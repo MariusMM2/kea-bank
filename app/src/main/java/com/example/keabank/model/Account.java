@@ -2,7 +2,7 @@ package com.example.keabank.model;
 
 import java.util.UUID;
 
-public class Account implements TransactionTarget {
+public class Account implements DatabaseItem, TransactionTarget {
     private UUID mId;
     private float mAmount;
     private Type mType;
@@ -21,20 +21,21 @@ public class Account implements TransactionTarget {
         mType = type;
     }
 
-    public void setCustomer(Customer linkedCustomer) {
-        mLinkedCustomer = linkedCustomer;
-    }
-
+    @Override
     public UUID getId() {
         return mId;
+    }
+
+    public Customer getCustomer() {
+        return mLinkedCustomer;
     }
 
     public Type getType() {
         return mType;
     }
 
-    public Customer getLinkedCustomer() {
-        return mLinkedCustomer;
+    public void setCustomer(Customer customer) {
+        mLinkedCustomer = customer;
     }
 
     @Override

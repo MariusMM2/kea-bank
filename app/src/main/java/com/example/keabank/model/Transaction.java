@@ -2,13 +2,27 @@ package com.example.keabank.model;
 
 import android.support.annotation.NonNull;
 
-public class Transaction {
+import java.util.UUID;
+
+public class Transaction implements DatabaseItem {
+    private UUID mId;
     private TransactionTarget mSource;
     private TransactionTarget mDestination;
     private float mAmount;
     private boolean mDone;
+    private Customer mLinkedCustomer;
+
+    public Transaction(UUID id, TransactionTarget source, TransactionTarget destination, float amount, boolean done, Customer linkedCustomer) {
+        mId = id;
+        mSource = source;
+        mDestination = destination;
+        mAmount = amount;
+        mDone = done;
+        mLinkedCustomer = linkedCustomer;
+    }
 
     private Transaction() {
+        mId = UUID.randomUUID();
         mDone = false;
         mAmount = -1f;
     }
@@ -89,6 +103,35 @@ public class Transaction {
         mSource.subtract(mAmount);
         mDestination.increase(mAmount);
         mDone = true;
+    }
+
+    @Override
+    public UUID getId() {
+        return null;
+    }
+
+    public TransactionTarget getSource() {
+        return mSource;
+    }
+
+    public TransactionTarget getDestination() {
+        return mDestination;
+    }
+
+    public float getAmount() {
+        return mAmount;
+    }
+
+    public boolean isDone() {
+        return mDone;
+    }
+
+    public Customer getLinkedCustomer() {
+        return mLinkedCustomer;
+    }
+
+    public void setLinkedCustomer(Customer linkedCustomer) {
+        mLinkedCustomer = linkedCustomer;
     }
 }
 

@@ -3,7 +3,7 @@ package com.example.keabank.model;
 import java.util.Date;
 import java.util.UUID;
 
-public class Bill implements TransactionTarget {
+public class Bill implements DatabaseItem, TransactionTarget {
     private final float mAmount;
     private UUID mId;
     private String mTitle, mDescription;
@@ -34,6 +34,7 @@ public class Bill implements TransactionTarget {
         mDueDate = dueDate;
     }
 
+    @Override
     public UUID getId() {
         return mId;
     }
@@ -66,8 +67,8 @@ public class Bill implements TransactionTarget {
         return mLinkedCustomer;
     }
 
-    public void setCustomer(Customer linkedCustomer) {
-        mLinkedCustomer = linkedCustomer;
+    public void setCustomer(Customer customer) {
+        mLinkedCustomer = customer;
     }
 
     @Override
