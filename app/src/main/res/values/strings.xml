@@ -3,4 +3,12 @@
     <string name="amount">%.2f</string>
     <string name="date_format">dd.MM.yyyy</string>
     <string name="transaction_balance_after">balance: %.2f</string>
+    <string name="transaction_payment_type">Payment Type</string>
+    <string name="transaction_status">Status</string>
+    <string name="transaction_target_account">Account</string>
+    <string name="transaction_text">Text</string>
+    <string name="transaction_amount">Amount</string>
+    <string name="transaction_date">Date</string>
+    <string name="transaction_message">Message</string>
+    <string name="transaction_id">Reference ID</string>
 </resources>
