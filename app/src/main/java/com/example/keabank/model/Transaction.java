@@ -12,22 +12,22 @@ public class Transaction implements DatabaseItem {
     private TransactionTarget mDestination;
     private float mAmount;
     private String mMessage;
-    private boolean mDone;
+    private State mState;
     private Date mDate;
 
-    private Transaction(UUID id, TransactionTarget source, TransactionTarget destination, float amount, String message, boolean done, Date date) {
+    private Transaction(UUID id, TransactionTarget source, TransactionTarget destination, float amount, String message, State state, Date date) {
         mId = id;
         mSource = source;
         mDestination = destination;
         mAmount = amount;
         mMessage = message;
-        mDone = done;
+        mState = state;
         mDate = date;
     }
 
     private Transaction() {
         mId = UUID.randomUUID();
-        mDone = false;
+        mState = State.STOPPED;
         mAmount = -1f;
         mDate = Calendar.getInstance().getTime();
     }
@@ -91,7 +91,7 @@ public class Transaction implements DatabaseItem {
             throw new TransactionException("Transaction has no amount for transfer");
         }
 
-        if (mDone) {
+        if (mState == State.DONE) {
             throw new TransactionException("Transaction has already finished");
         }
 
@@ -107,7 +107,7 @@ public class Transaction implements DatabaseItem {
     private void doTransaction() {
         mSource.subtract(mAmount);
         mDestination.increase(mAmount);
-        mDone = true;
+        mState = State.DONE;
     }
 
     @Override
@@ -127,8 +127,8 @@ public class Transaction implements DatabaseItem {
         return mAmount;
     }
 
-    public boolean isDone() {
-        return mDone;
+    public State getState() {
+        return mState;
     }
 
     public String getText() {
@@ -157,7 +157,7 @@ public class Transaction implements DatabaseItem {
                 this.mSource,
                 -this.mAmount,
                 this.mMessage,
-                this.mDone,
+                this.mState,
                 this.mDate
         );
     }
@@ -174,9 +174,16 @@ public class Transaction implements DatabaseItem {
                 ", mDestination=" + mDestination +
                 ", mAmount=" + mAmount +
                 ", mMessage='" + mMessage + '\'' +
-                ", mDone=" + mDone +
+                ", mState=" + mState +
                 ", mDate=" + mDate +
                 '}';
+    }
+
+    enum State {
+        STOPPED,
+        PENDING,
+        CANCELED,
+        DONE
     }
 }
 
