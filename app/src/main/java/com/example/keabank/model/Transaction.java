@@ -2,6 +2,8 @@ package com.example.keabank.model;
 
 import android.support.annotation.NonNull;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 public class Transaction implements DatabaseItem {
@@ -11,6 +13,7 @@ public class Transaction implements DatabaseItem {
     private float mAmount;
     private String mDescription;
     private boolean mDone;
+    private Date mDate;
 
     public Transaction(UUID id, TransactionTarget source, TransactionTarget destination, float amount, boolean done) {
         mId = id;
@@ -33,6 +36,7 @@ public class Transaction implements DatabaseItem {
         mId = UUID.randomUUID();
         mDone = false;
         mAmount = -1f;
+        mDate = Calendar.getInstance().getTime();
     }
 
     public static Transaction beginTransaction() {
@@ -158,6 +162,14 @@ public class Transaction implements DatabaseItem {
                 this.mDescription,
                 this.mDone
         );
+    }
+
+    public Date getDate() {
+        return mDate;
+    }
+
+    public void setDate(Date date) {
+        mDate = date;
     }
 }
 
