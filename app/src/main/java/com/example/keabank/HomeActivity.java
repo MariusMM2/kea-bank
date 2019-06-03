@@ -1,5 +1,6 @@
 package com.example.keabank;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +23,7 @@ public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
 
     private RecyclerView mAccountsList;
-    private AccountAdapter mAdapter;
+    private AccountAdapter mAccountAdapter;
 
     private Customer mCustomer;
 
@@ -74,6 +75,45 @@ public class HomeActivity extends AppCompatActivity {
         return customer;
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
+        mCustomer = getDebugCustomer();
+
+        mAccountsList = findViewById(R.id.list_accounts);
+
+        mAccountAdapter = new AccountAdapter();
+        mAccountsList.setAdapter(mAccountAdapter);
+        mAccountAdapter.notifyDataSetChanged();
+    }
+
+    private class AccountAdapter extends RecyclerView.Adapter<AccountHolder> {
+
+        @NonNull
+        @Override
+        public AccountHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(HomeActivity.this);
+            return new AccountHolder(layoutInflater, parent);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull AccountHolder accountHolder, int i) {
+
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull AccountHolder accountHolder, int i, @NonNull List<Object> payloads) {
+            Account account = mCustomer.getAccountList().get(i);
+            accountHolder.bind(account);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mCustomer.getAccountList().size();
+        }
+    }
+
     /**
      * ViewHolder for an Account.
      * Holds the type, the id and the amount.
@@ -103,52 +143,8 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-//            mSelectedItem = getAdapterPosition();
-//
-//            Intent i = DetailActivity.newIntent(getContext(), mItem);
-//
-//            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
-//                    itemView.findViewById(R.id.item_preview), "item");
-//            startActivityForResult(i, 1, options.toBundle());
+            Intent i = new Intent(HomeActivity.this, AccountActivity.class);
+            startActivity(i);
         }
-    }
-
-    private class AccountAdapter extends RecyclerView.Adapter<AccountHolder> {
-
-        @NonNull
-        @Override
-        public AccountHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater = LayoutInflater.from(HomeActivity.this);
-            return new AccountHolder(layoutInflater, parent);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull AccountHolder accountHolder, int i) {
-
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull AccountHolder accountHolder, int i, @NonNull List<Object> payloads) {
-            Account account = mCustomer.getAccountList().get(i);
-            accountHolder.bind(account);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mCustomer.getAccountList().size();
-        }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        mCustomer = getDebugCustomer();
-
-        mAccountsList = findViewById(R.id.list_accounts);
-
-        mAdapter = new AccountAdapter();
-        mAccountsList.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
     }
 }
