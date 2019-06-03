@@ -54,6 +54,7 @@ public class HomeActivity extends AppCompatActivity {
 
         AccountHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_account, parent, false));
+            itemView.setOnClickListener(this);
             mTypeTextView = itemView.findViewById(R.id.text_type);
             mIdTextView = itemView.findViewById(R.id.text_id);
             mAmountTextView = itemView.findViewById(R.id.text_amount);
