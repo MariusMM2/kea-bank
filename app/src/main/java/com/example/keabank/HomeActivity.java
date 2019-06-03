@@ -48,8 +48,8 @@ public class HomeActivity extends AppCompatActivity {
     private class AccountHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Account mAccount;
         private TextView mTypeTextView;
-        private TextView mIdTextView;
         private TextView mAmountTextView;
+        private TextView mIdTextView;
 
         AccountHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_account, parent, false));
@@ -61,10 +61,14 @@ public class HomeActivity extends AppCompatActivity {
 
         private void bind(Account account) {
             mAccount = account;
-            mTypeTextView.setText(String.valueOf(account.getType()));
-            mIdTextView.setText(account.getId().toString());
-            float amount = account.getAmount();
+
+            mTypeTextView.setText(String.valueOf(mAccount.getType()));
+
+            float amount = mAccount.getAmount();
             mAmountTextView.setText(getResources().getString(R.string.amount, amount));
+
+            mIdTextView.setText(mAccount.getId().toString());
+
             Log.d(TAG, String.format("Bound account %s to holder", mAccount.getType()));
         }
 
