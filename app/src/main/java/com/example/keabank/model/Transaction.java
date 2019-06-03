@@ -13,23 +13,22 @@ public class Transaction implements DatabaseItem {
     private float mAmount;
     private String mMessage;
     private State mState;
+    private Type mType;
     private Date mDate;
 
-    private Transaction(UUID id, TransactionTarget source, TransactionTarget destination, float amount, String message, State state, Date date) {
+    private Transaction(UUID id, TransactionTarget source, TransactionTarget destination, float amount, String message, State state, Type type, Date date) {
         mId = id;
         mSource = source;
         mDestination = destination;
         mAmount = amount;
         mMessage = message;
         mState = state;
+        mType = type;
         mDate = date;
     }
 
     private Transaction() {
-        mId = UUID.randomUUID();
-        mState = State.STOPPED;
-        mAmount = -1f;
-        mDate = Calendar.getInstance().getTime();
+        this(UUID.randomUUID(), null, null, -1f, "", State.STOPPED, Type.NORMAL, Calendar.getInstance().getTime());
     }
 
     public static Transaction beginTransaction() {
@@ -75,6 +74,11 @@ public class Transaction implements DatabaseItem {
             throw new IllegalStateException("Transaction already has an amount");
         }
 
+        return this;
+    }
+
+    public Transaction setType(Type type) {
+        mType = type;
         return this;
     }
 
@@ -158,8 +162,12 @@ public class Transaction implements DatabaseItem {
                 -this.mAmount,
                 this.mMessage,
                 this.mState,
-                this.mDate
+                Type.NORMAL, this.mDate
         );
+    }
+
+    public Type getType() {
+        return mType;
     }
 
     public Date getDate() {
@@ -184,6 +192,12 @@ public class Transaction implements DatabaseItem {
         PENDING,
         CANCELED,
         DONE
+    }
+
+    enum Type {
+        PAYMENT_SERVICE,
+        MOBILEPAY,
+        NORMAL
     }
 }
 
