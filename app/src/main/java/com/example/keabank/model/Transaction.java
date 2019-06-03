@@ -23,13 +23,14 @@ public class Transaction implements DatabaseItem {
         mDone = done;
     }
 
-    private Transaction(UUID id, TransactionTarget source, TransactionTarget destination, float amount, String description, boolean done) {
+    private Transaction(UUID id, TransactionTarget source, TransactionTarget destination, float amount, String description, boolean done, Date date) {
         mId = id;
         mSource = source;
         mDestination = destination;
         mAmount = amount;
         mDescription = description;
         mDone = done;
+        mDate = date;
     }
 
     private Transaction() {
@@ -160,7 +161,8 @@ public class Transaction implements DatabaseItem {
                 this.mSource,
                 -this.mAmount,
                 this.mDescription,
-                this.mDone
+                this.mDone,
+                this.mDate
         );
     }
 
@@ -168,8 +170,17 @@ public class Transaction implements DatabaseItem {
         return mDate;
     }
 
-    public void setDate(Date date) {
-        mDate = date;
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "mId=" + mId +
+                ", mSource=" + mSource +
+                ", mDestination=" + mDestination +
+                ", mAmount=" + mAmount +
+                ", mDescription='" + mDescription + '\'' +
+                ", mDone=" + mDone +
+                ", mDate=" + mDate +
+                '}';
     }
 }
 
