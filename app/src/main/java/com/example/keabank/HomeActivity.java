@@ -73,7 +73,7 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            Intent i = new Intent(HomeActivity.this, AccountActivity.class);
+            Intent i = new Intent(HomeActivity.this, AccountTransactionsActivity.class);
             startActivity(i);
         }
     }

@@ -16,8 +16,8 @@ import com.example.keabank.model.Transaction;
 
 import java.util.List;
 
-public class AccountActivity extends AppCompatActivity {
-    private static final String TAG = "AccountActivity";
+public class AccountTransactionsActivity extends AppCompatActivity {
+    private static final String TAG = "AccountTransactionsActivity";
 
     private Account mAccount;
 
@@ -27,7 +27,7 @@ public class AccountActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_account);
+        setContentView(R.layout.activity_account_transactions);
 
         mAccount = Customer.getDummyCustomer().getAccountList().get(0);
 
@@ -106,7 +106,7 @@ public class AccountActivity extends AppCompatActivity {
         @NonNull
         @Override
         public TransactionHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater = LayoutInflater.from(AccountActivity.this);
+            LayoutInflater layoutInflater = LayoutInflater.from(AccountTransactionsActivity.this);
             return new TransactionHolder(layoutInflater, parent);
         }
 
