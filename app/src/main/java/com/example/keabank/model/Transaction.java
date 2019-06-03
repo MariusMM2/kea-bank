@@ -9,6 +9,7 @@ public class Transaction implements DatabaseItem {
     private TransactionTarget mSource;
     private TransactionTarget mDestination;
     private float mAmount;
+    private String mDescription;
     private boolean mDone;
     private Customer mLinkedCustomer;
 
@@ -126,12 +127,20 @@ public class Transaction implements DatabaseItem {
         return mDone;
     }
 
-    public Customer getLinkedCustomer() {
+    public Customer getCustomer() {
         return mLinkedCustomer;
     }
 
-    public void setLinkedCustomer(Customer linkedCustomer) {
+    public void setCustomer(Customer linkedCustomer) {
         mLinkedCustomer = linkedCustomer;
+    }
+
+    public String getDescription() {
+        return mDescription;
+    }
+
+    public void setDescription(String description) {
+        mDescription = description;
     }
 }
 
