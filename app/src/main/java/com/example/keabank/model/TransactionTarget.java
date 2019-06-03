@@ -1,6 +1,6 @@
 package com.example.keabank.model;
 
-public interface TransactionTarget {
+public interface TransactionTarget extends DatabaseItem {
     float getAmount();
 
     boolean canSubtractAmount(float amount);

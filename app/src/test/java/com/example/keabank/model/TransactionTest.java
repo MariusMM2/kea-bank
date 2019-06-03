@@ -3,6 +3,8 @@ package com.example.keabank.model;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.UUID;
+
 import static org.junit.Assert.fail;
 
 public class TransactionTest {
@@ -21,6 +23,11 @@ public class TransactionTest {
         mTransaction3 = Transaction.beginTransaction();
 
         mTransactionTargetInt = new TransactionTarget() {
+            @Override
+            public UUID getId() {
+                return null;
+            }
+
             private float amount = 30;
 
             @Override
@@ -49,6 +56,11 @@ public class TransactionTest {
             }
         };
         mTransactionTargetNat = new TransactionTarget() {
+            @Override
+            public UUID getId() {
+                return null;
+            }
+
             private float amount = 200;
 
             @Override
