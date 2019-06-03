@@ -141,6 +141,7 @@ public class HomeActivity extends AppCompatActivity {
             allTransactions.addAll(outGoingTransactions);
             allTransactions.addAll(incomingTransactions);
             allTransactions.sort(Comparator.comparing(Transaction::getDate));
+            Collections.reverse(allTransactions);
             allTransactions.forEach(account::addTransaction);
 
             customer.addAccount(account);
