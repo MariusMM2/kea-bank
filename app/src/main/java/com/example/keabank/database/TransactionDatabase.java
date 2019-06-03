@@ -2,7 +2,7 @@ package com.example.keabank.database;
 
 import android.content.Context;
 
-public class TransactionDatabase extends AbstractDatabase {
+class TransactionDatabase extends AbstractDatabase {
     TransactionDatabase(Context context) {
         super(context);
     }

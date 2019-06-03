@@ -4,7 +4,7 @@ import android.content.Context;
 
 import java.util.Calendar;
 
-public class CustomerDatabase extends AbstractDatabase {
+class CustomerDatabase extends AbstractDatabase {
     CustomerDatabase(Context context) {
         super(context);
         Calendar.getInstance().set(1990, 7, 31);
