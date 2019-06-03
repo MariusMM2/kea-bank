@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.keabank.model.Account;
+import com.example.keabank.model.Customer;
 import com.example.keabank.model.Transaction;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class AccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
 
-        mAccount = HomeActivity.getDummyCustomer().getAccountList().get(0);
+        mAccount = Customer.getDummyCustomer().getAccountList().get(0);
 
         mTransactionsList = findViewById(R.id.list_transactions);
 
