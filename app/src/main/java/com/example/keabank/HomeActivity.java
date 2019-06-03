@@ -36,7 +36,7 @@ public class HomeActivity extends AppCompatActivity {
 
         mAccountsList = findViewById(R.id.list_accounts);
 
-        mAccountAdapter = new AccountAdapter();
+        mAccountAdapter = new AccountAdapter(mCustomer);
         mAccountsList.setAdapter(mAccountAdapter);
         mAccountAdapter.notifyDataSetChanged();
     }
@@ -47,6 +47,7 @@ public class HomeActivity extends AppCompatActivity {
      */
     private class AccountHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Account mAccount;
+
         private TextView mTypeTextView;
         private TextView mAmountTextView;
         private TextView mIdTextView;
@@ -80,6 +81,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private class AccountAdapter extends RecyclerView.Adapter<AccountHolder> {
+
+        private Customer mCustomer;
+
+        private AccountAdapter(Customer customer) {
+            mCustomer = customer;
+        }
 
         @NonNull
         @Override
