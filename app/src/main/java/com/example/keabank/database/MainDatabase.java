@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings({"SpellCheckingInspection", "unchecked"})
 public class MainDatabase {
-    static boolean DEBUG_NO_NEMID = false;
+    static boolean DEBUG_NO_NEMID = true;
     static boolean DEBUG_NO_PASSWORD = true;
     private static MainDatabase sInstance;
     Database mAccountDb, mBillDb, mCustomerDb, mNemIdDb, mTransactionDb;
