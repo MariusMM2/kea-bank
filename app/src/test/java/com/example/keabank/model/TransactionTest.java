@@ -1,8 +1,9 @@
 package com.example.keabank.model;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.fail;
 
 public class TransactionTest {
 
@@ -82,7 +83,7 @@ public class TransactionTest {
         try {
             //noinspection ConstantConditions
             mTransaction1.setSource(null);
-            Assert.fail("IllegalArgumentException not thrown");
+            fail("IllegalArgumentException not thrown");
         } catch (IllegalArgumentException ignored) {
 
         }
@@ -91,7 +92,7 @@ public class TransactionTest {
 
         try {
             mTransaction1.setSource(mTransactionTargetNat);
-            Assert.fail("IllegalStateException not thrown");
+            fail("IllegalStateException not thrown");
         } catch (IllegalStateException ignored) {
 
         }
@@ -102,7 +103,7 @@ public class TransactionTest {
         try {
             //noinspection ConstantConditions
             mTransaction1.setDestination(null);
-            Assert.fail("IllegalArgumentException not thrown");
+            fail("IllegalArgumentException not thrown");
         } catch (IllegalArgumentException ignored) {
 
         }
@@ -111,7 +112,7 @@ public class TransactionTest {
 
         try {
             mTransaction1.setDestination(mTransactionTargetNat);
-            Assert.fail("IllegalStateException not thrown");
+            fail("IllegalStateException not thrown");
         } catch (IllegalStateException ignored) {
 
         }
@@ -121,13 +122,13 @@ public class TransactionTest {
     public void setAmount() {
         try {
             mTransaction1.setAmount(0);
-            Assert.fail("IllegalArgumentException not thrown");
+            fail("IllegalArgumentException not thrown");
         } catch (IllegalArgumentException ignored) {
 
         }
         try {
             mTransaction1.setAmount(-100);
-            Assert.fail("IllegalArgumentException not thrown");
+            fail("IllegalArgumentException not thrown");
         } catch (IllegalArgumentException ignored) {
 
         }
@@ -136,7 +137,7 @@ public class TransactionTest {
 
         try {
             mTransaction1.setAmount(2);
-            Assert.fail("IllegalStateException not thrown");
+            fail("IllegalStateException not thrown");
         } catch (IllegalStateException ignored) {
 
         }
@@ -146,21 +147,21 @@ public class TransactionTest {
     public void commit() {
         try {
             mTransaction1.commit();
-            Assert.fail("TransactionException not thrown");
+            fail("TransactionException not thrown");
         } catch (TransactionException ignored) {
         }
 
         try {
             mTransaction1.setSource(mTransactionTargetInt)
                     .commit();
-            Assert.fail("TransactionException not thrown");
+            fail("TransactionException not thrown");
         } catch (TransactionException ignored) {
         }
 
         try {
             mTransaction1.setDestination(mTransactionTargetInt)
                     .commit();
-            Assert.fail("TransactionException not thrown");
+            fail("TransactionException not thrown");
         } catch (TransactionException ignored) {
         }
 
@@ -169,7 +170,7 @@ public class TransactionTest {
                     .setDestination(mTransactionTargetNat)
                     .setAmount(mTransactionTargetNat.getAmount() + 1)
                     .commit();
-            Assert.fail("TransactionException not thrown");
+            fail("TransactionException not thrown");
         } catch (TransactionException ignored) {
         }
 
@@ -177,12 +178,12 @@ public class TransactionTest {
             mTransaction1.setAmount(1000)
                     .commit();
         } catch (TransactionException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
 
         try {
             mTransaction1.commit();
-            Assert.fail("TransactionException not thrown");
+            fail("TransactionException not thrown");
         } catch (TransactionException ignored) {
         }
 
@@ -192,7 +193,7 @@ public class TransactionTest {
                     .setAmount(mTransactionTargetInt.getAmount() + 100)
                     .commit();
         } catch (TransactionException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
     }
 }
