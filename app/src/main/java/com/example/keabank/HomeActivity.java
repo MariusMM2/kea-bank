@@ -26,17 +26,52 @@ public class HomeActivity extends AppCompatActivity {
 
     private Customer mCustomer;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        getDebugCustomer();
+    public static Customer getDebugCustomer() {
+        Customer customer = new Customer("John", "Doe", "johndoe@email.com", "123456", Calendar.getInstance().getTime());
+        final List<Account> accountList = new ArrayList<>(
+                Arrays.asList(
+                        Account.newDefault(3000, customer.getId()),
+                        Account.newBudget(1000, customer.getId())
+                )
+        );
+        final List<Bill> billList = new ArrayList<>(
+                Arrays.asList(
+                        new Bill("1", "1++", false, 10, Calendar.getInstance().getTime(), customer.getId()),
+                        new Bill("2", "2++", false, 20, Calendar.getInstance().getTime(), customer.getId()),
+                        new Bill("3", "3++", false, 30, Calendar.getInstance().getTime(), customer.getId())
+                )
+        );
+        final List<Transaction> transactionList = new ArrayList<>(
+                Arrays.asList(
+                        Transaction.beginTransaction().setSource(accountList.get(0)).setDestination(accountList.get(1)).setAmount(1000),
+                        Transaction.beginTransaction().setSource(accountList.get(1)).setDestination(accountList.get(0)).setAmount(2000),
+                        Transaction.beginTransaction().setSource(accountList.get(0)).setDestination(billList.get(0)).setAmount(billList.get(0).getAmount()),
+                        Transaction.beginTransaction().setSource(accountList.get(1)).setDestination(billList.get(2)).setAmount(billList.get(2).getAmount()),
+                        Transaction.beginTransaction().setSource(billList.get(1)).setDestination(accountList.get(0)).setAmount(billList.get(1).getAmount())
+                )
+        );
 
-        mAccountsList = findViewById(R.id.list_accounts);
+        accountList.forEach(account -> {
+            List<Transaction> outGoingTransactions = transactionList.stream()
+                    .filter(transaction -> transaction.getSource().getId().equals(account.getId()))
+                    .collect(Collectors.toList());
 
-        mAdapter = new AccountAdapter();
-        mAccountsList.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
+            List<Transaction> incomingTransactions = transactionList.stream()
+                    .filter(transaction -> transaction.getDestination().getId().equals(account.getId()))
+                    .map(Transaction::reverse)
+                    .collect(Collectors.toList());
+
+            List<Transaction> allTransactions = new ArrayList<>();
+
+            allTransactions.addAll(outGoingTransactions);
+            allTransactions.addAll(incomingTransactions);
+            allTransactions.sort(Comparator.comparing(Transaction::getDate));
+            allTransactions.forEach(account::addTransaction);
+
+            customer.addAccount(account);
+        });
+
+        return customer;
     }
 
     /**
@@ -104,49 +139,16 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    private void getDebugCustomer() {
-        mCustomer = new Customer("John", "Doe", "johndoe@email.com", "123456", Calendar.getInstance().getTime());
-        final List<Account> accountList = new ArrayList<>(
-                Arrays.asList(
-                        Account.newDefault(3000, mCustomer.getId()),
-                        Account.newBudget(1000, mCustomer.getId())
-                )
-        );
-        final List<Bill> billList = new ArrayList<>(
-                Arrays.asList(
-                        new Bill("1", "1++", false, 10, Calendar.getInstance().getTime(), mCustomer.getId()),
-                        new Bill("2", "2++", false, 20, Calendar.getInstance().getTime(), mCustomer.getId()),
-                        new Bill("3", "3++", false, 30, Calendar.getInstance().getTime(), mCustomer.getId())
-                )
-        );
-        final List<Transaction> transactionList = new ArrayList<>(
-                Arrays.asList(
-                        Transaction.beginTransaction().setSource(accountList.get(0)).setDestination(accountList.get(1)).setAmount(1000),
-                        Transaction.beginTransaction().setSource(accountList.get(1)).setDestination(accountList.get(0)).setAmount(2000),
-                        Transaction.beginTransaction().setSource(accountList.get(0)).setDestination(billList.get(0)).setAmount(billList.get(0).getAmount()),
-                        Transaction.beginTransaction().setSource(accountList.get(1)).setDestination(billList.get(2)).setAmount(billList.get(2).getAmount()),
-                        Transaction.beginTransaction().setSource(billList.get(1)).setDestination(accountList.get(0)).setAmount(billList.get(1).getAmount())
-                )
-        );
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
+        mCustomer = getDebugCustomer();
 
-        accountList.forEach(account -> {
-            List<Transaction> outGoingTransactions = transactionList.stream()
-                    .filter(transaction -> transaction.getSource().getId().equals(account.getId()))
-                    .collect(Collectors.toList());
+        mAccountsList = findViewById(R.id.list_accounts);
 
-            List<Transaction> incomingTransactions = transactionList.stream()
-                    .filter(transaction -> transaction.getDestination().getId().equals(account.getId()))
-                    .map(Transaction::reverse)
-                    .collect(Collectors.toList());
-
-            List<Transaction> allTransactions = new ArrayList<>();
-
-            allTransactions.addAll(outGoingTransactions);
-            allTransactions.addAll(incomingTransactions);
-            allTransactions.sort(Comparator.comparing(Transaction::getDate));
-            allTransactions.forEach(account::addTransaction);
-
-            mCustomer.addAccount(account);
-        });
+        mAdapter = new AccountAdapter();
+        mAccountsList.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
     }
 }
