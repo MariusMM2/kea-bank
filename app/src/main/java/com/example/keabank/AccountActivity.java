@@ -6,13 +6,13 @@ import com.example.keabank.model.Customer;
 
 public class AccountActivity extends AppCompatActivity {
 
-    private Customer mCustomer;
+    private Account mAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
 
-        mCustomer = HomeActivity.getDebugCustomer();
+        mAccount = HomeActivity.getDummyCustomer().getAccountList().get(0);
     }
 }

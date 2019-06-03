@@ -32,7 +32,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mCustomer = getDebugCustomer();
+        mCustomer = getDummyCustomer();
 
         mAccountsList = findViewById(R.id.list_accounts);
 
@@ -112,7 +112,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    public static Customer getDebugCustomer() {
+    public static Customer getDummyCustomer() {
         Customer customer = new Customer("John", "Doe", "johndoe@email.com", "123456", Calendar.getInstance().getTime());
         final List<Account> accountList = new ArrayList<>(
                 Arrays.asList(
@@ -122,9 +122,9 @@ public class HomeActivity extends AppCompatActivity {
         );
         final List<Bill> billList = new ArrayList<>(
                 Arrays.asList(
-                        new Bill("1", "1++", false, 10, Calendar.getInstance().getTime(), customer.getId()),
-                        new Bill("2", "2++", false, 20, Calendar.getInstance().getTime(), customer.getId()),
-                        new Bill("3", "3++", false, 30, Calendar.getInstance().getTime(), customer.getId())
+                        new Bill("Bill 1", "1++", false, 10, Calendar.getInstance().getTime(), customer.getId()),
+                        new Bill("Bill 2", "2++", false, 20, Calendar.getInstance().getTime(), customer.getId()),
+                        new Bill("Bill 3", "3++", false, 30, Calendar.getInstance().getTime(), customer.getId())
                 )
         );
         final List<Transaction> transactionList = new ArrayList<>(
