@@ -12,17 +12,6 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/text_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_description"
-            tools:text="01.01.1970" />
-
-        <TextView
             android:id="@+id/text_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,7 +34,18 @@
             tools:text="###.##" />
 
         <TextView
-            android:id="@+id/text_balance"
+            android:id="@+id/text_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_description"
+            tools:text="01.01.1970" />
+
+        <TextView
+            android:id="@+id/text_balance_after"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
