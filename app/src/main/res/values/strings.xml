@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">KEA Bank</string>
+    <string name="amount">%.2f</string>
 </resources>

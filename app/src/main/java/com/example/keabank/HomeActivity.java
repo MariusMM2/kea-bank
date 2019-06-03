@@ -1,7 +1,14 @@
 package com.example.keabank;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import com.example.keabank.model.Account;
 import com.example.keabank.model.Bill;
 import com.example.keabank.model.Customer;
@@ -12,6 +19,10 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("Duplicates")
 public class HomeActivity extends AppCompatActivity {
+    private static final String TAG = "HomeActivity";
+
+    private RecyclerView mAccountsList;
+    private AccountAdapter mAdapter;
 
     private Customer mCustomer;
 
@@ -20,6 +31,77 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         getDebugCustomer();
+
+        mAccountsList = findViewById(R.id.list_accounts);
+
+        mAdapter = new AccountAdapter();
+        mAccountsList.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * ViewHolder for an Account.
+     * Holds the type, the id and the amount.
+     */
+    private class AccountHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private Account mAccount;
+        private TextView mTypeTextView;
+        private TextView mIdTextView;
+        private TextView mAmountTextView;
+
+        AccountHolder(LayoutInflater inflater, ViewGroup parent) {
+            super(inflater.inflate(R.layout.item_account, parent, false));
+            mTypeTextView = itemView.findViewById(R.id.text_type);
+            mIdTextView = itemView.findViewById(R.id.text_id);
+            mAmountTextView = itemView.findViewById(R.id.text_amount);
+            Log.d(TAG, "Created AccountHolder");
+        }
+
+        private void bind(Account account) {
+            mAccount = account;
+            mTypeTextView.setText(String.valueOf(account.getType()));
+            mIdTextView.setText(account.getId().toString());
+            float amount = account.getAmount();
+            mAmountTextView.setText(getResources().getString(R.string.amount, amount));
+            Log.d(TAG, String.format("Bound account %s to holder", mAccount.getType()));
+        }
+
+        @Override
+        public void onClick(View v) {
+//            mSelectedItem = getAdapterPosition();
+//
+//            Intent i = DetailActivity.newIntent(getContext(), mItem);
+//
+//            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+//                    itemView.findViewById(R.id.item_preview), "item");
+//            startActivityForResult(i, 1, options.toBundle());
+        }
+    }
+
+    private class AccountAdapter extends RecyclerView.Adapter<AccountHolder> {
+
+        @NonNull
+        @Override
+        public AccountHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(HomeActivity.this);
+            return new AccountHolder(layoutInflater, parent);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull AccountHolder accountHolder, int i) {
+
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull AccountHolder accountHolder, int i, @NonNull List<Object> payloads) {
+            Account account = mCustomer.getAccountList().get(i);
+            accountHolder.bind(account);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mCustomer.getAccountList().size();
+        }
     }
 
     private void getDebugCustomer() {
@@ -67,6 +149,4 @@ public class HomeActivity extends AppCompatActivity {
             mCustomer.addAccount(account);
         });
     }
-
-
 }
