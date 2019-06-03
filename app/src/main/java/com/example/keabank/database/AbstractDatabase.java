@@ -57,6 +57,7 @@ abstract class AbstractDatabase implements Database {
         mItems.set(index, item);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void save() {
         File saveDirectory = new File("database");
