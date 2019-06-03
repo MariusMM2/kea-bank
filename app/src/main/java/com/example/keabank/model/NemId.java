@@ -5,13 +5,13 @@ import java.util.UUID;
 public class NemId implements DatabaseItem {
     private UUID mId;
     private String mUsername, mPassword;
-    private Customer mLinkedCustomer;
+    private UUID mCustomerId;
 
-    public NemId(UUID id, String username, String password, Customer linkedCustomer) {
+    public NemId(UUID id, String username, String password, UUID customerId) {
         mId = id;
         mUsername = username;
         mPassword = password;
-        mLinkedCustomer = linkedCustomer;
+        mCustomerId = customerId;
     }
 
     public NemId(String username, String password) {
@@ -33,11 +33,11 @@ public class NemId implements DatabaseItem {
         return mPassword;
     }
 
-    public Customer getCustomer() {
-        return mLinkedCustomer;
+    public UUID getCustomerId() {
+        return mCustomerId;
     }
 
-    public void setCustomer(Customer customer) {
-        mLinkedCustomer = customer;
+    public void setCustomerId(UUID customerId) {
+        mCustomerId = customerId;
     }
 }

@@ -1,24 +1,52 @@
 package com.example.keabank.model;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
-public class Account implements DatabaseItem, TransactionTarget {
+public class Account implements TransactionTarget, Serializable {
     private UUID mId;
     private float mAmount;
     private Type mType;
-    private Customer mLinkedCustomer;
+    private UUID mCustomerId;
+    private transient List<Transaction> mTransactionList;
 
-    public Account(UUID id, float amount, Type type, Customer linkedCustomer) {
+    public Account(UUID id, float amount, Type type, UUID customerId, Transaction... transactions) {
         mId = id;
         mAmount = amount;
         mType = type;
-        mLinkedCustomer = linkedCustomer;
+        mCustomerId = customerId;
+        mTransactionList = Arrays.asList(transactions);
     }
 
-    public Account(float amount, Type type) {
+    public Account(float amount, Type type, UUID customerId) {
         mId = UUID.randomUUID();
         mAmount = amount;
         mType = type;
+        mCustomerId = customerId;
+        mTransactionList = new ArrayList<>();
+    }
+
+    public static Account newSavings(float amount, UUID customerId) {
+        return new Account(amount, Type.SAVINGS, customerId);
+    }
+
+    public static Account newBudget(float amount, UUID customerId) {
+        return new Account(amount, Type.BUDGET, customerId);
+    }
+
+    public static Account newPension(float amount, UUID customerId) {
+        return new Account(amount, Type.PENSION, customerId);
+    }
+
+    public static Account newBusiness(float amount, UUID customerId) {
+        return new Account(amount, Type.BUSINESS, customerId);
+    }
+
+    public static Account newDefault(float amount, UUID customerId) {
+        return new Account(amount, Type.DEFAULT, customerId);
     }
 
     @Override
@@ -26,16 +54,8 @@ public class Account implements DatabaseItem, TransactionTarget {
         return mId;
     }
 
-    public Customer getCustomer() {
-        return mLinkedCustomer;
-    }
-
     public Type getType() {
         return mType;
-    }
-
-    public void setCustomer(Customer customer) {
-        mLinkedCustomer = customer;
     }
 
     @Override
@@ -68,6 +88,22 @@ public class Account implements DatabaseItem, TransactionTarget {
     @Override
     public boolean canGoNegative() {
         return true;
+    }
+
+    public UUID getCustomerId() {
+        return mCustomerId;
+    }
+
+    public void setCustomerId(UUID customerId) {
+        mCustomerId = customerId;
+    }
+
+    public List<Transaction> getTransactionList() {
+        return mTransactionList;
+    }
+
+    public void addTransaction(Transaction transactions) {
+        mTransactionList.add(transactions);
     }
 
     private enum Type {

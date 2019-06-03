@@ -11,15 +11,22 @@ public class Transaction implements DatabaseItem {
     private float mAmount;
     private String mDescription;
     private boolean mDone;
-    private Customer mLinkedCustomer;
 
-    public Transaction(UUID id, TransactionTarget source, TransactionTarget destination, float amount, boolean done, Customer linkedCustomer) {
+    public Transaction(UUID id, TransactionTarget source, TransactionTarget destination, float amount, boolean done) {
         mId = id;
         mSource = source;
         mDestination = destination;
         mAmount = amount;
         mDone = done;
-        mLinkedCustomer = linkedCustomer;
+    }
+
+    private Transaction(UUID id, TransactionTarget source, TransactionTarget destination, float amount, String description, boolean done) {
+        mId = id;
+        mSource = source;
+        mDestination = destination;
+        mAmount = amount;
+        mDescription = description;
+        mDone = done;
     }
 
     private Transaction() {
@@ -108,7 +115,7 @@ public class Transaction implements DatabaseItem {
 
     @Override
     public UUID getId() {
-        return null;
+        return mId;
     }
 
     public TransactionTarget getSource() {
@@ -127,20 +134,30 @@ public class Transaction implements DatabaseItem {
         return mDone;
     }
 
-    public Customer getCustomer() {
-        return mLinkedCustomer;
-    }
-
-    public void setCustomer(Customer linkedCustomer) {
-        mLinkedCustomer = linkedCustomer;
-    }
-
     public String getDescription() {
         return mDescription;
     }
 
     public void setDescription(String description) {
         mDescription = description;
+    }
+
+    public UUID getSourceId() {
+        return mSource.getId();
+    }
+
+    public UUID getDestinationId() {
+        return mDestination.getId();
+    }
+
+    public Transaction reverse() {
+        return new Transaction(this.mId,
+                this.mDestination,
+                this.mSource,
+                -this.mAmount,
+                this.mDescription,
+                this.mDone
+        );
     }
 }
 

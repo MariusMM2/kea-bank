@@ -1,17 +1,18 @@
 package com.example.keabank.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-public class Bill implements DatabaseItem, TransactionTarget {
+public class Bill implements TransactionTarget, Serializable {
     private final float mAmount;
     private UUID mId;
     private String mTitle, mDescription;
     private boolean mAutomated, mRecurrent, mPendingPayment;
     private Date mDueDate;
-    private Customer mLinkedCustomer;
+    private UUID mCustomerId;
 
-    public Bill(UUID id, String title, String description, boolean automated, boolean recurrent, boolean pendingPayment, float amount, Date dueDate, Customer linkedCustomer) {
+    public Bill(UUID id, String title, String description, boolean automated, boolean recurrent, boolean pendingPayment, float amount, Date dueDate, UUID customerId) {
         mId = id;
         mTitle = title;
         mDescription = description;
@@ -20,10 +21,10 @@ public class Bill implements DatabaseItem, TransactionTarget {
         mPendingPayment = pendingPayment;
         mAmount = amount;
         mDueDate = dueDate;
-        mLinkedCustomer = linkedCustomer;
+        mCustomerId = customerId;
     }
 
-    public Bill(String title, String description, boolean recurrent, float amount, Date dueDate) {
+    public Bill(String title, String description, boolean recurrent, float amount, Date dueDate, UUID customerId) {
         mId = UUID.randomUUID();
         mTitle = title;
         mDescription = description;
@@ -32,6 +33,7 @@ public class Bill implements DatabaseItem, TransactionTarget {
         mAmount = amount;
         mPendingPayment = false;
         mDueDate = dueDate;
+        mCustomerId = customerId;
     }
 
     @Override
@@ -63,14 +65,6 @@ public class Bill implements DatabaseItem, TransactionTarget {
         return mDueDate;
     }
 
-    public Customer getCustomer() {
-        return mLinkedCustomer;
-    }
-
-    public void setCustomer(Customer customer) {
-        mLinkedCustomer = customer;
-    }
-
     @Override
     public float getAmount() {
         return mAmount;
@@ -94,5 +88,13 @@ public class Bill implements DatabaseItem, TransactionTarget {
     @Override
     public boolean canGoNegative() {
         return false;
+    }
+
+    public UUID getCustomerId() {
+        return mCustomerId;
+    }
+
+    public void setCustomerId(UUID customerId) {
+        mCustomerId = customerId;
     }
 }

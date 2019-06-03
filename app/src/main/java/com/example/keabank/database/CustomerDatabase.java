@@ -2,17 +2,16 @@ package com.example.keabank.database;
 
 import android.content.Context;
 
-public class CustomerDatabase extends AbstractDatabase {
-    private static CustomerDatabase sInstance;
+import java.util.Calendar;
 
-    private CustomerDatabase(Context context) {
+public class CustomerDatabase extends AbstractDatabase {
+    CustomerDatabase(Context context) {
         super(context);
+        Calendar.getInstance().set(1990, 7, 31);
     }
 
-    public static CustomerDatabase getInstance(Context context) {
-        if (sInstance == null) {
-            sInstance = new CustomerDatabase(context);
-        }
-        return sInstance;
+    @Override
+    String getItemsFileName() {
+        return "customers";
     }
 }
