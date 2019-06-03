@@ -11,24 +11,16 @@ public class Transaction implements DatabaseItem {
     private TransactionTarget mSource;
     private TransactionTarget mDestination;
     private float mAmount;
-    private String mDescription;
+    private String mMessage;
     private boolean mDone;
     private Date mDate;
 
-    public Transaction(UUID id, TransactionTarget source, TransactionTarget destination, float amount, boolean done) {
+    private Transaction(UUID id, TransactionTarget source, TransactionTarget destination, float amount, String message, boolean done, Date date) {
         mId = id;
         mSource = source;
         mDestination = destination;
         mAmount = amount;
-        mDone = done;
-    }
-
-    private Transaction(UUID id, TransactionTarget source, TransactionTarget destination, float amount, String description, boolean done, Date date) {
-        mId = id;
-        mSource = source;
-        mDestination = destination;
-        mAmount = amount;
-        mDescription = description;
+        mMessage = message;
         mDone = done;
         mDate = date;
     }
@@ -139,16 +131,16 @@ public class Transaction implements DatabaseItem {
         return mDone;
     }
 
-    public String getDisplayText() {
-        return mDestination.getTitle() != null ? mDestination.getTitle() : mDescription;
+    public String getText() {
+        return mDestination.getTitle() != null ? mDestination.getTitle() : mMessage.substring(0, 20);
     }
 
-    public String getDescription() {
-        return mDescription;
+    public String getMessage() {
+        return mMessage;
     }
 
-    public void setDescription(String description) {
-        mDescription = description;
+    public void setMessage(String message) {
+        mMessage = message;
     }
 
     public UUID getSourceId() {
@@ -164,7 +156,7 @@ public class Transaction implements DatabaseItem {
                 this.mDestination,
                 this.mSource,
                 -this.mAmount,
-                this.mDescription,
+                this.mMessage,
                 this.mDone,
                 this.mDate
         );
@@ -181,7 +173,7 @@ public class Transaction implements DatabaseItem {
                 ", mSource=" + mSource +
                 ", mDestination=" + mDestination +
                 ", mAmount=" + mAmount +
-                ", mDescription='" + mDescription + '\'' +
+                ", mMessage='" + mMessage + '\'' +
                 ", mDone=" + mDone +
                 ", mDate=" + mDate +
                 '}';

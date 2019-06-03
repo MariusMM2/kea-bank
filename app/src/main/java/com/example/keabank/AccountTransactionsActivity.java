@@ -66,7 +66,7 @@ public class AccountTransactionsActivity extends AppCompatActivity {
             mParentAccount = account;
             mTransaction = transaction;
 
-            mDescriptionTextView.setText(String.valueOf(mTransaction.getDisplayText()));
+            mDescriptionTextView.setText(String.valueOf(mTransaction.getText()));
 
             float amount = -mTransaction.getAmount();
             mAmountTextView.setText(getResources().getString(R.string.amount, amount));
@@ -86,7 +86,7 @@ public class AccountTransactionsActivity extends AppCompatActivity {
             mBalanceAfterTextView.setText(getResources().getString(R.string.amount, balanceAfter));
 
 
-            Log.d(TAG, String.format("Bound transaction %s to holder", mTransaction.getDisplayText()));
+            Log.d(TAG, String.format("Bound transaction %s to holder", mTransaction.getText()));
         }
 
         @Override
