@@ -10,4 +10,6 @@ public interface TransactionTarget extends DatabaseItem {
     void increase(float amount);
 
     boolean canGoNegative();
+
+    String getTitle();
 }

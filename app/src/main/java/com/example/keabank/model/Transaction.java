@@ -139,6 +139,10 @@ public class Transaction implements DatabaseItem {
         return mDone;
     }
 
+    public String getDisplayText() {
+        return mDestination.getTitle() != null ? mDestination.getTitle() : mDescription;
+    }
+
     public String getDescription() {
         return mDescription;
     }

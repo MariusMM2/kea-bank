@@ -90,6 +90,11 @@ public class Account implements TransactionTarget, Serializable {
         return true;
     }
 
+    @Override
+    public String getTitle() {
+        return String.format("%x", mId.getMostSignificantBits());
+    }
+
     public UUID getCustomerId() {
         return mCustomerId;
     }

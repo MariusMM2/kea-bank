@@ -41,6 +41,7 @@ public class Bill implements TransactionTarget, Serializable {
         return mId;
     }
 
+    @Override
     public String getTitle() {
         return mTitle;
     }
