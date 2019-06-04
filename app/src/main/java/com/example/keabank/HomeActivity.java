@@ -61,14 +61,14 @@ public class HomeActivity extends AppCompatActivity {
         private void bind(Account account) {
             mAccount = account;
 
-            mTypeTextView.setText(String.valueOf(mAccount.getType()));
+            mTypeTextView.setText(String.valueOf(mAccount.getType().getText()));
 
             float amount = mAccount.getAmount();
             mAmountTextView.setText(getResources().getString(R.string.amount, amount));
 
             mIdTextView.setText(mAccount.getId().toString());
 
-            Log.d(TAG, String.format("Bound account %s to holder", mAccount.getType()));
+            Log.d(TAG, String.format("Bound account %s to holder", mAccount.getType().getText()));
         }
 
         @Override
