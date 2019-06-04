@@ -1,5 +1,6 @@
 package com.example.keabank;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -55,6 +56,7 @@ public class AccountTransactionsActivity extends AppCompatActivity {
 
         TransactionHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_transaction, parent, false));
+            itemView.setOnClickListener(this);
             mDescriptionTextView = itemView.findViewById(R.id.text_description);
             mAmountTextView = itemView.findViewById(R.id.text_amount);
             mDateTextView = itemView.findViewById(R.id.text_date);
@@ -91,7 +93,8 @@ public class AccountTransactionsActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-
+            Intent i = new Intent(AccountTransactionsActivity.this, TransactionDetailActivity.class);
+            startActivity(i);
         }
     }
 
