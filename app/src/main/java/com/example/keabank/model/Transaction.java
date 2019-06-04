@@ -187,17 +187,37 @@ public class Transaction implements DatabaseItem {
                 '}';
     }
 
-    enum Status {
-        STOPPED,
-        PENDING,
-        CANCELED,
-        DONE
+    public enum Status {
+        STOPPED("Stopped"),
+        PENDING("Pending"),
+        CANCELED("Canceled"),
+        DONE("Done");
+
+        private final String mText;
+
+        Status(String text) {
+            mText = text;
+        }
+
+        public String getText() {
+            return mText;
+        }
     }
 
-    enum Type {
-        PAYMENT_SERVICE,
-        MOBILEPAY,
-        NORMAL
+    public enum Type {
+        PAYMENT_SERVICE("Payment Service"),
+        MOBILEPAY("MobilePay"),
+        NORMAL("Normal");
+
+        private final String mText;
+
+        Type(String text) {
+            mText = text;
+        }
+
+        public String getText() {
+            return mText;
+        }
     }
 }
 

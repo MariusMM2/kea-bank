@@ -112,10 +112,20 @@ public class Account implements TransactionTarget, Serializable {
     }
 
     private enum Type {
-        SAVINGS,
-        BUDGET,
-        PENSION,
-        BUSINESS,
-        DEFAULT
+        SAVINGS("Savings"),
+        BUDGET("Budget"),
+        PENSION("Pension"),
+        BUSINESS("Business"),
+        DEFAULT("Default");
+
+        private final String mText;
+
+        Type(String text) {
+            mText = text;
+        }
+
+        public String getText() {
+            return mText;
+        }
     }
 }
