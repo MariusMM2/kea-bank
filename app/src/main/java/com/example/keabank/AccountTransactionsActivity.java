@@ -19,10 +19,10 @@ import java.util.List;
 public class AccountTransactionsActivity extends AppCompatActivity {
     private static final String TAG = "AccountTransactionsActivity";
 
-    private Account mAccount;
-
     private RecyclerView mTransactionsList;
     private TransactionAdapter mTransactionAdapter;
+
+    private Account mAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
