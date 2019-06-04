@@ -111,7 +111,7 @@ public class Account implements TransactionTarget, Serializable {
         mTransactionList.add(transactions);
     }
 
-    private enum Type {
+    public enum Type {
         SAVINGS("Savings"),
         BUDGET("Budget"),
         PENSION("Pension"),
