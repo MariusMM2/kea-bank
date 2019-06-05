@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.example.keabank.database.MainDatabase;
 import com.example.keabank.model.Account;
 import com.example.keabank.model.Customer;
+import com.example.keabank.util.ModelBinding;
 
 import java.util.List;
 
@@ -62,12 +63,7 @@ public class HomeActivity extends AppCompatActivity {
         private void bind(Account account) {
             mAccount = account;
 
-            mTypeTextView.setText(String.valueOf(mAccount.getType().getText()));
-
-            float amount = mAccount.getAmount();
-            mAmountTextView.setText(getResources().getString(R.string.amount, amount));
-
-            mIdTextView.setText(mAccount.getId().toString());
+            ModelBinding.bindAccount(mAccount, mTypeTextView, mAmountTextView, mIdTextView);
 
             Log.d(TAG, String.format("Bound account %s to holder", mAccount.getType().getText()));
         }
