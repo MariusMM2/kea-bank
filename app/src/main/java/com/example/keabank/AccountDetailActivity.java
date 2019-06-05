@@ -39,7 +39,7 @@ public class AccountDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_account_transactions);
+        setContentView(R.layout.activity_account_detail);
 
         mAccount = getIntent().getParcelableExtra(EXTRA_ACCOUNT);
 
