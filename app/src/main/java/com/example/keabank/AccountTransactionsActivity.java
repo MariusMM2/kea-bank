@@ -21,22 +21,31 @@ import java.util.List;
 public class AccountTransactionsActivity extends AppCompatActivity {
     private static final String TAG = "AccountTransactionsActivity";
 
-    private RecyclerView mTransactionsList;
+    private static final String EXTRA_ACCOUNT = "com.example.extras.EXTRA_ACCOUNT";
+
+    private RecyclerView mTransactionsListView;
     private TransactionAdapter mTransactionAdapter;
 
     private Account mAccount;
+
+    static Intent newIntent(Context packageContext, Account account) {
+        Intent intent = new Intent(packageContext, AccountTransactionsActivity.class);
+        intent.putExtra(EXTRA_ACCOUNT, (Parcelable) account);
+
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_transactions);
 
-        mAccount = Customer.getDummyCustomer().getAccountList().get(0);
+        mAccount = getIntent().getParcelableExtra(EXTRA_ACCOUNT);
 
-        mTransactionsList = findViewById(R.id.list_transactions);
+        mTransactionsListView = findViewById(R.id.list_transactions);
 
         mTransactionAdapter = new TransactionAdapter(mAccount);
-        mTransactionsList.setAdapter(mTransactionAdapter);
+        mTransactionsListView.setAdapter(mTransactionAdapter);
         mTransactionAdapter.notifyDataSetChanged();
     }
 
@@ -94,7 +103,7 @@ public class AccountTransactionsActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            Intent i = new Intent(AccountTransactionsActivity.this, TransactionDetailActivity.class);
+            Intent i = TransactionDetailActivity.newIntent(AccountTransactionsActivity.this, mTransaction);
             startActivity(i);
         }
     }

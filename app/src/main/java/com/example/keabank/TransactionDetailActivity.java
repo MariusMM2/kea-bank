@@ -11,6 +11,9 @@ import com.example.keabank.model.Transaction;
 
 public class TransactionDetailActivity extends AppCompatActivity {
     private static final String TAG = "TransactionDetailActivi";
+    private static final String EXTRA_TRANSACTION = "com.example.extras.EXTRA_TRANSACTION";
+
+    private TextView mLabelMessageTextView;
 
     private TextView mTypeTextView;
     private TextView mStatusTextView;
@@ -23,12 +26,21 @@ public class TransactionDetailActivity extends AppCompatActivity {
 
     private Transaction mTransaction;
 
+    static Intent newIntent(Context packageContext, Transaction transaction) {
+        Intent intent = new Intent(packageContext, TransactionDetailActivity.class);
+        intent.putExtra(EXTRA_TRANSACTION, transaction);
+
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_detail);
 
-        mTransaction = Customer.getDummyCustomer().getAccountList().get(0).getTransactionList().get(0);
+        mTransaction = getIntent().getParcelableExtra(EXTRA_TRANSACTION);
+
+        mLabelMessageTextView = findViewById(R.id.text_label_message);
 
         mTypeTextView = findViewById(R.id.text_type);
         mStatusTextView = findViewById(R.id.text_status);
