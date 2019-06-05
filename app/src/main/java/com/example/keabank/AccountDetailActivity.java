@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.keabank.model.Account;
 import com.example.keabank.model.Transaction;
+import com.example.keabank.util.ModelBinding;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class AccountDetailActivity extends AppCompatActivity {
 
     private static final String EXTRA_ACCOUNT = "com.example.extras.EXTRA_ACCOUNT";
 
+    private View mAccountView;
     private RecyclerView mTransactionsListView;
     private TransactionAdapter mTransactionAdapter;
 
@@ -42,6 +44,9 @@ public class AccountDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_account_detail);
 
         mAccount = getIntent().getParcelableExtra(EXTRA_ACCOUNT);
+
+        mAccountView = findViewById(R.id.include);
+        ModelBinding.bindAccount(mAccount, mAccountView);
 
         mTransactionsListView = findViewById(R.id.list_transactions);
 

@@ -3,6 +3,7 @@ package com.example.keabank;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -71,7 +72,11 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Intent i = AccountDetailActivity.newIntent(HomeActivity.this, mAccount);
-            startActivity(i);
+
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(HomeActivity.this,
+                    itemView.findViewById(R.id.item_account), "item");
+
+            startActivity(i, options.toBundle());
         }
     }
 
