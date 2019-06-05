@@ -20,10 +20,10 @@
         </activity>
         <activity
             android:name=".AccountTransactionsActivity"
-            android:parentActivityName=".HomeActivity"></activity>
+            android:parentActivityName=".HomeActivity" />
         <activity
             android:name=".TransactionDetailActivity"
-            android:parentActivityName=".AccountTransactionsActivity"></activity>
+            android:parentActivityName=".AccountTransactionsActivity" />
     </application>
 
 </manifest>
