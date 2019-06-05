@@ -12,4 +12,6 @@ public interface TransactionTarget extends DatabaseItem {
     boolean canGoNegative();
 
     String getTitle();
+
+    String getDescription();
 }

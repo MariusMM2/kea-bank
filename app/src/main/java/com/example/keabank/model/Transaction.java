@@ -221,6 +221,9 @@ public class Transaction implements DatabaseItem, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         ParcelHelper.writeUuid(dest, mId);
         dest.writeFloat(mAmount);
+        if (getMessage().isEmpty()) {
+            mMessage = mDestination.getDescription();
+        }
         dest.writeString(mMessage);
         ParcelHelper.writeEnum(dest, mType);
         ParcelHelper.writeEnum(dest, mStatus);

@@ -99,6 +99,11 @@ public class Account implements TransactionTarget, Serializable, Parcelable {
         return String.format("%s - %x", getType().getText(), mId.getMostSignificantBits());
     }
 
+    @Override
+    public String getDescription() {
+        return getTitle();
+    }
+
     public UUID getCustomerId() {
         return mCustomerId;
     }

@@ -46,8 +46,9 @@ public class Bill implements TransactionTarget, Serializable {
         return mTitle;
     }
 
+    @Override
     public String getDescription() {
-        return mDescription;
+        return mDescription == null ? "" : mDescription;
     }
 
     public boolean isAutomated() {
