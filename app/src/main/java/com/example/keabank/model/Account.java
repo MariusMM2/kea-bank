@@ -1,12 +1,16 @@
 package com.example.keabank.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import com.example.keabank.util.ParcelHelper;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class Account implements TransactionTarget, Serializable {
+public class Account implements TransactionTarget, Serializable, Parcelable {
     private UUID mId;
     private float mAmount;
     private Type mType;
@@ -92,7 +96,7 @@ public class Account implements TransactionTarget, Serializable {
 
     @Override
     public String getTitle() {
-        return String.format("%x", mId.getMostSignificantBits());
+        return String.format("%s - %x", getType().getText(), mId.getMostSignificantBits());
     }
 
     public UUID getCustomerId() {
@@ -128,4 +132,38 @@ public class Account implements TransactionTarget, Serializable {
             return mText;
         }
     }
+
+    protected Account(Parcel in) {
+        mId = ParcelHelper.readUuid(in);
+        mAmount = in.readFloat();
+        mType = ParcelHelper.readEnum(in, Type.class);
+        mCustomerId = ParcelHelper.readUuid(in);
+        mTransactionList = ParcelHelper.readList(in, Transaction.class);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        ParcelHelper.writeUuid(dest, mId);
+        dest.writeFloat(mAmount);
+        ParcelHelper.writeEnum(dest, mType);
+        ParcelHelper.writeUuid(dest, mCustomerId);
+        ParcelHelper.writeList(dest, mTransactionList);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Account> CREATOR = new Creator<Account>() {
+        @Override
+        public Account createFromParcel(Parcel in) {
+            return new Account(in);
+        }
+
+        @Override
+        public Account[] newArray(int size) {
+            return new Account[size];
+        }
+    };
 }

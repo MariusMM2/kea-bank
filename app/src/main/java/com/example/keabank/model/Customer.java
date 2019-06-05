@@ -1,5 +1,9 @@
 package com.example.keabank.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import com.example.keabank.util.ParcelHelper;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,4 +66,41 @@ public class Customer implements DatabaseItem, Serializable, Parcelable {
     public void removeAccounts() {
         mAccountList = new ArrayList<>();
     }
+
+    // Parcelable packaging and marshalling logic
+    protected Customer(Parcel in) {
+        mId = ParcelHelper.readUuid(in);
+        mFirstName = in.readString();
+        mLastName = in.readString();
+        mEmail = in.readString();
+        mPassword = in.readString();
+        mAccountList = ParcelHelper.readList(in, Account.class);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        ParcelHelper.writeUuid(dest, mId);
+        dest.writeString(mFirstName);
+        dest.writeString(mLastName);
+        dest.writeString(mEmail);
+        dest.writeString(mPassword);
+        ParcelHelper.writeList(dest, mAccountList);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Customer> CREATOR = new Creator<Customer>() {
+        @Override
+        public Customer createFromParcel(Parcel in) {
+            return new Customer(in);
+        }
+
+        @Override
+        public Customer[] newArray(int size) {
+            return new Customer[size];
+        }
+    };
 }

@@ -1,7 +1,9 @@
 package com.example.keabank;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.keabank.model.Account;
-import com.example.keabank.model.Customer;
 import com.example.keabank.model.Transaction;
 
 import java.util.List;
@@ -68,7 +69,7 @@ public class AccountTransactionsActivity extends AppCompatActivity {
             mParentAccount = account;
             mTransaction = transaction;
 
-            mDescriptionTextView.setText(String.valueOf(mTransaction.getText()));
+            mDescriptionTextView.setText(String.valueOf(mTransaction.getTitle()));
 
             float amount = -mTransaction.getAmount();
             mAmountTextView.setText(getResources().getString(R.string.amount, amount));
@@ -88,7 +89,7 @@ public class AccountTransactionsActivity extends AppCompatActivity {
             mBalanceAfterTextView.setText(getResources().getString(R.string.amount, balanceAfter));
 
 
-            Log.d(TAG, String.format("Bound transaction %s to holder", mTransaction.getText()));
+            Log.d(TAG, String.format("Bound transaction %s to holder", mTransaction.getTitle()));
         }
 
         @Override

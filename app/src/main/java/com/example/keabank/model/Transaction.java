@@ -1,20 +1,25 @@
 package com.example.keabank.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import com.example.keabank.util.ParcelHelper;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
-public class Transaction implements DatabaseItem {
+public class Transaction implements DatabaseItem, Parcelable {
     private UUID mId;
     private TransactionTarget mSource;
     private TransactionTarget mDestination;
-    private float mAmount;
-    private String mMessage;
-    private Status mStatus;
     private Type mType;
+    private Status mStatus;
+    private String mSourceDetails;
+    private String mTitle;
+    private float mAmount;
     private Date mDate;
+    private String mMessage;
 
     private Transaction(UUID id, TransactionTarget source, TransactionTarget destination, float amount, String message, Status status, Type type, Date date) {
         mId = id;
@@ -30,6 +35,18 @@ public class Transaction implements DatabaseItem {
     private Transaction() {
         this(UUID.randomUUID(), null, null, -1f, "", Status.STOPPED, Type.NORMAL, Calendar.getInstance().getTime());
     }
+
+    public static final Creator<Transaction> CREATOR = new Creator<Transaction>() {
+        @Override
+        public Transaction createFromParcel(Parcel in) {
+            return new Transaction(in);
+        }
+
+        @Override
+        public Transaction[] newArray(int size) {
+            return new Transaction[size];
+        }
+    };
 
     public static Transaction beginTransaction() {
         return new Transaction();
@@ -82,6 +99,11 @@ public class Transaction implements DatabaseItem {
         return this;
     }
 
+    public Transaction setTitle(String title) {
+        mTitle = title;
+        return this;
+    }
+
     public Transaction commit() throws TransactionException {
         if (mSource == null) {
             throw new TransactionException("Transaction has no source");
@@ -100,6 +122,7 @@ public class Transaction implements DatabaseItem {
         }
 
         if (mSource.canGoNegative() || mSource.canSubtractAmount(mAmount)) {
+            setTitle(mDestination.getTitle() != null ? mDestination.getTitle() : mMessage.substring(0, 20));
             doTransaction();
         } else {
             throw new TransactionException("Transaction source has insufficient balance");
@@ -135,24 +158,24 @@ public class Transaction implements DatabaseItem {
         return mStatus;
     }
 
-    public String getText() {
-        return mDestination.getTitle() != null ? mDestination.getTitle() : mMessage.substring(0, 20);
-    }
-
     public String getMessage() {
-        return mMessage;
+        return mMessage == null ? "" : mMessage;
     }
 
     public void setMessage(String message) {
         mMessage = message;
     }
 
-    public UUID getSourceId() {
-        return mSource.getId();
+    public String getSourceDetails() {
+        return mSourceDetails;
     }
 
-    public UUID getDestinationId() {
-        return mDestination.getId();
+    public Type getType() {
+        return mType;
+    }
+
+    public Date getDate() {
+        return mDate;
     }
 
     public Transaction reverse() {
@@ -166,12 +189,8 @@ public class Transaction implements DatabaseItem {
         );
     }
 
-    public Type getType() {
-        return mType;
-    }
-
-    public Date getDate() {
-        return mDate;
+    public String getTitle() {
+        return mTitle;
     }
 
     @Override
@@ -185,6 +204,40 @@ public class Transaction implements DatabaseItem {
                 ", mStatus=" + mStatus +
                 ", mDate=" + mDate +
                 '}';
+    }
+
+    protected Transaction(Parcel in) {
+        mId = ParcelHelper.readUuid(in);
+        mAmount = in.readFloat();
+        mMessage = in.readString();
+        mType = ParcelHelper.readEnum(in, Type.class);
+        mStatus = ParcelHelper.readEnum(in, Status.class);
+        mSourceDetails = in.readString();
+        mTitle = in.readString();
+        mDate = (Date) in.readSerializable();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        ParcelHelper.writeUuid(dest, mId);
+        dest.writeFloat(mAmount);
+        dest.writeString(mMessage);
+        ParcelHelper.writeEnum(dest, mType);
+        ParcelHelper.writeEnum(dest, mStatus);
+        if (mSourceDetails == null || mSourceDetails.isEmpty()) {
+            mSourceDetails = mSource.getTitle();
+        }
+        dest.writeString(mSourceDetails);
+        if (mTitle == null || mTitle.isEmpty()) {
+            mTitle = mDestination.getTitle();
+        }
+        dest.writeString(mTitle);
+        dest.writeSerializable(mDate);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public enum Status {

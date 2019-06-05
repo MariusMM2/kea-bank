@@ -1,10 +1,12 @@
 package com.example.keabank;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
+import android.view.View;
 import android.widget.TextView;
-import com.example.keabank.model.Customer;
 import com.example.keabank.model.Transaction;
 
 public class TransactionDetailActivity extends AppCompatActivity {
@@ -13,7 +15,7 @@ public class TransactionDetailActivity extends AppCompatActivity {
     private TextView mTypeTextView;
     private TextView mStatusTextView;
     private TextView mAccountTextView;
-    private TextView mTextTextView;
+    private TextView mTitleTextView;
     private TextView mAmountTextView;
     private TextView mDateTextView;
     private TextView mMessageTextView;
@@ -31,7 +33,7 @@ public class TransactionDetailActivity extends AppCompatActivity {
         mTypeTextView = findViewById(R.id.text_type);
         mStatusTextView = findViewById(R.id.text_status);
         mAccountTextView = findViewById(R.id.text_account);
-        mTextTextView = findViewById(R.id.text_text);
+        mTitleTextView = findViewById(R.id.text_title);
         mAmountTextView = findViewById(R.id.text_amount);
         mDateTextView = findViewById(R.id.text_date);
         mMessageTextView = findViewById(R.id.text_message);
@@ -39,12 +41,18 @@ public class TransactionDetailActivity extends AppCompatActivity {
 
         mTypeTextView.setText(mTransaction.getType().getText());
         mStatusTextView.setText(String.valueOf(mTransaction.getStatus().getText()));
-        mAccountTextView.setText(mTransaction.getSourceId().toString());
-        mTextTextView.setText(mTransaction.getText());
-        mAmountTextView.setText(String.valueOf(mTransaction.getAmount()));
+        mAccountTextView.setText(mTransaction.getSourceDetails());
+        mTitleTextView.setText(mTransaction.getTitle());
+        mAmountTextView.setText(String.valueOf(-mTransaction.getAmount()));
         mDateTextView.setText(DateFormat.format(
                 getResources().getString(R.string.date_format),
                 mTransaction.getDate()));
+
+        if (mTransaction.getMessage().isEmpty()) {
+            mLabelMessageTextView.setVisibility(View.GONE);
+            mMessageTextView.setVisibility(View.GONE);
+        }
+
         mMessageTextView.setText(mTransaction.getMessage());
         mIdTextView.setText(mTransaction.getId().toString());
     }
