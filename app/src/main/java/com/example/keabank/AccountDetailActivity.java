@@ -19,8 +19,8 @@ import com.example.keabank.model.Transaction;
 
 import java.util.List;
 
-public class AccountTransactionsActivity extends AppCompatActivity {
-    private static final String TAG = "AccountTransactionsActivity";
+public class AccountDetailActivity extends AppCompatActivity {
+    private static final String TAG = "AccountDetailActivity";
 
     private static final String EXTRA_ACCOUNT = "com.example.extras.EXTRA_ACCOUNT";
 
@@ -30,7 +30,7 @@ public class AccountTransactionsActivity extends AppCompatActivity {
     private Account mAccount;
 
     static Intent newIntent(Context packageContext, Account account) {
-        Intent intent = new Intent(packageContext, AccountTransactionsActivity.class);
+        Intent intent = new Intent(packageContext, AccountDetailActivity.class);
         intent.putExtra(EXTRA_ACCOUNT, (Parcelable) account);
 
         return intent;
@@ -115,7 +115,7 @@ public class AccountTransactionsActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            Intent i = TransactionDetailActivity.newIntent(AccountTransactionsActivity.this, mTransaction);
+            Intent i = TransactionDetailActivity.newIntent(AccountDetailActivity.this, mTransaction);
             startActivity(i);
         }
     }
@@ -131,7 +131,7 @@ public class AccountTransactionsActivity extends AppCompatActivity {
         @NonNull
         @Override
         public TransactionHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater = LayoutInflater.from(AccountTransactionsActivity.this);
+            LayoutInflater layoutInflater = LayoutInflater.from(AccountDetailActivity.this);
             return new TransactionHolder(layoutInflater, parent);
         }
 

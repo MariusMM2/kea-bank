@@ -19,11 +19,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AccountTransactionsActivity"
+            android:name=".AccountDetailActivity"
             android:parentActivityName=".HomeActivity" />
         <activity
             android:name=".TransactionDetailActivity"
-            android:parentActivityName=".AccountTransactionsActivity" />
+            android:parentActivityName=".AccountDetailActivity" />
     </application>
 
 </manifest>
