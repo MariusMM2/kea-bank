@@ -18,8 +18,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AccountTransactionsActivity" />
-        <activity android:name=".TransactionDetailActivity" />
+        <activity
+            android:name=".AccountTransactionsActivity"
+            android:parentActivityName=".HomeActivity"></activity>
+        <activity
+            android:name=".TransactionDetailActivity"
+            android:parentActivityName=".AccountTransactionsActivity"></activity>
     </application>
 
 </manifest>
