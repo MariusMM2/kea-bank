@@ -13,6 +13,7 @@ public class MainDatabase {
     static boolean DEBUG_NO_PASSWORD = true;
     private static MainDatabase sInstance;
     Database mAccountDb, mBillDb, mCustomerDb, mNemIdDb, mTransactionDb;
+    private static Customer mDummyCustomer = createDummyCustomer();
 
     MainDatabase(Context context) {
         mAccountDb = new AccountDatabase(context);
@@ -30,7 +31,7 @@ public class MainDatabase {
         return sInstance;
     }
 
-    public static Customer getDummyCustomer() {
+    public static Customer createDummyCustomer() {
         Customer customer = new Customer("John", "Doe", "johndoe@email.com", "123456", Calendar.getInstance().getTime());
         final List<Account> accountList = new ArrayList<>(
                 Arrays.asList(
@@ -77,6 +78,10 @@ public class MainDatabase {
         });
 
         return customer;
+    }
+
+    public static Customer getDummyCustomer() {
+        return mDummyCustomer;
     }
 
     public boolean tryLogin(NemId nemId) {
