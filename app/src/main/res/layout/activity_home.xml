@@ -17,19 +17,19 @@
             android:id="@+id/btn_new_account"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Account" />
+            android:text="@string/new_account" />
 
         <Button
             android:id="@+id/btn_payments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Payments" />
+            android:text="@string/payments" />
 
         <Button
             android:id="@+id/btn_transfer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Transfer" />
+            android:text="@string/transfer" />
 
     </LinearLayout>
 
