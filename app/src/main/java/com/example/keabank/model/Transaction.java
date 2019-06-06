@@ -3,23 +3,26 @@ package com.example.keabank.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import com.example.keabank.util.ParcelHelper;
+import com.example.keabank.util.StringWrapper;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
 public class Transaction implements DatabaseItem, Parcelable {
+    private static final String TAG = "Transaction";
     private UUID mId;
-    private TransactionTarget mSource;
-    private TransactionTarget mDestination;
-    private Type mType;
-    private Status mStatus;
-    private String mSourceDetails;
-    private String mTitle;
-    private float mAmount;
-    private Date mDate;
-    private String mMessage;
+    private TransactionTarget mSource; // X
+    private TransactionTarget mDestination; // X
+    private Type mType; // X
+    private Status mStatus; // X
+    private String mSourceDetails; // X
+    private String mTitle; // X
+    private float mAmount; // X
+    private Date mDate; // X
+    private String mMessage; // X
 
     private Transaction(UUID id, TransactionTarget source, TransactionTarget destination, float amount, String message, Status status, Type type, Date date) {
         mId = id;
@@ -49,7 +52,9 @@ public class Transaction implements DatabaseItem, Parcelable {
     };
 
     public static Transaction beginTransaction() {
-        return new Transaction();
+        Transaction transaction = new Transaction();
+        Log.i(TAG, String.format("Started Transaction {%s}", transaction.getId()));
+        return transaction;
     }
 
     public Transaction setSource(@NonNull TransactionTarget source) {
@@ -57,11 +62,9 @@ public class Transaction implements DatabaseItem, Parcelable {
             throw new IllegalArgumentException("Transaction source is null");
         }
 
-        if (mSource == null) {
-            mSource = source;
-        } else {
-            throw new IllegalStateException("Transaction already has a source");
-        }
+        mSource = source;
+
+        Log.i(TAG, String.format("Set source of transaction {%s} to {%s}", getId(), mSource.getTitle()));
 
         return this;
     }
@@ -77,34 +80,42 @@ public class Transaction implements DatabaseItem, Parcelable {
             throw new IllegalStateException("Transaction already has a source");
         }
 
+        Log.i(TAG, String.format("Set destination of transaction {%s} to {%s}", getId(), mDestination.getTitle()));
+
         return this;
     }
 
     public Transaction setAmount(float amount) {
-        if (mAmount == -1) {
-            if (amount > 0) {
-                mAmount = amount;
-            } else {
-                throw new IllegalArgumentException("Transaction can't process a negative amount");
-            }
+        if (amount > 0) {
+            mAmount = amount;
         } else {
-            throw new IllegalStateException("Transaction already has an amount");
+            throw new IllegalArgumentException("Transaction can't process a negative amount");
         }
 
+        Log.i(TAG, String.format("Set amount of transaction {%s} to {%s}", getId(), mAmount));
+
         return this;
     }
 
-    public Transaction setType(Type type) {
+    public void setType(Type type) {
         mType = type;
-        return this;
+
+        Log.i(TAG, String.format("Set type of transaction {%s} to {%s}", getId(), mType));
     }
 
-    public Transaction setTitle(String title) {
+    public void setDate(Date date) {
+        mDate = date;
+
+        Log.i(TAG, String.format("Set date of transaction {%s} to {%s}", getId(), StringWrapper.wrapDate(mDate)));
+    }
+
+    public void setTitle(String title) {
         mTitle = title;
-        return this;
+
+        Log.i(TAG, String.format("Set title of transaction {%s} to {%s}", getId(), mTitle));
     }
 
-    public Transaction commit() throws TransactionException {
+    public void commit() throws TransactionException {
         if (mSource == null) {
             throw new TransactionException("Transaction has no source");
         }
@@ -122,13 +133,15 @@ public class Transaction implements DatabaseItem, Parcelable {
         }
 
         if (mSource.canGoNegative() || mSource.canSubtractAmount(mAmount)) {
-            setTitle(mDestination.getTitle() != null ? mDestination.getTitle() : mMessage.substring(0, 20));
+            setDefaultTitle();
             doTransaction();
         } else {
             throw new TransactionException("Transaction source has insufficient balance");
         }
+    }
 
-        return this;
+    public void setDefaultTitle() {
+        setTitle(mDestination.getTitle() != null ? mDestination.getTitle() : mMessage.substring(0, 20));
     }
 
     private void doTransaction() {
@@ -241,6 +254,10 @@ public class Transaction implements DatabaseItem, Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public void setStatus(Status status) {
+        mStatus = status;
     }
 
     public enum Status {

@@ -10,7 +10,7 @@ import com.example.keabank.model.Account;
  */
 public class ModelBinding {
     public static void bindAccount(Account account, View accountView) {
-        TextView typeTextView = accountView.findViewById(R.id.text_type);
+        TextView typeTextView = accountView.findViewById(R.id.text_destination);
         TextView amountTextView = accountView.findViewById(R.id.text_amount);
         TextView idTextView = accountView.findViewById(R.id.text_id);
         bindAccount(account, typeTextView, amountTextView, idTextView);

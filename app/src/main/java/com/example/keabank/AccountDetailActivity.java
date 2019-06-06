@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.keabank.model.Account;
 import com.example.keabank.model.Transaction;
 import com.example.keabank.util.ModelBinding;
+import com.example.keabank.util.StringWrapper;
 
 import java.util.List;
 

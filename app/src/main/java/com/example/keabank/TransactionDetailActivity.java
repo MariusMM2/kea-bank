@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import com.example.keabank.model.Transaction;
+import com.example.keabank.util.StringWrapper;
 
 public class TransactionDetailActivity extends UpNavActivity {
     private static final String TAG = "TransactionDetailActivi";
@@ -40,7 +41,7 @@ public class TransactionDetailActivity extends UpNavActivity {
 
         mLabelMessageTextView = findViewById(R.id.text_label_message);
 
-        mTypeTextView = findViewById(R.id.text_type);
+        mTypeTextView = findViewById(R.id.text_destination);
         mStatusTextView = findViewById(R.id.text_status);
         mAccountTextView = findViewById(R.id.text_account);
         mTitleTextView = findViewById(R.id.text_title);
@@ -63,5 +64,8 @@ public class TransactionDetailActivity extends UpNavActivity {
 
         mMessageTextView.setText(mTransaction.getMessage());
         mIdTextView.setText(mTransaction.getId().toString());
+    }
+
+    public void openDateDialog(View view) {
     }
 }

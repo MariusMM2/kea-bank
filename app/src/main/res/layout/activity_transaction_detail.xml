@@ -22,7 +22,7 @@
             android:text="@string/transaction_payment_type" />
 
         <TextView
-            android:id="@+id/text_type"
+            android:id="@+id/text_destination"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

@@ -14,4 +14,11 @@
     <string name="new_account">New Account</string>
     <string name="payments">Payments</string>
     <string name="transfer">Transfer</string>
+    <string name="from_account_label">From</string>
+    <string name="destination_label">Target</string>
+    <string name="transaction_type_label">Transfer Type</string>
+    <string name="amount_label">Amount</string>
+    <string name="date_label">Due Date</string>
+    <string name="transaction_destination_label">Target</string>
+    <string name="manual_account_item">Enter Account ID</string>
 </resources>
