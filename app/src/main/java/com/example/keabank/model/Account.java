@@ -1,7 +1,6 @@
 package com.example.keabank.model;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 import com.example.keabank.util.ParcelHelper;
 
 import java.io.Serializable;
@@ -10,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class Account implements TransactionTarget, Serializable, Parcelable {
+public class Account implements TransactionTarget, Serializable {
     private UUID mId;
     private float mAmount;
     private Type mType;

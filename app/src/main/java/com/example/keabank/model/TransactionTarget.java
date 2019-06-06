@@ -1,6 +1,8 @@
 package com.example.keabank.model;
 
-public interface TransactionTarget extends DatabaseItem {
+import android.os.Parcelable;
+
+public interface TransactionTarget extends DatabaseItem, Parcelable {
     float getAmount();
 
     boolean canSubtractAmount(float amount);

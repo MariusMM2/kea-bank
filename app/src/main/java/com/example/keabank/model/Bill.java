@@ -1,5 +1,8 @@
 package com.example.keabank.model;
 
+import android.os.Parcel;
+import com.example.keabank.util.ParcelHelper;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -35,6 +38,48 @@ public class Bill implements TransactionTarget, Serializable {
         mDueDate = dueDate;
         mCustomerId = customerId;
     }
+
+    protected Bill(Parcel in) {
+        mAmount = in.readFloat();
+        mId = ParcelHelper.readUuid(in);
+        mTitle = in.readString();
+        mDescription = in.readString();
+        mAutomated = in.readByte() != 0;
+        mRecurrent = in.readByte() != 0;
+        mPendingPayment = in.readByte() != 0;
+        mDueDate = (Date) in.readSerializable();
+        mCustomerId = ParcelHelper.readUuid(in);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(mAmount);
+        ParcelHelper.writeUuid(dest, mId);
+        dest.writeString(mTitle);
+        dest.writeString(mDescription);
+        dest.writeByte((byte) (mAutomated ? 1 : 0));
+        dest.writeByte((byte) (mRecurrent ? 1 : 0));
+        dest.writeByte((byte) (mPendingPayment ? 1 : 0));
+        dest.writeSerializable(mDueDate);
+        ParcelHelper.writeUuid(dest, mCustomerId);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Bill> CREATOR = new Creator<Bill>() {
+        @Override
+        public Bill createFromParcel(Parcel in) {
+            return new Bill(in);
+        }
+
+        @Override
+        public Bill[] newArray(int size) {
+            return new Bill[size];
+        }
+    };
 
     @Override
     public UUID getId() {
