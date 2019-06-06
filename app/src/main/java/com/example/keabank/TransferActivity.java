@@ -77,7 +77,7 @@ public class TransferActivity extends UpNavActivity {
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             TextView label = (TextView) super.getView(position, convertView, parent);
-            label.setText(getItem(position).getTitle());
+            label.setText(Objects.requireNonNull(getItem(position)).getTitle());
 
             return label;
         }
@@ -85,7 +85,7 @@ public class TransferActivity extends UpNavActivity {
         @Override
         public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             TextView label = (TextView) super.getView(position, convertView, parent);
-            label.setText(getItem(position).getTitle());
+            label.setText(Objects.requireNonNull(getItem(position)).getTitle());
 
             return label;
         }
