@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSpinner;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,8 @@ import com.example.keabank.model.Account;
 import com.example.keabank.model.Customer;
 import com.example.keabank.model.Transaction;
 
+import java.util.List;
+
 public class TransferActivity extends UpNavActivity {
     private static final String TAG = "TransferActivity";
 
@@ -25,6 +29,8 @@ public class TransferActivity extends UpNavActivity {
 
     private Customer mCustomer;
     private Transaction newTransaction;
+    private AppCompatSpinner mSpinner;
+    private SpinnerAdapter mSpinnerAdapter;
 
 
     static Intent newIntent(Context packageContext, Customer customer) {
@@ -40,29 +46,48 @@ public class TransferActivity extends UpNavActivity {
         setContentView(R.layout.activity_transfer);
 
         mCustomer = getIntent().getParcelableExtra(EXTRA_CUSTOMER);
+//        mCustomer = null;
 
-//        List<String> accountNames = mCustomer.getAccountList().stream().map(Account::getTitle).collect(Collectors.toList());
+        if (mCustomer == null) {
+            showCustomerErrorDialog();
+        } else {
 
-        SpinnerAdapter adapter = new ArrayAdapter<Account>(this, android.R.layout.simple_spinner_item, mCustomer.getAccountList()) {
-            @NonNull
-            @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                TextView label = (TextView) super.getView(position, convertView, parent);
-                label.setText(getItem(position).getTitle());
+            mSpinnerAdapter = new AccountAdapter(this, R.layout.simple_spinner_item, mCustomer.getAccountList());
 
-                return label;
-            }
+            mSpinner = findViewById(R.id.categorySpinner);
+            mSpinner.setAdapter(mSpinnerAdapter);
+        }
+    }
 
-            @Override
-            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                TextView label = (TextView) super.getView(position, convertView, parent);
-                label.setText(getItem(position).getTitle());
+    private void showCustomerErrorDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Error")
+                .setMessage("Error retrieving customer details")
+                .setPositiveButton(android.R.string.ok, null)
+                .setOnDismissListener(dialog -> finish())
+                .create().show();
+    }
 
-                return label;
-            }
-        };
+    private class AccountAdapter extends ArrayAdapter<Account> {
+        public AccountAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Account> accountList) {
+            super(context, resource, accountList);
+        }
 
-        AppCompatSpinner spinner = findViewById(R.id.categorySpinner);
-        spinner.setAdapter(adapter);
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            TextView label = (TextView) super.getView(position, convertView, parent);
+            label.setText(getItem(position).getTitle());
+
+            return label;
+        }
+
+        @Override
+        public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            TextView label = (TextView) super.getView(position, convertView, parent);
+            label.setText(getItem(position).getTitle());
+
+            return label;
+        }
     }
 }
