@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,9 +87,7 @@ public class AccountDetailActivity extends UpNavActivity {
             mAmountTextView.setText(getResources().getString(R.string.amount, amount));
             mAmountTextView.setTextColor(getResources().getColor(amount > 0 ? R.color.green : R.color.red, getTheme()));
 
-            mDateTextView.setText(DateFormat.format(
-                    getResources().getString(R.string.date_format),
-                    mTransaction.getDate()));
+            mDateTextView.setText(StringWrapper.wrapDate(mTransaction.getDate()));
 
             float accumulatedTransactionsAmount = mParentAccount.getTransactionList().subList(0, getAdapterPosition())
                     .stream()

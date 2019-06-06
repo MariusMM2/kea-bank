@@ -3,7 +3,6 @@ package com.example.keabank;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.TextView;
 import com.example.keabank.model.Transaction;
@@ -55,9 +54,7 @@ public class TransactionDetailActivity extends UpNavActivity {
         mAccountTextView.setText(mTransaction.getSourceDetails());
         mTitleTextView.setText(mTransaction.getTitle());
         mAmountTextView.setText(String.valueOf(-mTransaction.getAmount()));
-        mDateTextView.setText(DateFormat.format(
-                getResources().getString(R.string.date_format),
-                mTransaction.getDate()));
+        mDateTextView.setText(StringWrapper.wrapDate(mTransaction.getDate()));
 
         if (mTransaction.getMessage().isEmpty()) {
             mLabelMessageTextView.setVisibility(View.GONE);
