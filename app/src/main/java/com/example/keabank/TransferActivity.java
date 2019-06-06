@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -18,7 +16,7 @@ import com.example.keabank.model.Account;
 import com.example.keabank.model.Customer;
 import com.example.keabank.model.Transaction;
 
-public class TransferActivity extends AppCompatActivity {
+public class TransferActivity extends UpNavActivity {
     private static final String TAG = "TransferActivity";
 
     static final int REQUEST_TRANSACTION = 1;
@@ -66,16 +64,5 @@ public class TransferActivity extends AppCompatActivity {
 
         AppCompatSpinner spinner = findViewById(R.id.categorySpinner);
         spinner.setAdapter(adapter);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 }

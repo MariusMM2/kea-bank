@@ -5,12 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -20,7 +18,7 @@ import com.example.keabank.util.ModelBinding;
 
 import java.util.List;
 
-public class AccountDetailActivity extends AppCompatActivity {
+public class AccountDetailActivity extends UpNavActivity {
     private static final String TAG = "AccountDetailActivity";
 
     private static final String EXTRA_ACCOUNT = "com.example.extras.EXTRA_ACCOUNT";
@@ -53,17 +51,6 @@ public class AccountDetailActivity extends AppCompatActivity {
         mTransactionAdapter = new TransactionAdapter(mAccount);
         mTransactionsListView.setAdapter(mTransactionAdapter);
         mTransactionAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     /**
