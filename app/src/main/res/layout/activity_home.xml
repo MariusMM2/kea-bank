@@ -1,10 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".HomeActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_new_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Account" />
+
+        <Button
+            android:id="@+id/btn_payments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Payments" />
+
+        <Button
+            android:id="@+id/btn_transfer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Transfer" />
+
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_accounts"
@@ -17,10 +44,6 @@
         android:fadingEdgeLength="40dp"
         android:requiresFadingEdge="vertical"
         android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/item_account" />
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
