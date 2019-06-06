@@ -41,6 +41,11 @@ public class HomeActivity extends AppCompatActivity {
         mAccountAdapter.notifyDataSetChanged();
     }
 
+    public void startTransferActivity(View view) {
+        Intent i = TransferActivity.newIntent(this, mCustomer);
+        startActivityForResult(i, TransferActivity.REQUEST_TRANSACTION);
+    }
+
     /**
      * ViewHolder for an Account.
      * Holds the type, the id and the amount.

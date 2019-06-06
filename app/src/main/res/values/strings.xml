@@ -11,4 +11,7 @@
     <string name="transaction_date">Date</string>
     <string name="transaction_message">Message</string>
     <string name="transaction_id">Reference ID</string>
+    <string name="new_account">New Account</string>
+    <string name="payments">Payments</string>
+    <string name="transfer">Transfer</string>
 </resources>

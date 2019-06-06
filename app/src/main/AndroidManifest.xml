@@ -24,6 +24,9 @@
         <activity
             android:name=".TransactionDetailActivity"
             android:parentActivityName=".AccountDetailActivity" />
+        <activity
+            android:name=".TransferActivity"
+            android:parentActivityName=".AccountDetailActivity" />
     </application>
 
 </manifest>
