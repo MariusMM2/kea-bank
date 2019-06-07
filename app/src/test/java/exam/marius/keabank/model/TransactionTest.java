@@ -1,5 +1,6 @@
 package exam.marius.keabank.model;
 
+import android.os.Parcel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,6 +24,16 @@ public class TransactionTest {
         mTransaction3 = Transaction.beginTransaction();
 
         mTransactionTargetInt = new TransactionTarget() {
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+
+            }
+
             @Override
             public UUID getId() {
                 return null;
@@ -54,8 +65,28 @@ public class TransactionTest {
             public boolean canGoNegative() {
                 return true;
             }
+
+            @Override
+            public String getTitle() {
+                return null;
+            }
+
+            @Override
+            public String getDescription() {
+                return null;
+            }
         };
         mTransactionTargetNat = new TransactionTarget() {
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+
+            }
+
             @Override
             public UUID getId() {
                 return null;
@@ -86,6 +117,16 @@ public class TransactionTest {
             @Override
             public boolean canGoNegative() {
                 return false;
+            }
+
+            @Override
+            public String getTitle() {
+                return null;
+            }
+
+            @Override
+            public String getDescription() {
+                return null;
             }
         };
     }
