@@ -3,6 +3,7 @@ package exam.marius.keabank;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.TextView;
 import exam.marius.keabank.model.Transaction;
@@ -27,7 +28,7 @@ public class TransactionDetailActivity extends UpNavActivity {
 
     static Intent newIntent(Context packageContext, Transaction transaction) {
         Intent intent = new Intent(packageContext, TransactionDetailActivity.class);
-        intent.putExtra(EXTRA_TRANSACTION, transaction);
+        intent.putExtra(EXTRA_TRANSACTION, (Parcelable) transaction);
 
         return intent;
     }

@@ -3,13 +3,13 @@ package exam.marius.keabank.model;
 import android.os.Parcel;
 import exam.marius.keabank.util.ParcelHelper;
 
-import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class Account implements TransactionTarget, Serializable {
+public class Account implements TransactionTarget {
     private UUID mId;
     private float mAmount;
     private Type mType;

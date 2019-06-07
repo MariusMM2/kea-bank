@@ -3,11 +3,10 @@ package exam.marius.keabank.model;
 import android.os.Parcel;
 import exam.marius.keabank.util.ParcelHelper;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-public class Bill implements TransactionTarget, Serializable {
+public class Bill implements TransactionTarget {
     private final float mAmount;
     private UUID mId;
     private String mTitle, mDescription;

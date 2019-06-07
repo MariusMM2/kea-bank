@@ -32,7 +32,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mCustomer = MainDatabase.getDummyCustomer();
+        mCustomer = MainDatabase.getInstance(this).getDummyCustomer();
 
         mAccountsList = findViewById(R.id.list_accounts);
 

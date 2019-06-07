@@ -4,13 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import exam.marius.keabank.util.ParcelHelper;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public class Customer implements DatabaseItem, Serializable, Parcelable {
+public class Customer implements DatabaseItem, Parcelable {
     private UUID mId;
     private String mFirstName, mLastName, mEmail, mPassword;
     private Date mBirthDate;

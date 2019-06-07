@@ -1,8 +1,9 @@
 package exam.marius.keabank.model;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public interface DatabaseItem {
+public interface DatabaseItem extends Serializable {
 
     UUID getId();
 }
