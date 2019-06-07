@@ -62,12 +62,9 @@ public class ParcelHelper {
      * @return The read ArrayList
      */
     public static <T extends Parcelable> List<T> readList(Parcel in, Class<T> itemClass) {
-        List<T> list;
+        List<T> list = new ArrayList<>();
         if (in.readByte() == 0x01) {
-            list = new ArrayList<>();
             in.readList(list, itemClass.getClassLoader());
-        } else {
-            list = null;
         }
         return list;
     }
