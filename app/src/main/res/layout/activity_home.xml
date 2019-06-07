@@ -23,6 +23,7 @@
             android:id="@+id/btn_payments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="startPaymentActivity"
             android:text="@string/payments" />
 
         <Button
