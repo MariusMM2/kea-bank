@@ -93,7 +93,7 @@ public class AccountDetailActivity extends UpNavActivity {
             float accumulatedTransactionsAmount = mParentAccount.getTransactionList().subList(0, getAdapterPosition())
                     .stream()
                     .reduce(0f,
-                            (transaction1, transaction2) -> transaction1 + transaction2.getAmount(),
+                            (totalAmount, transaction2) -> totalAmount + transaction2.getAmount(),
                             Float::sum);
 
             float balanceAfter = mParentAccount.getAmount() + accumulatedTransactionsAmount;
