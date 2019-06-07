@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="transaction_message_min_length">6</integer>
+    <integer name="transaction_message_max_length">150</integer>
+</resources>

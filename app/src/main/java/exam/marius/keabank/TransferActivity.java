@@ -13,16 +13,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import exam.marius.keabank.database.MainDatabase;
-import exam.marius.keabank.model.Account;
-import exam.marius.keabank.model.Customer;
-import exam.marius.keabank.model.Transaction;
-import exam.marius.keabank.model.TransactionTarget;
+import exam.marius.keabank.model.*;
 import exam.marius.keabank.util.StringWrapper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TransferActivity extends UpNavActivity {
@@ -35,7 +29,7 @@ public class TransferActivity extends UpNavActivity {
     private Customer mCustomer;
     private Transaction mNewTransaction;
 
-    private DatePickerDialog mTransactionDateDialog;
+    private DatePickerDialog mDueDateDialog;
 
     private AppCompatSpinner mSourcesSpinner;
     private EditText mDestinationEditText;
@@ -79,17 +73,6 @@ public class TransferActivity extends UpNavActivity {
 
         mSourcesSpinner = findViewById(R.id.spinner_source_accounts);
         mSourcesSpinner.setAdapter(mSourcesAdapter);
-        mSourcesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mNewTransaction.setSource(mCustomer.getAccountList().get(position));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         // Destination Accounts Field
         List<String> sourceEntries = new ArrayList<>();
@@ -137,11 +120,10 @@ public class TransferActivity extends UpNavActivity {
         });
 
         // Due Date Field
-        mTransactionDateDialog = new DatePickerDialog(this);
-
         mDueDateField = findViewById(R.id.edit_transaction_date);
+        mDueDateDialog = new DatePickerDialog(this);
         mDueDateField.setOnTouchListener((v, event) -> {
-            mTransactionDateDialog.show();
+            mDueDateDialog.show();
 
             return true;
         });
@@ -163,7 +145,71 @@ public class TransferActivity extends UpNavActivity {
     }
 
     public void submitTransaction(View view) {
-        mNewTransaction.setMessage(mMessageField.getText().toString());
+        boolean validInput = true;
+
+        // Source selection
+        TransactionTarget source = null;
+        try {
+            source = mCustomer.getAccountList().get(mSourcesSpinner.getSelectedItemPosition());
+        } catch (IndexOutOfBoundsException e) {
+            Toast.makeText(this, "Error: Source Account not found", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, String.format("submitTransaction: %s", Log.getStackTraceString(e.getCause())));
+            validInput = false;
+        }
+
+        // Destination selection
+        TransactionTarget destination = null;
+        if (mDestinationsSpinner.getSelectedItemPosition() == 0) {
+            // User had "Enter Account ID selected"
+            destination = MainDatabase.getInstance(this).findAccount(null);
+        } else {
+            try {
+                destination = mCustomer.getAccountList().get(mDestinationsSpinner.getSelectedItemPosition() - 1);
+            } catch (IndexOutOfBoundsException e) {
+                Toast.makeText(this, "Error: Source Account not found", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, String.format("submitTransaction: %s", Log.getStackTraceString(e.getCause())));
+                validInput = false;
+            }
+        }
+
+        if (validInput && source.getId().equals(destination.getId())) {
+            Toast.makeText(this, "Source and Destination account are the same", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Type selection
+        Transaction.Type type = null;
+        try {
+            type = Transaction.Type.values()[mTypesSpinner.getSelectedItemPosition()];
+        } catch (IndexOutOfBoundsException e) {
+            Toast.makeText(this, "Error: Type selection failed", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, String.format("submitTransaction: %s", Log.getStackTraceString(e.getCause())));
+            validInput = false;
+        }
+
+        // Date selection
+        Date date = null;
+        try {
+            date = mDueDateDialog.getDate();
+        } catch (NullPointerException e) {
+            Toast.makeText(this, "Error: Date selection failed", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, String.format("submitTransaction: %s", Log.getStackTraceString(e.getCause())));
+            validInput = false;
+        }
+
+        // Message selection
+        String message = mMessageField.getText().toString();
+        int messageMinLength = getResources().getInteger(R.integer.transaction_message_min_length);
+        int messageMaxLength = getResources().getInteger(R.integer.transaction_message_max_length);
+        if (message.length() < messageMinLength) {
+            Toast.makeText(this, String.format("Message too short! Must have at least %d letters", messageMinLength), Toast.LENGTH_SHORT).show();
+            validInput = false;
+        } else if (message.length() > messageMaxLength) {
+            Toast.makeText(this, String.format("Message too long! Must have at most %d letters", messageMaxLength), Toast.LENGTH_SHORT).show();
+            validInput = false;
+        }
+
+        // Amount selection
         float amount;
         try {
             amount = Float.parseFloat(mAmountField.getText().toString());
@@ -175,14 +221,28 @@ public class TransferActivity extends UpNavActivity {
             return;
         }
 
-        mNewTransaction.setAmount(amount);
-        mNewTransaction.setStatus(Transaction.Status.PENDING);
+        if (validInput) {
+            try {
+                mNewTransaction.setSource(source)
+                        .setDestination(destination)
+                        .setType(type)
+                        .setDate(date)
+                        .setMessage(message)
+                        .setAmount(amount)
+                        .setStatus(Transaction.Status.PENDING)
+                        .commit();
+            } catch (TransactionException e) {
+                Toast.makeText(this, "Unexpected Error: " + e.getStackTrace()[0], Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
 
         Log.i(TAG, String.format("submitTransaction: %s", mNewTransaction.toString()));
     }
 
     class DatePickerDialog extends android.app.DatePickerDialog {
         private long mLastOpenTime;
+        private Date mDate;
 
         DatePickerDialog(@NonNull Context context) {
             super(context);
@@ -191,9 +251,16 @@ public class TransferActivity extends UpNavActivity {
             setOnDateSetListener((view, year, month, dayOfMonth) -> {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month, dayOfMonth);
-                mNewTransaction.setDate(calendar.getTime());
-                mDueDateField.setText(StringWrapper.wrapDate(mNewTransaction.getDate()));
+                mDate = calendar.getTime();
+                mDueDateField.setText(StringWrapper.wrapDate(mDate, true));
             });
+
+            mDate = new Date();
+            mDueDateField.setText(StringWrapper.wrapDate(mDate, true));
+        }
+
+        Date getDate() {
+            return new Date(mDate.getTime());
         }
 
         @Override
