@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity android:name=".HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,7 +27,10 @@
             android:parentActivityName=".AccountDetailActivity" />
         <activity
             android:name=".TransferActivity"
-            android:parentActivityName=".AccountDetailActivity" />
+            android:parentActivityName=".HomeActivity" />
+        <activity
+            android:name=".PaymentActivity"
+            android:parentActivityName=".HomeActivity" />
     </application>
 
 </manifest>
