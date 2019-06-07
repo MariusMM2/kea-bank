@@ -16,6 +16,9 @@ import exam.marius.keabank.model.Transaction;
 import exam.marius.keabank.util.ModelBinding;
 import exam.marius.keabank.util.StringWrapper;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class AccountDetailActivity extends UpNavActivity {
@@ -60,7 +63,6 @@ public class AccountDetailActivity extends UpNavActivity {
      */
 
     private class TransactionHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private Account mParentAccount;
         private Transaction mTransaction;
 
         private TextView mDescriptionTextView;
@@ -78,8 +80,7 @@ public class AccountDetailActivity extends UpNavActivity {
             Log.d(TAG, "Created TransactionHolder");
         }
 
-        private void bind(Transaction transaction, Account account) {
-            mParentAccount = account;
+        void bind(Transaction transaction, float accountBalance, List<Transaction> transactions) {
             mTransaction = transaction;
 
             mDescriptionTextView.setText(String.valueOf(mTransaction.getTitle()));
@@ -90,13 +91,13 @@ public class AccountDetailActivity extends UpNavActivity {
 
             mDateTextView.setText(StringWrapper.wrapDate(mTransaction.getDate()));
 
-            float accumulatedTransactionsAmount = mParentAccount.getTransactionList().subList(0, getAdapterPosition())
+            float accumulatedTransactionsAmount = transactions.subList(0, getAdapterPosition())
                     .stream()
                     .reduce(0f,
                             (totalAmount, transaction2) -> totalAmount + transaction2.getAmount(),
                             Float::sum);
 
-            float balanceAfter = mParentAccount.getAmount() + accumulatedTransactionsAmount;
+            float balanceAfter = accountBalance + accumulatedTransactionsAmount;
             mBalanceAfterTextView.setText(getResources().getString(R.string.amount, balanceAfter));
 
 
@@ -113,9 +114,14 @@ public class AccountDetailActivity extends UpNavActivity {
     private class TransactionAdapter extends RecyclerView.Adapter<TransactionHolder> {
 
         private Account mAccount;
+        private List<Transaction> mTransactions;
 
         private TransactionAdapter(Account account) {
             mAccount = account;
+            mTransactions = new ArrayList<>();
+            mTransactions.addAll(mAccount.getTransactionList());
+            mTransactions.sort(Comparator.comparing(Transaction::getDate));
+            Collections.reverse(mTransactions);
         }
 
         @NonNull
@@ -132,13 +138,13 @@ public class AccountDetailActivity extends UpNavActivity {
 
         @Override
         public void onBindViewHolder(@NonNull TransactionHolder transactionHolder, int i, @NonNull List payloads) {
-            Transaction transaction = mAccount.getTransactionList().get(i);
-            transactionHolder.bind(transaction, mAccount);
+            Transaction transaction = mTransactions.get(i);
+            transactionHolder.bind(transaction, mAccount.getAmount(), mTransactions);
         }
 
         @Override
         public int getItemCount() {
-            return mAccount.getTransactionList().size();
+            return mTransactions.size();
         }
     }
 }

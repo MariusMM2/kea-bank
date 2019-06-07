@@ -7,19 +7,19 @@ import exam.marius.keabank.model.DatabaseItem;
 import java.util.List;
 import java.util.function.Predicate;
 
-public interface Database {
-    void add(DatabaseItem item);
+public interface Database<T extends DatabaseItem> {
+    void add(T item);
 
-    List<DatabaseItem> readMultiple(@NonNull Predicate<DatabaseItem> filter);
+    List<T> readMultiple(@NonNull Predicate<T> filter);
 
-    List<DatabaseItem> readAll();
+    List<T> readAll();
 
     @Nullable
-    DatabaseItem read(@NonNull Predicate<DatabaseItem> query);
+    T read(@NonNull Predicate<T> query);
 
     int size();
 
-    void update(int index, DatabaseItem item);
+    void update(int index, T item);
 
     void save();
 

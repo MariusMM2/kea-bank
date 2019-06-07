@@ -3,6 +3,7 @@ package exam.marius.keabank;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -32,7 +33,15 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mCustomer = MainDatabase.getInstance(this).getDummyCustomer();
+        Intent intent = getIntent();
+        Customer intentCustomer = TransferActivity.getCustomer(intent);
+        if (intentCustomer != null) {
+            mCustomer = intentCustomer;
+            Log.i(TAG, "onCreate: Customer instance found: " + mCustomer.toString());
+        } else {
+            mCustomer = MainDatabase.getInstance(this).getDummyCustomer();
+            Log.i(TAG, "onCreate: no Customer instance found, retrieved from database: " + mCustomer.toString());
+        }
 
         mAccountsList = findViewById(R.id.list_accounts);
 
@@ -44,6 +53,18 @@ public class HomeActivity extends AppCompatActivity {
     public void startTransferActivity(View view) {
         Intent i = TransferActivity.newIntent(this, mCustomer);
         startActivityForResult(i, TransferActivity.REQUEST_TRANSACTION);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == TransferActivity.REQUEST_TRANSACTION) {
+            if (resultCode == TransferActivity.RESULT_CODE_SUCCESS) {
+                setIntent(data);
+                recreate();
+            }
+        }
     }
 
     /**

@@ -7,20 +7,32 @@ import exam.marius.keabank.model.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"SpellCheckingInspection", "unchecked"})
+import static exam.marius.keabank.database.AbstractDatabase.sFilesDir;
+
+@SuppressWarnings({"SpellCheckingInspection", "WeakerAccess"})
 public class MainDatabase {
     static boolean DEBUG_NO_NEMID = true;
     static boolean DEBUG_NO_PASSWORD = true;
     private static MainDatabase sInstance;
-    Database mAccountDb, mBillDb, mCustomerDb, mNemIdDb, mTransactionDb;
-    private static Customer mDummyCustomer = createDummyCustomer();
+    AccountDatabase mAccountDb;
+    BillDatabase mBillDb;
+    CustomerDatabase mCustomerDb;
+    NemIdDatabase mNemIdDb;
+    TransactionDatabase mTransactionDb;
 
     MainDatabase(Context context) {
+
+        if (sFilesDir == null) {
+            sFilesDir = context.getFilesDir();
+        }
+
         mAccountDb = new AccountDatabase(context);
         mBillDb = new BillDatabase(context);
         mCustomerDb = new CustomerDatabase(context);
         mNemIdDb = new NemIdDatabase(context);
         mTransactionDb = new TransactionDatabase(context);
+
+        createDummyData();
     }
 
     public static MainDatabase getInstance(Context context) {
@@ -31,8 +43,14 @@ public class MainDatabase {
         return sInstance;
     }
 
-    public static Customer createDummyCustomer() {
+    private void createDummyData() {
         Customer customer = new Customer("John", "Doe", "johndoe@email.com", "123456", Calendar.getInstance().getTime());
+        final List<NemId> nemIdList = new ArrayList<>(
+                Collections.singletonList(
+                        new NemId(UUID.randomUUID(), "foobar98", "f00b4r98", customer.getId())
+                )
+        );
+
         final List<Account> accountList = new ArrayList<>(
                 Arrays.asList(
                         Account.newDefault(3000, customer.getId()),
@@ -56,40 +74,20 @@ public class MainDatabase {
                 )
         );
 
-        accountList.forEach(account -> {
-            List<Transaction> outGoingTransactions = transactionList.stream()
-                    .filter(transaction -> transaction.getSource().getId().equals(account.getId()))
-                    .collect(Collectors.toList());
-
-            List<Transaction> incomingTransactions = transactionList.stream()
-                    .filter(transaction -> transaction.getDestination().getId().equals(account.getId()))
-                    .map(Transaction::reverse)
-                    .collect(Collectors.toList());
-
-            List<Transaction> allTransactions = new ArrayList<>();
-
-            allTransactions.addAll(outGoingTransactions);
-            allTransactions.addAll(incomingTransactions);
-            allTransactions.sort(Comparator.comparing(Transaction::getDate));
-            Collections.reverse(allTransactions);
-            allTransactions.forEach(account::addTransaction);
-
-            customer.addAccount(account);
-        });
-
-        return customer;
+        accountList.forEach(account -> mAccountDb.add(account));
+        billList.forEach(bill -> mBillDb.add(bill));
+        mCustomerDb.add(customer);
+        nemIdList.forEach(nemId -> mNemIdDb.add(nemId));
+        transactionList.forEach(transaction -> mTransactionDb.add(transaction));
     }
 
-    public static Customer getDummyCustomer() {
-        return mDummyCustomer;
-    }
-
+    @SuppressWarnings("WeakerAccess")
     public boolean tryLogin(NemId nemId) {
         if (DEBUG_NO_NEMID) {
             return true;
         }
 
-        NemId retrievedNemId = (NemId) mNemIdDb.read(databaseItem -> ((NemId) databaseItem).getUsername().equals(nemId.getUsername()));
+        NemId retrievedNemId = mNemIdDb.read(databaseItem -> databaseItem.getUsername().equals(nemId.getUsername()));
 
         if (retrievedNemId != null) {
             if (DEBUG_NO_PASSWORD) {
@@ -103,33 +101,35 @@ public class MainDatabase {
 
     }
 
+    public Customer getDummyCustomer() {
+        NemId nemId = mNemIdDb.readAll().get(0);
+        Customer customer = null;
+        try {
+            customer = getCustomer(nemId);
+        } catch (InvalidNemIDException | InvalidCustomerException ignored) {
+
+        }
+        return customer;
+    }
+
+    @SuppressWarnings("WeakerAccess")
     public Customer getCustomer(@NonNull NemId nemId) throws InvalidNemIDException, InvalidCustomerException {
-        NemId retrievedNemId = (NemId) mNemIdDb.read(item -> item.getId().equals(nemId.getId()));
+        NemId retrievedNemId = mNemIdDb.read(item -> item.getId().equals(nemId.getId()));
 
         if (retrievedNemId == null) throw new InvalidNemIDException();
 
-        Customer retrievedCustomer = (Customer) mCustomerDb.read(item -> item.getId().equals(retrievedNemId.getCustomerId()));
+        Customer retrievedCustomer = mCustomerDb.read(item -> item.getId().equals(retrievedNemId.getCustomerId()));
 
         if (retrievedCustomer == null) throw new InvalidCustomerException();
 
         retrievedCustomer.removeAccounts();
 
-        List<Account> retrievedAccounts = (List<Account>) (Object) mAccountDb.readMultiple(item -> ((Account) item).getCustomerId().equals(retrievedCustomer.getId()));
+        List<Account> retrievedAccounts = mAccountDb.readMultiple(item -> item.getCustomerId().equals(retrievedCustomer.getId()));
 
         retrievedAccounts.forEach(account -> {
-            List<Transaction> outGoingTransactions = (List<Transaction>) (Object) mTransactionDb.readMultiple(item -> {
-                Transaction transaction = ((Transaction) item);
-                return transaction.getSource().getId().equals(account.getId());
-            });
+            List<Transaction> transactionList = getTransactions(account);
 
-            outGoingTransactions.forEach(account::addTransaction);
-
-            List<Transaction> incomingTransactions = ((List<Transaction>) (Object) mTransactionDb.readMultiple(item -> {
-                Transaction transaction = ((Transaction) item);
-                return transaction.getDestination().getId().equals(account.getId());
-            })).stream().map(Transaction::reverse).collect(Collectors.toList());
-
-            incomingTransactions.forEach(account::addTransaction);
+            transactionList.forEach(account::addTransaction);
 
             retrievedCustomer.addAccount(account);
         });
@@ -138,19 +138,37 @@ public class MainDatabase {
     }
 
     public List<Bill> getBills(@NonNull Customer customer) {
-        return (List<Bill>) (Object) mBillDb.readMultiple(item -> ((Bill) item).getCustomerId().equals(customer.getId()));
+        return mBillDb.readMultiple(item -> item.getCustomerId().equals(customer.getId()));
     }
 
-    public Account findAccount(UUID accountId) {
-        return (Account) mAccountDb.read(item -> item.getId().equals(accountId));
+    public Account getAccount(UUID accountId) {
+        return mAccountDb.read(item -> item.getId().equals(accountId));
     }
 
-    public void save() {
+    void save() {
         mAccountDb.save();
         mBillDb.save();
         mCustomerDb.save();
         mNemIdDb.save();
         mTransactionDb.save();
+    }
+
+    public void addTransaction(Transaction newTransaction) {
+        mTransactionDb.add(newTransaction);
+    }
+
+    public List<Transaction> getTransactions(Account account) {
+        List<Transaction> outGoingTransactions = mTransactionDb.readMultiple(item -> item.getSource().getId().equals(account.getId()));
+
+        List<Transaction> incomingTransactions = mTransactionDb.readMultiple(item ->
+                item.getDestination().getId().equals(account.getId()))
+                .stream()
+                .map(Transaction::reverse)
+                .collect(Collectors.toList());
+
+        outGoingTransactions.addAll(incomingTransactions);
+
+        return outGoingTransactions;
     }
 }
 

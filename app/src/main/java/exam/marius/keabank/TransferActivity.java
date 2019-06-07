@@ -14,7 +14,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import exam.marius.keabank.database.MainDatabase;
-import exam.marius.keabank.model.*;
+import exam.marius.keabank.model.Account;
+import exam.marius.keabank.model.Customer;
+import exam.marius.keabank.model.Transaction;
+import exam.marius.keabank.model.TransactionException;
 import exam.marius.keabank.util.StringWrapper;
 
 import java.util.*;
@@ -27,6 +30,7 @@ public class TransferActivity extends UpNavActivity {
     static final int REQUEST_TRANSACTION = 1;
 
     private static final String EXTRA_CUSTOMER = "com.example.extras.EXTRA_CUSTOMER";
+    static final int RESULT_CODE_SUCCESS = 1;
 
     private Customer mCustomer;
     private Transaction mNewTransaction;
@@ -55,13 +59,17 @@ public class TransferActivity extends UpNavActivity {
         return intent;
     }
 
+    static Customer getCustomer(Intent intent) {
+        return intent.getParcelableExtra(EXTRA_CUSTOMER);
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transfer);
 
-        mCustomer = getIntent().getParcelableExtra(EXTRA_CUSTOMER);
+        mCustomer = getCustomer(getIntent());
 
         if (mCustomer == null) {
             showCustomerErrorDialog();
@@ -210,22 +218,13 @@ public class TransferActivity extends UpNavActivity {
         String message = mMessageField.getText().toString();
 
         if (message.isEmpty()) {
-//            validInput[0] = false;
-//            mMessageField.setError(getString(R.string.transaction_error_empty_field, mMessageField.getHint()));
-//            focusView[0] = mMessageField;
             errorMacro.accept(mMessageField, getString(R.string.transaction_error_empty_field, mMessageField.getHint()));
         } else {
             int messageMinLength = getResources().getInteger(R.integer.transaction_message_min_length);
             int messageMaxLength = getResources().getInteger(R.integer.transaction_message_max_length);
             if (message.length() < messageMinLength) {
-//            validInput[0] = false;
-//            mMessageField.setError(getString(R.string.transaction_error_message_short, messageMinLength));
-//            focusView[0] = mMessageField;
                 errorMacro.accept(mMessageField, getString(R.string.transaction_error_message_short, messageMinLength));
             } else if (message.length() > messageMaxLength) {
-//            validInput[0] = false;
-//            mMessageField.setError(getString(R.string.transaction_error_message_long, messageMaxLength));
-//            focusView[0] = mMessageField;
                 errorMacro.accept(mMessageField, getString(R.string.transaction_error_message_long, messageMaxLength));
             }
         }
@@ -251,18 +250,15 @@ public class TransferActivity extends UpNavActivity {
         }
 
         // Destination selection
-        TransactionTarget destination = null;
+        Account destination = null;
         if (mDestinationsSpinner.getSelectedItemPosition() == 0) {
             // User had "Enter Account ID" selected
             if (mDestinationEditText.getText().toString().isEmpty()) {
                 errorMacro.accept(mDestinationEditText, getString(R.string.transaction_error_empty_field, ((TextView) findViewById(R.id.text_destination_label)).getText()));
             } else {
-                destination = MainDatabase.getInstance(this).findAccount(null);
+                destination = MainDatabase.getInstance(this).getAccount(null);
 
                 if (destination == null) {
-//                validInput[0] = false;
-//                mDestinationEditText.setError(getString(R.string.transaction_error_destination_invalid));
-//                focusView[0] = mDestinationEditText;
                     errorMacro.accept(mDestinationEditText, getString(R.string.transaction_error_destination_invalid));
                 }
             }
@@ -277,7 +273,7 @@ public class TransferActivity extends UpNavActivity {
         }
 
         // Source selection
-        TransactionTarget source = null;
+        Account source = null;
         try {
             source = mCustomer.getAccountList().get(mSourcesSpinner.getSelectedItemPosition());
         } catch (IndexOutOfBoundsException e) {
@@ -288,9 +284,6 @@ public class TransferActivity extends UpNavActivity {
 
         if (source != null && destination != null) {
             if (source.getId().equals(destination.getId())) {
-//                mDestinationEditText.setError(getString(R.string.transaction_error_same_target));
-//                validInput[0] = false;
-//                focusView[0] = mDestinationEditText;
                 errorMacro.accept(mDestinationEditText, getString(R.string.transaction_error_same_target));
             }
         }
@@ -306,6 +299,17 @@ public class TransferActivity extends UpNavActivity {
                         .setAmount(amount)
                         .setStatus(Transaction.Status.PENDING)
                         .commit();
+
+                MainDatabase.getInstance(this).addTransaction(mNewTransaction);
+
+                source.addTransaction(mNewTransaction);
+                destination.addTransaction(mNewTransaction.reverse());
+
+                Intent i = newIntent(this, mCustomer);
+
+                setResult(RESULT_CODE_SUCCESS, i);
+                finish();
+
             } catch (TransactionException e) {
                 Toast.makeText(this, getString(R.string.transaction_error_unexpected, e.getStackTrace()[0]), Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "submitTransaction: ", e);

@@ -160,8 +160,8 @@ public class MainDatabaseTest {
     @Test
     public void findAccount() {
         addAccounts();
-        assertEquals(mAccountList.get(0), mMainDatabase.findAccount(mAccountList.get(0).getId()));
-        assertEquals(mAccountList.get(1), mMainDatabase.findAccount(mAccountList.get(1).getId()));
+        assertEquals(mAccountList.get(0), mMainDatabase.getAccount(mAccountList.get(0).getId()));
+        assertEquals(mAccountList.get(1), mMainDatabase.getAccount(mAccountList.get(1).getId()));
     }
 
     @Test

@@ -2,6 +2,7 @@ package exam.marius.keabank.database;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import exam.marius.keabank.model.DatabaseItem;
 
 import java.io.*;
@@ -10,57 +11,76 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-abstract class AbstractDatabase implements Database {
-    final String ITEMS_FILE_NAME = "database" + File.separator + getItemsFileName() + ".bin";
-    private List<DatabaseItem> mItems;
+abstract class AbstractDatabase<T extends DatabaseItem> implements Database<T> {
+    private static final String TAG = "AbstractDatabase";
+    private static final boolean DEBUG = true;
+
+
+    static File sFilesDir;
+
+    private final String ITEMS_DIRECTORY = sFilesDir.getAbsolutePath() + File.separator + "database";
+    final String ITEMS_FILE_NAME = ITEMS_DIRECTORY +
+            File.separator + getItemsFileName() + ".bin";
+    private List<T> mItems;
 
     AbstractDatabase(Context context) {
-        load();
+        if (DEBUG) {
+            mItems = new ArrayList<>();
+            save();
+        } else {
+            load();
+        }
     }
 
     abstract String getItemsFileName();
 
     @Override
-    public void add(DatabaseItem item) {
+    public void add(T item) {
+        load();
         mItems.add(item);
+        save();
+    }
+
+    public List<T> readMultiple(@NonNull Predicate<T> filter) {
+        load();
+        return mItems.stream().filter(filter).collect(Collectors.toList());
     }
 
     @Override
-    public List<DatabaseItem> readMultiple(@NonNull Predicate filter) {
-        //noinspection unchecked
-        return (List<DatabaseItem>) mItems.stream().filter(filter).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<DatabaseItem> readAll() {
+    public List<T> readAll() {
+        load();
         return mItems;
     }
 
     @Override
-    public DatabaseItem read(@NonNull Predicate<DatabaseItem> query) {
-        Object[] databaseItems = mItems.stream().filter(query).toArray();
+    public T read(@NonNull Predicate<T> query) {
+        load();
+        List<T> databaseItems = mItems.stream().filter(query).collect(Collectors.toList());
 
-        if (databaseItems.length == 0) {
+        if (databaseItems.size() == 0) {
             return null;
         } else {
-            return (DatabaseItem) databaseItems[0];
+            return databaseItems.get(0);
         }
     }
 
     @Override
     public int size() {
+        load();
         return mItems.size();
     }
 
     @Override
-    public void update(int index, DatabaseItem item) {
+    public void update(int index, T item) {
+        load();
         mItems.set(index, item);
+        save();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void save() {
-        File saveDirectory = new File("database");
+        File saveDirectory = new File(ITEMS_DIRECTORY);
         saveDirectory.mkdir();
         File saveFile = new File(ITEMS_FILE_NAME);
         if (!saveFile.exists()) {
@@ -78,6 +98,7 @@ abstract class AbstractDatabase implements Database {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Log.d(TAG, "save: saved list: " + mItems.toString());
     }
 
     @Override
@@ -87,10 +108,13 @@ abstract class AbstractDatabase implements Database {
                 ObjectInputStream ois = new ObjectInputStream(fis)
         ) {
             //noinspection unchecked
-            mItems = (List<DatabaseItem>) ois.readObject();
+            mItems = (List<T>) ois.readObject();
 
         } catch (IOException | ClassNotFoundException e) {
             mItems = new ArrayList<>();
+            Log.e(TAG, "load: unable to load list", e);
         }
+
+        Log.d(TAG, "load: loaded list: " + mItems.toString());
     }
 }
