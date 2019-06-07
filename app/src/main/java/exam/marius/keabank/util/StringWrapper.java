@@ -19,8 +19,18 @@ public class StringWrapper {
     }
 
     public static CharSequence wrapDate(Date date) {
-        return DateFormat.format(
+        return wrapDate(date, false);
+    }
+
+    public static CharSequence wrapDate(Date date, boolean showIfCurrentDay) {
+        CharSequence charSequence = DateFormat.format(
                 sContext.getResources().getString(R.string.date_format),
                 date);
+
+        if (showIfCurrentDay && charSequence.equals(wrapDate(new Date()))) {
+            charSequence = sContext.getResources().getString(R.string.date_today);
+        }
+
+        return charSequence;
     }
 }
