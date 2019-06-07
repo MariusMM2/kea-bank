@@ -74,11 +74,7 @@ public class Transaction implements DatabaseItem, Parcelable {
             throw new IllegalArgumentException("Transaction destination is null");
         }
 
-        if (mDestination == null) {
-            mDestination = destination;
-        } else {
-            throw new IllegalStateException("Transaction already has a source");
-        }
+        mDestination = destination;
 
         Log.i(TAG, String.format("Set destination of transaction {%s} to {%s}", getId(), mDestination.getTitle()));
 
