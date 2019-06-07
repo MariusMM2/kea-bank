@@ -294,8 +294,3 @@ public class Transaction implements DatabaseItem, Parcelable {
     }
 }
 
-class TransactionException extends Exception {
-    TransactionException(String cause) {
-        super(cause);
-    }
-}
