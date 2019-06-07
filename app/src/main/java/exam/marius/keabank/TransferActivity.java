@@ -17,6 +17,7 @@ import exam.marius.keabank.model.*;
 import exam.marius.keabank.util.StringWrapper;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public class TransferActivity extends UpNavActivity {
@@ -93,6 +94,7 @@ public class TransferActivity extends UpNavActivity {
                     mDestinationEditText.setText(String.format("%x",
                             mCustomer.getAccountList().get(position - 1).getId().getMostSignificantBits()));
                 }
+                mDestinationEditText.setError(null);
             }
 
             @Override
@@ -145,46 +147,57 @@ public class TransferActivity extends UpNavActivity {
     }
 
     public void submitTransaction(View view) {
-        boolean validInput = true;
+        // Input Validation
+        final boolean[] validInput = {true};
+        final View[] focusView = {null};
 
-        // Source selection
-        TransactionTarget source = null;
-        try {
-            source = mCustomer.getAccountList().get(mSourcesSpinner.getSelectedItemPosition());
-        } catch (IndexOutOfBoundsException e) {
-            Toast.makeText(this, "Error: Source Account not found", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, String.format("submitTransaction: %s", Log.getStackTraceString(e.getCause())));
-            validInput = false;
-        }
-
-        // Destination selection
-        TransactionTarget destination = null;
-        if (mDestinationsSpinner.getSelectedItemPosition() == 0) {
-            // User had "Enter Account ID selected"
-            destination = MainDatabase.getInstance(this).findAccount(null);
-        } else {
-            try {
-                destination = mCustomer.getAccountList().get(mDestinationsSpinner.getSelectedItemPosition() - 1);
-            } catch (IndexOutOfBoundsException e) {
-                Toast.makeText(this, "Error: Source Account not found", Toast.LENGTH_SHORT).show();
-                Log.e(TAG, String.format("submitTransaction: %s", Log.getStackTraceString(e.getCause())));
-                validInput = false;
+        final BiConsumer<TextView, String> errorMacro = (targetView, targetError) -> {
+            validInput[0] = false;
+            if (targetView != null && targetError != null) {
+                targetView.setError(targetError);
+                focusView[0] = targetView;
             }
-        }
+        };
 
-        if (validInput && source.getId().equals(destination.getId())) {
-            Toast.makeText(this, "Source and Destination account are the same", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Type selection
-        Transaction.Type type = null;
+        // Amount selection
+        float amount = -1;
         try {
-            type = Transaction.Type.values()[mTypesSpinner.getSelectedItemPosition()];
-        } catch (IndexOutOfBoundsException e) {
-            Toast.makeText(this, "Error: Type selection failed", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, String.format("submitTransaction: %s", Log.getStackTraceString(e.getCause())));
-            validInput = false;
+            if (mAmountField.getText().toString().isEmpty()) {
+                errorMacro.accept(mAmountField, getString(R.string.transaction_error_empty_field, mAmountField.getHint()));
+            } else {
+                amount = Float.parseFloat(mAmountField.getText().toString());
+                if (amount == 0) {
+                    errorMacro.accept(mAmountField, getString(R.string.transaction_error_amount_invalid));
+                }
+            }
+        } catch (IllegalStateException ei) {
+            errorMacro.accept(mAmountField, getString(R.string.transaction_error_amount_negative));
+        } catch (NumberFormatException en) {
+            errorMacro.accept(mAmountField, getString(R.string.transaction_error_amount_invalid));
+        }
+
+        // Message selection
+        String message = mMessageField.getText().toString();
+
+        if (message.isEmpty()) {
+//            validInput[0] = false;
+//            mMessageField.setError(getString(R.string.transaction_error_empty_field, mMessageField.getHint()));
+//            focusView[0] = mMessageField;
+            errorMacro.accept(mMessageField, getString(R.string.transaction_error_empty_field, mMessageField.getHint()));
+        } else {
+            int messageMinLength = getResources().getInteger(R.integer.transaction_message_min_length);
+            int messageMaxLength = getResources().getInteger(R.integer.transaction_message_max_length);
+            if (message.length() < messageMinLength) {
+//            validInput[0] = false;
+//            mMessageField.setError(getString(R.string.transaction_error_message_short, messageMinLength));
+//            focusView[0] = mMessageField;
+                errorMacro.accept(mMessageField, getString(R.string.transaction_error_message_short, messageMinLength));
+            } else if (message.length() > messageMaxLength) {
+//            validInput[0] = false;
+//            mMessageField.setError(getString(R.string.transaction_error_message_long, messageMaxLength));
+//            focusView[0] = mMessageField;
+                errorMacro.accept(mMessageField, getString(R.string.transaction_error_message_long, messageMaxLength));
+            }
         }
 
         // Date selection
@@ -192,36 +205,68 @@ public class TransferActivity extends UpNavActivity {
         try {
             date = mDueDateDialog.getDate();
         } catch (NullPointerException e) {
-            Toast.makeText(this, "Error: Date selection failed", Toast.LENGTH_SHORT).show();
+            validInput[0] = false;
+            Toast.makeText(this, getString(R.string.transaction_error_date), Toast.LENGTH_SHORT).show();
             Log.e(TAG, String.format("submitTransaction: %s", Log.getStackTraceString(e.getCause())));
-            validInput = false;
         }
 
-        // Message selection
-        String message = mMessageField.getText().toString();
-        int messageMinLength = getResources().getInteger(R.integer.transaction_message_min_length);
-        int messageMaxLength = getResources().getInteger(R.integer.transaction_message_max_length);
-        if (message.length() < messageMinLength) {
-            Toast.makeText(this, String.format("Message too short! Must have at least %d letters", messageMinLength), Toast.LENGTH_SHORT).show();
-            validInput = false;
-        } else if (message.length() > messageMaxLength) {
-            Toast.makeText(this, String.format("Message too long! Must have at most %d letters", messageMaxLength), Toast.LENGTH_SHORT).show();
-            validInput = false;
-        }
-
-        // Amount selection
-        float amount;
+        // Type selection
+        Transaction.Type type = null;
         try {
-            amount = Float.parseFloat(mAmountField.getText().toString());
-        } catch (IllegalStateException ei) {
-            Toast.makeText(this, "Amount cannot have a negative value", Toast.LENGTH_SHORT).show();
-            return;
-        } catch (NumberFormatException en) {
-            Toast.makeText(this, "Amount is invalid", Toast.LENGTH_SHORT).show();
-            return;
+            type = Transaction.Type.values()[mTypesSpinner.getSelectedItemPosition()];
+        } catch (IndexOutOfBoundsException e) {
+            validInput[0] = false;
+            Toast.makeText(this, getString(R.string.transaction_error_type), Toast.LENGTH_SHORT).show();
+            Log.e(TAG, String.format("submitTransaction: %s", Log.getStackTraceString(e.getCause())));
         }
 
-        if (validInput) {
+        // Destination selection
+        TransactionTarget destination = null;
+        if (mDestinationsSpinner.getSelectedItemPosition() == 0) {
+            // User had "Enter Account ID" selected
+            if (mDestinationEditText.getText().toString().isEmpty()) {
+                errorMacro.accept(mDestinationEditText, getString(R.string.transaction_error_empty_field, ((TextView) findViewById(R.id.text_destination_label)).getText()));
+            } else {
+                destination = MainDatabase.getInstance(this).findAccount(null);
+
+                if (destination == null) {
+//                validInput[0] = false;
+//                mDestinationEditText.setError(getString(R.string.transaction_error_destination_invalid));
+//                focusView[0] = mDestinationEditText;
+                    errorMacro.accept(mDestinationEditText, getString(R.string.transaction_error_destination_invalid));
+                }
+            }
+        } else {
+            try {
+                destination = mCustomer.getAccountList().get(mDestinationsSpinner.getSelectedItemPosition() - 1);
+            } catch (IndexOutOfBoundsException | NoSuchElementException e) {
+                validInput[0] = false;
+                Toast.makeText(this, getString(R.string.transaction_error_destination_internal), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, String.format("submitTransaction: %s", Log.getStackTraceString(e.getCause())));
+            }
+        }
+
+        // Source selection
+        TransactionTarget source = null;
+        try {
+            source = mCustomer.getAccountList().get(mSourcesSpinner.getSelectedItemPosition());
+        } catch (IndexOutOfBoundsException e) {
+            Toast.makeText(this, getString(R.string.transaction_error_source), Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Customer source account exception:", e);
+            validInput[0] = false;
+        }
+
+        if (source != null && destination != null) {
+            if (source.getId().equals(destination.getId())) {
+//                mDestinationEditText.setError(getString(R.string.transaction_error_same_target));
+//                validInput[0] = false;
+//                focusView[0] = mDestinationEditText;
+                errorMacro.accept(mDestinationEditText, getString(R.string.transaction_error_same_target));
+            }
+        }
+        // END Input Validation
+
+        if (validInput[0]) {
             try {
                 mNewTransaction.setSource(source)
                         .setDestination(destination)
@@ -232,12 +277,15 @@ public class TransferActivity extends UpNavActivity {
                         .setStatus(Transaction.Status.PENDING)
                         .commit();
             } catch (TransactionException e) {
-                Toast.makeText(this, "Unexpected Error: " + e.getStackTrace()[0], Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.transaction_error_unexpected, e.getStackTrace()[0]), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "submitTransaction: ", e);
                 return;
             }
+        } else {
+            focusView[0].requestFocus();
         }
 
-        Log.i(TAG, String.format("submitTransaction: %s", mNewTransaction.toString()));
+        Log.d(TAG, String.format("submitTransaction: %s", mNewTransaction.toString()));
     }
 
     class DatePickerDialog extends android.app.DatePickerDialog {

@@ -22,4 +22,18 @@
     <string name="transaction_destination_label">Target</string>
     <string name="manual_account_item">Enter Account ID</string>
     <string name="date_today">Today</string>
+
+    <string name="transaction_error_source">Error: Source Account not found</string>
+    <string name="transaction_error_destination_invalid">Account not found</string>
+    <string name="transaction_error_destination_internal">Error: Destination Account not found</string>
+    <string name="transaction_error_same_target">Source and Destination accounts cannot be the same account</string>
+    <string name="transaction_error_type">Error: Type selection failed</string>
+    <string name="transaction_error_date">Error: Date selection failed</string>
+    <string name="transaction_error_message_short">Message too short! Must have at least %d letters</string>
+    <string name="transaction_error_message_long">Message too long! Must have at most %d letters</string>
+    <string name="transaction_error_amount_negative">Amount cannot have a negative value</string>
+    <string name="transaction_error_amount_invalid">Amount is invalid</string>
+    <string name="transaction_error_unexpected">Unexpected Error: %s</string>
+    <string name="transaction_error_empty_field">Field \'%s\' cannot be empty</string>
+
 </resources>
