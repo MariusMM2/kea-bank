@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:context=".TransactionDetailActivity">
 
-        <!--        Source Account-->
+        <!--Source Account-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
-        <!--        Target Account-->
+        <!--Target Account-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
 
         </LinearLayout>
 
-        <!--        Transaction Type-->
+        <!--Transaction Type-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
-        <!--        Due Date Field-->
+        <!--Due Date Field-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -125,7 +125,7 @@
                 android:paddingStart="12dp" />
         </LinearLayout>
 
-        <!--        Message Field-->
+        <!--Message Field-->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -142,7 +142,7 @@
                 tools:text="Lorem Ipsum dolor ist amet" />
         </android.support.design.widget.TextInputLayout>
 
-        <!--        Amount Field-->
+        <!--Amount Field-->
         <android.support.design.widget.TextInputLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
