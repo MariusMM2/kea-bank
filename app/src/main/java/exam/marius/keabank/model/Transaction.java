@@ -97,16 +97,20 @@ public class Transaction implements DatabaseItem, Parcelable {
         return this;
     }
 
-    public void setType(Type type) {
+    public Transaction setType(Type type) {
         mType = type;
 
         Log.i(TAG, String.format("Set type of transaction {%s} to {%s}", getId(), mType));
+
+        return this;
     }
 
-    public void setDate(Date date) {
+    public Transaction setDate(Date date) {
         mDate = date;
 
         Log.i(TAG, String.format("Set date of transaction {%s} to {%s}", getId(), StringWrapper.wrapDate(mDate)));
+
+        return this;
     }
 
     public void setTitle(String title) {
@@ -175,8 +179,10 @@ public class Transaction implements DatabaseItem, Parcelable {
         return mMessage == null ? "" : mMessage;
     }
 
-    public void setMessage(String message) {
+    public Transaction setMessage(String message) {
         mMessage = message;
+
+        return this;
     }
 
     public String getSourceDetails() {
@@ -256,8 +262,10 @@ public class Transaction implements DatabaseItem, Parcelable {
         return 0;
     }
 
-    public void setStatus(Status status) {
+    public Transaction setStatus(Status status) {
         mStatus = status;
+
+        return this;
     }
 
     public enum Status {
