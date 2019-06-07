@@ -16,12 +16,12 @@ public class Account implements TransactionTarget {
     private UUID mCustomerId;
     private transient List<Transaction> mTransactionList;
 
-    public Account(UUID id, float amount, Type type, UUID customerId, Transaction... transactions) {
-        mId = id;
-        mAmount = amount;
-        mType = type;
-        mCustomerId = customerId;
-        mTransactionList = Arrays.asList(transactions);
+    // Called at deserialization,
+    // instantiates any transient fields
+    // to a default value
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        mTransactionList = new ArrayList<>();
+        in.defaultReadObject();
     }
 
     public Account(float amount, Type type, UUID customerId) {
