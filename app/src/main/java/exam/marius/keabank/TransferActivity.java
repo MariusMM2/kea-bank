@@ -90,8 +90,7 @@ public class TransferActivity extends UpNavActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) mDestinationEditText.setText("");
                 else {
-                    mDestinationEditText.setText(String.format("%x",
-                            mCustomer.getAccountList().get(position - 1).getId().getMostSignificantBits()));
+                    mDestinationEditText.setText(mCustomer.getAccountList().get(position - 1).getIdNumber());
                 }
                 mDestinationEditText.setError(null);
             }

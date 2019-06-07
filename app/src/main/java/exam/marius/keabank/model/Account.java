@@ -57,6 +57,10 @@ public class Account implements TransactionTarget, Serializable {
         return mId;
     }
 
+    public String getIdNumber() {
+        return String.format("%x", mId.getMostSignificantBits());
+    }
+
     public Type getType() {
         return mType;
     }
