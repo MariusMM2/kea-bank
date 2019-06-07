@@ -1,0 +1,17 @@
+package exam.marius.keabank.database;
+
+import android.content.Context;
+
+import java.util.Calendar;
+
+class CustomerDatabase extends AbstractDatabase {
+    CustomerDatabase(Context context) {
+        super(context);
+        Calendar.getInstance().set(1990, 7, 31);
+    }
+
+    @Override
+    String getItemsFileName() {
+        return "customers";
+    }
+}
