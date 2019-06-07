@@ -66,6 +66,19 @@ public class Customer implements DatabaseItem, Parcelable {
         mAccountList = new ArrayList<>();
     }
 
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "mId=" + mId +
+                ", mFirstName='" + mFirstName + '\'' +
+                ", mLastName='" + mLastName + '\'' +
+                ", mEmail='" + mEmail + '\'' +
+                ", mPassword='" + mPassword + '\'' +
+                ", mBirthDate=" + mBirthDate +
+                ", mAccountList=" + mAccountList +
+                '}';
+    }
+
     // Parcelable packaging and marshalling logic
     protected Customer(Parcel in) {
         mId = ParcelHelper.readUuid(in);
