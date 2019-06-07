@@ -76,7 +76,7 @@ public class Transaction implements DatabaseItem, Parcelable {
 
         mDestination = destination;
 
-        Log.i(TAG, String.format("Set destination of transaction {%s} to {%s}", getId(), mDestination.getTitle()));
+        Log.d(TAG, String.format("Set destination of transaction {%s} to {%s}", getId(), mDestination.getTitle()));
 
         return this;
     }
@@ -88,7 +88,7 @@ public class Transaction implements DatabaseItem, Parcelable {
             throw new IllegalArgumentException("Transaction can't process a negative amount");
         }
 
-        Log.i(TAG, String.format("Set amount of transaction {%s} to {%s}", getId(), mAmount));
+        Log.d(TAG, String.format("Set amount of transaction {%s} to {%s}", getId(), mAmount));
 
         return this;
     }
@@ -96,7 +96,7 @@ public class Transaction implements DatabaseItem, Parcelable {
     public Transaction setType(Type type) {
         mType = type;
 
-        Log.i(TAG, String.format("Set type of transaction {%s} to {%s}", getId(), mType));
+        Log.d(TAG, String.format("Set type of transaction {%s} to {%s}", getId(), mType));
 
         return this;
     }
@@ -104,7 +104,7 @@ public class Transaction implements DatabaseItem, Parcelable {
     public Transaction setDate(Date date) {
         mDate = date;
 
-        Log.i(TAG, String.format("Set date of transaction {%s} to {%s}", getId(), StringWrapper.wrapDate(mDate)));
+        Log.d(TAG, String.format("Set date of transaction {%s} to {%s}", getId(), StringWrapper.wrapDate(mDate)));
 
         return this;
     }
@@ -112,7 +112,7 @@ public class Transaction implements DatabaseItem, Parcelable {
     public void setTitle(String title) {
         mTitle = title;
 
-        Log.i(TAG, String.format("Set title of transaction {%s} to {%s}", getId(), mTitle));
+        Log.d(TAG, String.format("Set title of transaction {%s} to {%s}", getId(), mTitle));
     }
 
     public void commit() throws TransactionException {
