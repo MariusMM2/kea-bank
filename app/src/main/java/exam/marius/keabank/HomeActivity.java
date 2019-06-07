@@ -55,6 +55,12 @@ public class HomeActivity extends AppCompatActivity {
         startActivityForResult(i, TransferActivity.REQUEST_TRANSACTION);
     }
 
+    public void startPaymentActivity(View view) {
+//        Intent i = PaymentActivity.newIntent(this, mCustomer);
+//        startActivityForResult(new Intent(this, PaymentActivity.class), PaymentActivity.REQUEST_PAYMENT);
+        startActivity(new Intent(this, PaymentActivity.class));
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
