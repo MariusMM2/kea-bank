@@ -8,6 +8,8 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSpinner;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
@@ -43,6 +45,7 @@ public class TransferActivity extends UpNavActivity {
     private SpinnerAdapter mSourcesAdapter;
     private SpinnerAdapter mDestinationsAdapter;
     private SpinnerAdapter mTypesAdapter;
+    private int mChosenDestination;
 
 
     static Intent newIntent(Context packageContext, Customer customer) {
@@ -82,15 +85,44 @@ public class TransferActivity extends UpNavActivity {
         mDestinationsAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, sourceEntries);
 
         mDestinationEditText = findViewById(R.id.edit_destination);
+        mDestinationEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int selectedItemPosition = mDestinationsSpinner.getSelectedItemPosition();
+                if (selectedItemPosition != 0) {
+                    String sString = s.toString();
+                    String itemString = mCustomer.getAccountList().get(selectedItemPosition - 1).getIdNumber();
+                    if (!sString.equals(itemString)) {
+                        mChosenDestination = 0;
+                        mDestinationsSpinner.setSelection(0);
+                    }
+                }
+            }
+        });
 
         mDestinationsSpinner = findViewById(R.id.spinner_destinations);
         mDestinationsSpinner.setAdapter(mDestinationsAdapter);
         mDestinationsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) mDestinationEditText.setText("");
-                else {
+                if (position == 0) {
+                    if (mChosenDestination != 0) {
+                        mDestinationEditText.setText("");
+                        mChosenDestination = -1;
+                    }
+                } else {
                     mDestinationEditText.setText(mCustomer.getAccountList().get(position - 1).getIdNumber());
+                    mChosenDestination = position;
                 }
                 mDestinationEditText.setError(null);
             }
