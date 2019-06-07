@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSpinner;
@@ -289,13 +288,12 @@ public class TransferActivity extends UpNavActivity {
     }
 
     class DatePickerDialog extends android.app.DatePickerDialog {
-        private long mLastOpenTime;
         private Date mDate;
 
         DatePickerDialog(@NonNull Context context) {
             super(context);
-            mLastOpenTime = 0;
             setCanceledOnTouchOutside(true);
+            getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
             setOnDateSetListener((view, year, month, dayOfMonth) -> {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month, dayOfMonth);
@@ -309,17 +307,6 @@ public class TransferActivity extends UpNavActivity {
 
         Date getDate() {
             return new Date(mDate.getTime());
-        }
-
-        @Override
-        public void show() {
-            if (SystemClock.elapsedRealtime() - mLastOpenTime >= 500) {
-                mLastOpenTime = SystemClock.elapsedRealtime();
-
-                getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-
-                super.show();
-            }
         }
     }
 }

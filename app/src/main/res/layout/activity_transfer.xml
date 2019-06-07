@@ -67,6 +67,9 @@
                 android:id="@+id/edit_destination"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text|textNoSuggestions"
+                android:lines="1"
+                android:nextFocusDown="@id/edit_message"
                 android:paddingEnd="8dp"
                 android:paddingStart="12dp" />
 
@@ -92,27 +95,35 @@
             <android.support.v7.widget.AppCompatSpinner
                 android:id="@+id/spinner_transaction_type"
                 style="@style/Widget.AppCompat.Spinner.Underlined"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
         <!--        Due Date Field-->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="16dp">
+            android:orientation="vertical">
 
-            <android.support.design.widget.TextInputEditText
+            <TextView
+                android:id="@+id/text_transaction_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:paddingStart="12dp"
+                android:text="@string/date_label"
+                android:textColor="?android:textColorHint"
+                android:textSize="12sp" />
+
+            <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/edit_transaction_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/date_label"
-                android:inputType="date"
-                android:minWidth="100dp"
+                android:inputType="none"
                 android:paddingEnd="8dp"
-                android:paddingStart="12dp"
-                tools:text="@string/date_format" />
-        </android.support.design.widget.TextInputLayout>
+                android:paddingStart="12dp" />
+        </LinearLayout>
 
         <!--        Message Field-->
         <android.support.design.widget.TextInputLayout
@@ -125,8 +136,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/transaction_message"
-                android:inputType="text|textMultiLine"
-                android:lines="3"
+                android:inputType="text|textShortMessage|textMultiLine"
                 android:paddingEnd="8dp"
                 android:paddingStart="12dp"
                 tools:text="Lorem Ipsum dolor ist amet" />
@@ -157,7 +167,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:layout_marginEnd="24dp"
-        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_send"
