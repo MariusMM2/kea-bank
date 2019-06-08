@@ -158,7 +158,8 @@ public class MainDatabase {
     }
 
     public List<Transaction> getTransactions(Account account) {
-        List<Transaction> outGoingTransactions = mTransactionDb.readMultiple(item -> item.getSource().getId().equals(account.getId()));
+        List<Transaction> outGoingTransactions = mTransactionDb.readMultiple(item ->
+                item.getSource().getId().equals(account.getId()));
 
         List<Transaction> incomingTransactions = mTransactionDb.readMultiple(item ->
                 item.getDestination().getId().equals(account.getId()))
