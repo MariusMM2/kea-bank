@@ -27,10 +27,10 @@ import java.util.stream.Collectors;
 public class TransferActivity extends UpNavActivity {
     private static final String TAG = "TransferActivity";
 
-    static final int REQUEST_TRANSACTION = 1;
+    static final int REQUEST_TRANSACTION = 0x2;
+    static final int RESULT_CODE_SUCCESS = 1;
 
     private static final String EXTRA_CUSTOMER = "com.example.extras.EXTRA_CUSTOMER";
-    static final int RESULT_CODE_SUCCESS = 1;
 
     private Customer mCustomer;
     private Transaction mNewTransaction;
