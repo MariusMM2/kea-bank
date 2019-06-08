@@ -19,7 +19,6 @@ public class Transaction implements DatabaseItem, Parcelable {
     private TransactionTarget mDestination; // X
     private Type mType; // X
     private Status mStatus; // X
-    private String mSourceDetails; // X
     private String mTitle; // X
     private float mAmount; // X
     private Date mDate; // X
@@ -184,10 +183,6 @@ public class Transaction implements DatabaseItem, Parcelable {
         return this;
     }
 
-    public String getSourceDetails() {
-        return mSourceDetails;
-    }
-
     public Type getType() {
         return mType;
     }
@@ -239,11 +234,12 @@ public class Transaction implements DatabaseItem, Parcelable {
 
     protected Transaction(Parcel in) {
         mId = ParcelUtils.readUuid(in);
+        mSource = in.readParcelable(TransactionTarget.class.getClassLoader());
+        mDestination = in.readParcelable(TransactionTarget.class.getClassLoader());
         mAmount = in.readFloat();
         mMessage = in.readString();
         mType = ParcelUtils.readEnum(in, Type.class);
         mStatus = ParcelUtils.readEnum(in, Status.class);
-        mSourceDetails = in.readString();
         mTitle = in.readString();
         mDate = (Date) in.readSerializable();
     }
@@ -251,6 +247,12 @@ public class Transaction implements DatabaseItem, Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         ParcelUtils.writeUuid(dest, mId);
+
+        mSource.prepareParcel();
+        dest.writeParcelable(mSource, flags);
+        mDestination.prepareParcel();
+        dest.writeParcelable(mDestination, flags);
+
         dest.writeFloat(mAmount);
         if (getMessage().isEmpty()) {
             mMessage = mDestination.getDescription();
@@ -258,10 +260,6 @@ public class Transaction implements DatabaseItem, Parcelable {
         dest.writeString(mMessage);
         ParcelUtils.writeEnum(dest, mType);
         ParcelUtils.writeEnum(dest, mStatus);
-        if (mSourceDetails == null || mSourceDetails.isEmpty()) {
-            mSourceDetails = mSource.getTitle();
-        }
-        dest.writeString(mSourceDetails);
         if (mTitle == null || mTitle.isEmpty()) {
             mTitle = mDestination.getTitle();
         }

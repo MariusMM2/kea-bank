@@ -53,7 +53,7 @@ public class TransactionDetailActivity extends UpNavActivity {
 
         mTypeTextView.setText(mTransaction.getType().getText());
         mStatusTextView.setText(String.valueOf(mTransaction.getStatus().getText()));
-        mAccountTextView.setText(mTransaction.getSourceDetails());
+        mAccountTextView.setText(mTransaction.getSource().getTitle());
         mTitleTextView.setText(mTransaction.getTitle());
         mAmountTextView.setText(String.valueOf(-mTransaction.getAmount()));
         mDateTextView.setText(StringUtils.wrapDate(mTransaction.getDate()));
