@@ -63,6 +63,7 @@ public class TransferActivity extends UpNavActivity {
         return intent.getParcelableExtra(EXTRA_CUSTOMER);
     }
 
+    @SuppressWarnings("Duplicates")
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
