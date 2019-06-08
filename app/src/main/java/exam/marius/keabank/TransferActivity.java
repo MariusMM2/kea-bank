@@ -104,7 +104,7 @@ public class TransferActivity extends UpNavActivity {
                 int selectedItemPosition = mDestinationsSpinner.getSelectedItemPosition();
                 if (selectedItemPosition != 0) {
                     String sString = s.toString();
-                    String itemString = mCustomer.getAccountList().get(selectedItemPosition - 1).getIdNumber();
+                    String itemString = mCustomer.getAccountList().get(selectedItemPosition - 1).getNumber();
                     if (!sString.equals(itemString)) {
                         mChosenDestination = 0;
                         mDestinationsSpinner.setSelection(0);
@@ -124,7 +124,7 @@ public class TransferActivity extends UpNavActivity {
                         mChosenDestination = -1;
                     }
                 } else {
-                    mDestinationEditText.setText(mCustomer.getAccountList().get(position - 1).getIdNumber());
+                    mDestinationEditText.setText(mCustomer.getAccountList().get(position - 1).getNumber());
                     mChosenDestination = position;
                 }
                 mDestinationEditText.setError(null);
@@ -261,10 +261,11 @@ public class TransferActivity extends UpNavActivity {
         Account destination = null;
         if (mDestinationsSpinner.getSelectedItemPosition() == 0) {
             // User had "Enter Account ID" selected
-            if (mDestinationEditText.getText().toString().isEmpty()) {
+            String destinationNumber = mDestinationEditText.getText().toString();
+            if (destinationNumber.isEmpty()) {
                 errorMacro.accept(mDestinationEditText, getString(R.string.transaction_error_empty_field, ((TextView) findViewById(R.id.text_destination_label)).getText()));
             } else {
-                destination = MainDatabase.getInstance(this).getAccount(null);
+                destination = MainDatabase.getInstance(this).getAccount(destinationNumber);
 
                 if (destination == null) {
                     errorMacro.accept(mDestinationEditText, getString(R.string.transaction_error_destination_invalid));

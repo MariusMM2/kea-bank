@@ -2,6 +2,7 @@ package exam.marius.keabank.model;
 
 import android.os.Parcel;
 import exam.marius.keabank.util.ParcelUtils;
+import exam.marius.keabank.util.StringUtils;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,12 +12,15 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Account implements TransactionTarget {
+    private static final int NUMBER_DIGIT_COUNT = 10;
+
     private UUID mId;
+    private String mNumber;
     private float mAmount;
     private Type mType;
     private UUID mCustomerId;
     private transient List<Transaction> mTransactionList;
-    private boolean mSkipTransactionParcel = false;
+    private boolean mSkipTransactionParcel;
 
     // Called at deserialization,
     // instantiates any transient fields
@@ -26,12 +30,18 @@ public class Account implements TransactionTarget {
         in.defaultReadObject();
     }
 
-    public Account(float amount, Type type, UUID customerId) {
+    public Account(String number, float amount, Type type, UUID customerId) {
         mId = UUID.randomUUID();
+        mNumber = number;
         mAmount = amount;
         mType = type;
         mCustomerId = customerId;
         mTransactionList = new ArrayList<>();
+        mSkipTransactionParcel = false;
+    }
+
+    public Account(float amount, Type type, UUID customerId) {
+        this(StringUtils.getRandomNumerical(NUMBER_DIGIT_COUNT), amount, type, customerId);
     }
 
     public static Account newSavings(float amount, UUID customerId) {
@@ -59,8 +69,8 @@ public class Account implements TransactionTarget {
         return mId;
     }
 
-    public String getIdNumber() {
-        return String.format("%x", mId.getMostSignificantBits());
+    public String getNumber() {
+        return mNumber;
     }
 
     public Type getType() {
@@ -167,15 +177,18 @@ public class Account implements TransactionTarget {
 
     protected Account(Parcel in) {
         mId = ParcelUtils.readUuid(in);
+        mNumber = in.readString();
         mAmount = in.readFloat();
         mType = ParcelUtils.readEnum(in, Type.class);
         mCustomerId = ParcelUtils.readUuid(in);
         mTransactionList = ParcelUtils.readList(in, Transaction.class);
+        mSkipTransactionParcel = false;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         ParcelUtils.writeUuid(dest, mId);
+        dest.writeString(mNumber);
         dest.writeFloat(mAmount);
         ParcelUtils.writeEnum(dest, mType);
         ParcelUtils.writeUuid(dest, mCustomerId);

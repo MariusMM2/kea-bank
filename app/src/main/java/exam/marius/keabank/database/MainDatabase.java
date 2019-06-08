@@ -148,6 +148,10 @@ public class MainDatabase {
         return mAccountDb.read(item -> item.getId().equals(accountId));
     }
 
+    public Account getAccount(String accountNumber) {
+        return mAccountDb.read(account -> account.getNumber().equals(accountNumber));
+    }
+
     void save() {
         mAccountDb.save();
         mBillDb.save();
