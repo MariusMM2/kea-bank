@@ -96,6 +96,11 @@ public class Bill implements TransactionTarget {
         return mDescription == null ? "" : mDescription;
     }
 
+    @Override
+    public void prepareParcel() {
+
+    }
+
     public boolean isAutomated() {
         return mAutomated;
     }

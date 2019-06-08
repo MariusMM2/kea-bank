@@ -16,4 +16,6 @@ public interface TransactionTarget extends DatabaseItem, Parcelable {
     String getTitle();
 
     String getDescription();
+
+    void prepareParcel();
 }

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Account implements TransactionTarget {
@@ -105,6 +106,24 @@ public class Account implements TransactionTarget {
     @Override
     public String getDescription() {
         return getTitle();
+    }
+
+    @Override
+    public void prepareParcel() {
+        mTransactionList = null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return mId.equals(account.mId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mId);
     }
 
     public UUID getCustomerId() {

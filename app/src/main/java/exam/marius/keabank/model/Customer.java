@@ -4,10 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import exam.marius.keabank.util.ParcelUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Customer implements DatabaseItem, Parcelable {
     private UUID mId;
@@ -77,6 +74,19 @@ public class Customer implements DatabaseItem, Parcelable {
                 ", mBirthDate=" + mBirthDate +
                 ", mAccountList=" + mAccountList +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Customer customer = (Customer) o;
+        return mId.equals(customer.mId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mId);
     }
 
     // Parcelable packaging and marshalling logic

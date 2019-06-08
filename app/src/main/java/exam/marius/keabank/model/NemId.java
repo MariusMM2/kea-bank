@@ -1,5 +1,6 @@
 package exam.marius.keabank.model;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class NemId implements DatabaseItem {
@@ -23,6 +24,19 @@ public class NemId implements DatabaseItem {
     @Override
     public UUID getId() {
         return mId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NemId nemId = (NemId) o;
+        return mId.equals(nemId.mId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mId);
     }
 
     public String getUsername() {

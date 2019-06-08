@@ -9,6 +9,7 @@ import exam.marius.keabank.util.StringUtils;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Transaction implements DatabaseItem, Parcelable {
@@ -221,6 +222,19 @@ public class Transaction implements DatabaseItem, Parcelable {
                 ", mStatus=" + mStatus +
                 ", mDate=" + mDate +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Transaction that = (Transaction) o;
+        return mId.equals(that.mId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mId);
     }
 
     protected Transaction(Parcel in) {
