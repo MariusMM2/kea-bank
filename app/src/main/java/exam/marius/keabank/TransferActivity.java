@@ -82,12 +82,12 @@ public class TransferActivity extends UpNavActivity {
         List<String> accountTitles = mCustomer.getAccountList().stream().map(Account::getTitle).collect(Collectors.toList());
         mSourcesAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, accountTitles);
 
-        mSourcesSpinner = findViewById(R.id.spinner_source_accounts);
+        mSourcesSpinner = findViewById(R.id.spinner_accounts);
         mSourcesSpinner.setAdapter(mSourcesAdapter);
 
         // Destination Accounts Field
         List<String> destinationEntries = new ArrayList<>();
-        destinationEntries.add(getResources().getString(R.string.manual_account_item));
+        destinationEntries.add(getResources().getString(R.string.item_manual_account_id));
         destinationEntries.addAll(accountTitles);
 
         mDestinationsAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, destinationEntries);

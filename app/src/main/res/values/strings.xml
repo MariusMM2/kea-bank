@@ -2,26 +2,25 @@
     <string name="app_name">KEA Bank</string>
     <string name="amount">%.2f</string>
     <string name="date_format">dd.MM.yyyy</string>
-    <string name="transaction_balance_after">balance: %.2f</string>
-    <string name="transaction_payment_type">Payment Type</string>
-    <string name="transaction_status">Status</string>
-    <string name="transaction_target_account">Account</string>
-    <string name="transaction_title">Title</string>
-    <string name="transaction_amount">Amount</string>
-    <string name="transaction_date">Date</string>
-    <string name="transaction_message">Message</string>
-    <string name="transaction_id">Reference ID</string>
+    <string name="date_today">Today</string>
     <string name="new_account">New Account</string>
     <string name="payments">Payments</string>
     <string name="transfer">Transfer</string>
-    <string name="from_account_label">From</string>
-    <string name="destination_label">Target</string>
-    <string name="transaction_type_label">Transfer Type</string>
-    <string name="amount_label">Amount</string>
-    <string name="date_label">Due Date</string>
-    <string name="transaction_destination_label">Target</string>
-    <string name="manual_account_item">Enter Account ID</string>
-    <string name="date_today">Today</string>
+    <string name="text_transaction_balance_after">balance: %.2f</string>
+
+    <string name="item_manual_account_id">Enter Account ID</string>
+    <string name="label_amount">Amount</string>
+    <string name="label_due_date">Due Date</string>
+    <string name="label_from">From</string>
+    <string name="label_target">Target</string>
+    <string name="label_title">Title</string>
+    <string name="label_message">Message</string>
+
+    <string name="label_transaction_type">Type</string>
+    <string name="label_transaction_status">Status</string>
+    <string name="label_transaction_target_account">Account</string>
+    <string name="label_transaction_date">Date</string>
+    <string name="label_transaction_id">Reference ID</string>
 
     <string name="transaction_error_source">Error: Source Account not found</string>
     <string name="transaction_error_destination_invalid">Account not found</string>

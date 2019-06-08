@@ -19,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/transaction_payment_type" />
+            android:text="@string/label_transaction_type" />
 
         <TextView
             android:id="@+id/text_destination"
@@ -42,7 +42,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/transaction_status" />
+            android:text="@string/label_transaction_status" />
 
         <TextView
             android:id="@+id/text_status"
@@ -64,7 +64,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/transaction_target_account" />
+            android:text="@string/label_transaction_target_account" />
 
         <TextView
             android:id="@+id/text_account"
@@ -86,7 +86,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/transaction_title" />
+            android:text="@string/label_title" />
 
         <TextView
             android:id="@+id/text_title"
@@ -108,7 +108,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/transaction_amount" />
+            android:text="@string/label_amount" />
 
         <TextView
             android:id="@+id/text_amount"
@@ -130,7 +130,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/transaction_date" />
+            android:text="@string/label_transaction_date" />
 
         <TextView
             android:id="@+id/text_date"
@@ -153,7 +153,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/transaction_message" />
+            android:text="@string/label_message" />
 
         <TextView
             android:id="@+id/text_message"
@@ -177,7 +177,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/transaction_id" />
+            android:text="@string/label_transaction_id" />
 
         <TextView
             android:id="@+id/text_id"
