@@ -76,6 +76,10 @@ abstract class AbstractDatabase<T extends DatabaseItem> implements Database<T> {
 
         int index = mItems.indexOf(item);
 
+        if (index == -1) {
+            throw new ArrayIndexOutOfBoundsException("Item not found: " + item.toString());
+        }
+
         mItems.set(index, item);
 
         save();
