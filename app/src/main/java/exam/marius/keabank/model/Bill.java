@@ -107,6 +107,10 @@ public class Bill implements TransactionTarget {
         return mPendingPayment;
     }
 
+    public boolean isOpen() {
+        return !mAutomated && !mPendingPayment;
+    }
+
     public Date getDueDate() {
         return mDueDate;
     }
