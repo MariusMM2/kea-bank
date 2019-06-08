@@ -117,7 +117,7 @@ public class Transaction implements DatabaseItem, Parcelable {
         return this;
     }
 
-    public void commit() throws TransactionException {
+    public Transaction commit() throws TransactionException {
         if (mSource == null) {
             throw new TransactionException("Transaction has no source");
         }
@@ -140,6 +140,8 @@ public class Transaction implements DatabaseItem, Parcelable {
         } else {
             throw new TransactionException("Transaction source has insufficient balance");
         }
+
+        return this;
     }
 
     public void setDefaultTitle() {
