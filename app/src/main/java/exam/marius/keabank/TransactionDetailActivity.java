@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.widget.TextView;
 import exam.marius.keabank.model.Transaction;
@@ -40,6 +41,13 @@ public class TransactionDetailActivity extends UpNavActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_detail);
+
+        if (getCallingActivity() != null) {
+            // Activity was called for confirmation of a transaction,
+            // so show "Confirm" button
+            ConstraintLayout sendTransactionButton = findViewById(R.id.btn_send_transaction);
+            sendTransactionButton.setVisibility(View.VISIBLE);
+        }
 
         mTransaction = getIntent().getParcelableExtra(EXTRA_TRANSACTION);
 
