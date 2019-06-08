@@ -147,4 +147,12 @@ public class Bill implements TransactionTarget {
     public void setCustomerId(UUID customerId) {
         mCustomerId = customerId;
     }
+
+    public void setAutomated(boolean automated) {
+        mAutomated = automated;
+    }
+
+    public void setPendingPayment(boolean pendingPayment) {
+        mPendingPayment = pendingPayment;
+    }
 }
