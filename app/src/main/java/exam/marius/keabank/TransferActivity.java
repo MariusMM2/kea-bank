@@ -86,11 +86,11 @@ public class TransferActivity extends UpNavActivity {
         mSourcesSpinner.setAdapter(mSourcesAdapter);
 
         // Destination Accounts Field
-        List<String> sourceEntries = new ArrayList<>();
-        sourceEntries.add(getResources().getString(R.string.manual_account_item));
-        sourceEntries.addAll(accountTitles);
+        List<String> destinationEntries = new ArrayList<>();
+        destinationEntries.add(getResources().getString(R.string.manual_account_item));
+        destinationEntries.addAll(accountTitles);
 
-        mDestinationsAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, sourceEntries);
+        mDestinationsAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, destinationEntries);
 
         mDestinationEditText = findViewById(R.id.edit_destination);
         mDestinationEditText.addTextChangedListener(new TextWatcher() {
