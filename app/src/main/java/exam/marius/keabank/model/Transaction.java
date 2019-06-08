@@ -282,9 +282,9 @@ public class Transaction implements DatabaseItem, Parcelable {
     }
 
     public enum Type {
+        NORMAL("Normal"),
         PAYMENT_SERVICE("Payment Service"),
-        MOBILEPAY("MobilePay"),
-        NORMAL("Normal");
+        MOBILEPAY("MobilePay");
 
         private final String mText;
 
