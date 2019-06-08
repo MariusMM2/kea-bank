@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import exam.marius.keabank.database.MainDatabase;
 import exam.marius.keabank.model.Account;
+import exam.marius.keabank.model.Bill;
 import exam.marius.keabank.model.Customer;
 import exam.marius.keabank.util.ModelBinding;
 
@@ -56,9 +57,9 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void startPaymentActivity(View view) {
-//        Intent i = PaymentActivity.newIntent(this, mCustomer);
-//        startActivityForResult(new Intent(this, PaymentActivity.class), PaymentActivity.REQUEST_PAYMENT);
-        startActivity(new Intent(this, PaymentActivity.class));
+        List<Bill> billList = MainDatabase.getInstance(this).getBills(mCustomer);
+        Intent i = PaymentActivity.newIntent(this, mCustomer, billList);
+        startActivityForResult(i, PaymentActivity.REQUEST_PAYMENT);
     }
 
     @Override

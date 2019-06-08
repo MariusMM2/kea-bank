@@ -35,4 +35,6 @@
     <string name="transaction_error_unexpected">Unexpected Error: %s</string>
     <string name="transaction_error_empty_field">Field \'%s\' cannot be empty</string>
 
+    <string name="prompt_bill_select_bill">Select Bill</string>
+    <string name="text_bill_recurrent">This bill is recurrent</string>
 </resources>

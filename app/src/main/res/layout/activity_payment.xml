@@ -1,8 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".PaymentActivity">
+    android:layout_height="match_parent">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context=".TransactionDetailActivity">
+
+        <!--Source Account-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="4dp"
+                android:paddingStart="12dp"
+                android:text="@string/label_from"
+                android:textColor="?android:textColorHint"
+                android:textSize="12sp" />
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/spinner_accounts"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!--Target Bill-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_bill_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="4dp"
+                android:paddingStart="12dp"
+                android:text="Bill"
+                android:textColor="?android:textColorHint"
+                android:textSize="12sp" />
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/spinner_bills"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <!--Transaction Type-->
+
+        <LinearLayout
+            android:id="@+id/layout_bill_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--Title Field-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_bill_title_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="4dp"
+                    android:paddingStart="12dp"
+                    android:text="Title"
+                    android:textColor="?android:textColorHint"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/text_bill_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="This is a not long title of this Bill"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="12dp" />
+            </LinearLayout>
+
+            <!--Description Field-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_bill_description_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="4dp"
+                    android:paddingStart="12dp"
+                    android:text="Description"
+                    android:textColor="?android:textColorHint"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/text_bill_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="This is a not long description of this specific BIll in particular"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="12dp" />
+            </LinearLayout>
+
+            <!--Amount Field-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_bill_amount_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="4dp"
+                    android:paddingStart="12dp"
+                    android:text="@string/label_amount"
+                    android:textColor="?android:textColorHint"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/text_bill_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:text="000"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="12dp" />
+            </LinearLayout>
+
+            <!--Due Date Field-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_bill_due_date_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="4dp"
+                    android:paddingStart="12dp"
+                    android:text="@string/label_due_date"
+                    android:textColor="?android:textColorHint"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/text_bill_due_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="01.01.1970"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="12dp" />
+            </LinearLayout>
+
+            <!--Recurrent Field-->
+            <LinearLayout
+                android:id="@+id/layout_recurrent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_bill_recurrent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="8dp"
+                    android:paddingEnd="4dp"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:text="@string/text_bill_recurrent"
+                    android:textColor="?android:textColorHint"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/checkbox_automated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="12dp"
+                    android:checked="false"
+                    android:text="Register to Payment Service" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_send"
+        android:onClick="submitPayment" />
 </android.support.constraint.ConstraintLayout>
