@@ -31,7 +31,7 @@ public class TransferActivity extends UpNavActivity {
     static final int REQUEST_TRANSACTION = 0x2;
     static final int RESULT_CODE_SUCCESS = 1;
 
-    private static final String EXTRA_CUSTOMER = "com.example.extras.EXTRA_CUSTOMER";
+    private static final String EXTRA_CUSTOMER = "exam.marius.extras.EXTRA_CUSTOMER";
 
     private Customer mCustomer;
     private Transaction mNewTransaction;

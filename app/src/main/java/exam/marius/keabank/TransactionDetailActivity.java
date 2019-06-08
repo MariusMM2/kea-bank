@@ -11,7 +11,7 @@ import exam.marius.keabank.util.StringUtils;
 
 public class TransactionDetailActivity extends UpNavActivity {
     private static final String TAG = "TransactionDetailActivi";
-    private static final String EXTRA_TRANSACTION = "com.example.extras.EXTRA_TRANSACTION";
+    private static final String EXTRA_TRANSACTION = "exam.marius.extras.EXTRA_TRANSACTION";
 
     private TextView mLabelMessageTextView;
 

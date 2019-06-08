@@ -24,7 +24,7 @@ import java.util.List;
 public class AccountDetailActivity extends UpNavActivity {
     private static final String TAG = "AccountDetailActivity";
 
-    private static final String EXTRA_ACCOUNT = "com.example.extras.EXTRA_ACCOUNT";
+    private static final String EXTRA_ACCOUNT = "exam.marius.extras.EXTRA_ACCOUNT";
 
     private View mAccountView;
     private RecyclerView mTransactionsListView;
