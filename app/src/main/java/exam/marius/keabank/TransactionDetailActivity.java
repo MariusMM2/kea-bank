@@ -11,6 +11,9 @@ import exam.marius.keabank.util.StringUtils;
 
 public class TransactionDetailActivity extends UpNavActivity {
     private static final String TAG = "TransactionDetailActivi";
+
+    static final int REQUEST_CONFIRM_TRANSACTION = 0x4;
+
     private static final String EXTRA_TRANSACTION = "exam.marius.extras.EXTRA_TRANSACTION";
 
     private TextView mLabelMessageTextView;
@@ -67,6 +70,18 @@ public class TransactionDetailActivity extends UpNavActivity {
         mIdTextView.setText(mTransaction.getId().toString());
     }
 
-    public void openDateDialog(View view) {
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (getCallingActivity() != null) {
+            // User pressed the Up button when confirming a transaction,
+            // Cancel transaction
+            setResult(RESULT_CANCELED);
+        }
+    }
+
+    public void submitTransaction(View view) {
+        setResult(RESULT_OK);
+        finish();
     }
 }

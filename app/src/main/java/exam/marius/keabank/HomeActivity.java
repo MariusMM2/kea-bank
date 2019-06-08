@@ -1,7 +1,9 @@
 package exam.marius.keabank;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -13,21 +15,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import exam.marius.keabank.database.MainDatabase;
-import exam.marius.keabank.model.Account;
-import exam.marius.keabank.model.Bill;
-import exam.marius.keabank.model.Customer;
+import exam.marius.keabank.model.*;
 import exam.marius.keabank.util.ViewUtils;
 
 import java.util.List;
 
 @SuppressWarnings("Duplicates")
 public class HomeActivity extends AppCompatActivity {
+    static final int REQUEST_TRANSACTION = 0x2;
     private static final String TAG = "HomeActivity";
+
+    private static final String EXTRA_CUSTOMER = "exam.marius.extras.EXTRA_CUSTOMER";
+    private static final String EXTRA_TRANSACTION = "exam.marius.extras.EXTRA_TRANSACTION";
 
     private RecyclerView mAccountsList;
     private AccountAdapter mAccountAdapter;
 
     private Customer mCustomer;
+
+    static Intent newIntent(Context packageContext, Customer customer, Transaction transaction) {
+        Intent intent = new Intent(packageContext, HomeActivity.class);
+        intent.putExtra(EXTRA_CUSTOMER, (Parcelable) customer);
+        intent.putExtra(EXTRA_TRANSACTION, (Parcelable) transaction);
+
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +47,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         Intent intent = getIntent();
-        Customer intentCustomer = TransferActivity.getCustomer(intent);
+        Customer intentCustomer = intent.getParcelableExtra(EXTRA_CUSTOMER);
         if (intentCustomer != null) {
             mCustomer = intentCustomer;
             Log.i(TAG, "onCreate: Customer instance found: " + mCustomer.toString());
@@ -53,21 +65,21 @@ public class HomeActivity extends AppCompatActivity {
 
     public void startTransferActivity(View view) {
         Intent i = TransferActivity.newIntent(this, mCustomer);
-        startActivityForResult(i, TransferActivity.REQUEST_TRANSACTION);
+        startActivityForResult(i, REQUEST_TRANSACTION);
     }
 
     public void startPaymentActivity(View view) {
         List<Bill> billList = MainDatabase.getInstance(this).getBills(mCustomer);
         Intent i = PaymentActivity.newIntent(this, mCustomer, billList);
-        startActivityForResult(i, PaymentActivity.REQUEST_PAYMENT);
+        startActivityForResult(i, REQUEST_TRANSACTION);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == TransferActivity.REQUEST_TRANSACTION) {
-            if (resultCode == TransferActivity.RESULT_CODE_SUCCESS) {
+        if (requestCode == REQUEST_TRANSACTION) {
+            if (resultCode == RESULT_OK) {
                 setIntent(data);
                 recreate();
             }

@@ -16,17 +16,12 @@ import exam.marius.keabank.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public class PaymentActivity extends UpNavActivity {
 
-    static final int REQUEST_PAYMENT = 0x1;
-    static final int RESULT_CODE_SUCCESS = 1;
-
     private static final String EXTRA_CUSTOMER = "exam.marius.extras.EXTRA_CUSTOMER";
     private static final String EXTRA_BILLS = "exam.marius.extras.EXTRA_BILLS";
-    private static final String EXTRA_SINGLE_BILL = "exam.marius.extras.EXTRA_SINGLE_BILL";
 
     private Customer mCustomer;
     private List<Bill> mBillList;

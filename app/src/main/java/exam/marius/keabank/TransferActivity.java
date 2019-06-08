@@ -27,9 +27,6 @@ import java.util.stream.Collectors;
 public class TransferActivity extends UpNavActivity {
     private static final String TAG = "TransferActivity";
 
-    static final int REQUEST_TRANSACTION = 0x2;
-    static final int RESULT_CODE_SUCCESS = 1;
-
     private static final String EXTRA_CUSTOMER = "exam.marius.extras.EXTRA_CUSTOMER";
 
     private Customer mCustomer;
@@ -59,10 +56,6 @@ public class TransferActivity extends UpNavActivity {
         return intent;
     }
 
-    static Customer getCustomer(Intent intent) {
-        return intent.getParcelableExtra(EXTRA_CUSTOMER);
-    }
-
     @SuppressWarnings("Duplicates")
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -70,7 +63,7 @@ public class TransferActivity extends UpNavActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transfer);
 
-        mCustomer = getCustomer(getIntent());
+        mCustomer = getIntent().getParcelableExtra(EXTRA_CUSTOMER);
 
         if (mCustomer == null) {
             showCustomerErrorDialog();
@@ -302,14 +295,9 @@ public class TransferActivity extends UpNavActivity {
 
                 Intent i = newIntent(this, mCustomer);
 
-                setResult(RESULT_CODE_SUCCESS, i);
-                finish();
-
-            } catch (TransactionException e) {
-                Toast.makeText(this, getString(R.string.transaction_error_unexpected, e.getStackTrace()[0]), Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "submitTransaction: ", e);
-                return;
-            }
+            Intent i = TransactionDetailActivity.newIntent(this, mNewTransaction);
+            startActivityForResult(i, TransactionDetailActivity.REQUEST_CONFIRM_TRANSACTION);
+            return;
         } else {
             focusView[0].requestFocus();
         }
