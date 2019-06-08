@@ -4,8 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import exam.marius.keabank.util.ParcelHelper;
-import exam.marius.keabank.util.StringWrapper;
+import exam.marius.keabank.util.ParcelUtils;
+import exam.marius.keabank.util.StringUtils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -104,7 +104,7 @@ public class Transaction implements DatabaseItem, Parcelable {
     public Transaction setDate(Date date) {
         mDate = date;
 
-        Log.d(TAG, String.format("Set date of transaction {%s} to {%s}", getId(), StringWrapper.wrapDate(mDate)));
+        Log.d(TAG, String.format("Set date of transaction {%s} to {%s}", getId(), StringUtils.wrapDate(mDate)));
 
         return this;
     }
@@ -222,11 +222,11 @@ public class Transaction implements DatabaseItem, Parcelable {
     }
 
     protected Transaction(Parcel in) {
-        mId = ParcelHelper.readUuid(in);
+        mId = ParcelUtils.readUuid(in);
         mAmount = in.readFloat();
         mMessage = in.readString();
-        mType = ParcelHelper.readEnum(in, Type.class);
-        mStatus = ParcelHelper.readEnum(in, Status.class);
+        mType = ParcelUtils.readEnum(in, Type.class);
+        mStatus = ParcelUtils.readEnum(in, Status.class);
         mSourceDetails = in.readString();
         mTitle = in.readString();
         mDate = (Date) in.readSerializable();
@@ -234,14 +234,14 @@ public class Transaction implements DatabaseItem, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        ParcelHelper.writeUuid(dest, mId);
+        ParcelUtils.writeUuid(dest, mId);
         dest.writeFloat(mAmount);
         if (getMessage().isEmpty()) {
             mMessage = mDestination.getDescription();
         }
         dest.writeString(mMessage);
-        ParcelHelper.writeEnum(dest, mType);
-        ParcelHelper.writeEnum(dest, mStatus);
+        ParcelUtils.writeEnum(dest, mType);
+        ParcelUtils.writeEnum(dest, mStatus);
         if (mSourceDetails == null || mSourceDetails.isEmpty()) {
             mSourceDetails = mSource.getTitle();
         }

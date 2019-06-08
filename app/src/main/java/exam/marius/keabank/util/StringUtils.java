@@ -7,8 +7,8 @@ import exam.marius.keabank.R;
 
 import java.util.Date;
 
-public class StringWrapper {
-    private static final String TAG = "StringWrapper";
+public class StringUtils {
+    private static final String TAG = "StringUtils";
     private static Context sContext;
 
     public static void init(Context context) {

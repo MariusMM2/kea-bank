@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import android.view.View;
 import android.widget.TextView;
 import exam.marius.keabank.model.Transaction;
-import exam.marius.keabank.util.StringWrapper;
+import exam.marius.keabank.util.StringUtils;
 
 public class TransactionDetailActivity extends UpNavActivity {
     private static final String TAG = "TransactionDetailActivi";
@@ -56,7 +56,7 @@ public class TransactionDetailActivity extends UpNavActivity {
         mAccountTextView.setText(mTransaction.getSourceDetails());
         mTitleTextView.setText(mTransaction.getTitle());
         mAmountTextView.setText(String.valueOf(-mTransaction.getAmount()));
-        mDateTextView.setText(StringWrapper.wrapDate(mTransaction.getDate()));
+        mDateTextView.setText(StringUtils.wrapDate(mTransaction.getDate()));
 
         if (mTransaction.getMessage().isEmpty()) {
             mLabelMessageTextView.setVisibility(View.GONE);

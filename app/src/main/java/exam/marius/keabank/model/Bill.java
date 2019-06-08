@@ -1,7 +1,7 @@
 package exam.marius.keabank.model;
 
 import android.os.Parcel;
-import exam.marius.keabank.util.ParcelHelper;
+import exam.marius.keabank.util.ParcelUtils;
 
 import java.util.Date;
 import java.util.UUID;
@@ -40,27 +40,27 @@ public class Bill implements TransactionTarget {
 
     protected Bill(Parcel in) {
         mAmount = in.readFloat();
-        mId = ParcelHelper.readUuid(in);
+        mId = ParcelUtils.readUuid(in);
         mTitle = in.readString();
         mDescription = in.readString();
         mAutomated = in.readByte() != 0;
         mRecurrent = in.readByte() != 0;
         mPendingPayment = in.readByte() != 0;
         mDueDate = (Date) in.readSerializable();
-        mCustomerId = ParcelHelper.readUuid(in);
+        mCustomerId = ParcelUtils.readUuid(in);
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeFloat(mAmount);
-        ParcelHelper.writeUuid(dest, mId);
+        ParcelUtils.writeUuid(dest, mId);
         dest.writeString(mTitle);
         dest.writeString(mDescription);
         dest.writeByte((byte) (mAutomated ? 1 : 0));
         dest.writeByte((byte) (mRecurrent ? 1 : 0));
         dest.writeByte((byte) (mPendingPayment ? 1 : 0));
         dest.writeSerializable(mDueDate);
-        ParcelHelper.writeUuid(dest, mCustomerId);
+        ParcelUtils.writeUuid(dest, mCustomerId);
     }
 
     @Override

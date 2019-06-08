@@ -1,7 +1,7 @@
 package exam.marius.keabank;
 
 import android.app.Application;
-import exam.marius.keabank.util.StringWrapper;
+import exam.marius.keabank.util.StringUtils;
 
 public class KEABank extends Application {
 
@@ -9,6 +9,6 @@ public class KEABank extends Application {
     public void onCreate() {
         super.onCreate();
 
-        StringWrapper.init(this.getApplicationContext());
+        StringUtils.init(this.getApplicationContext());
     }
 }

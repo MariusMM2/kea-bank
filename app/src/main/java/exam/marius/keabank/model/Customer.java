@@ -2,7 +2,7 @@ package exam.marius.keabank.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import exam.marius.keabank.util.ParcelHelper;
+import exam.marius.keabank.util.ParcelUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -81,22 +81,22 @@ public class Customer implements DatabaseItem, Parcelable {
 
     // Parcelable packaging and marshalling logic
     protected Customer(Parcel in) {
-        mId = ParcelHelper.readUuid(in);
+        mId = ParcelUtils.readUuid(in);
         mFirstName = in.readString();
         mLastName = in.readString();
         mEmail = in.readString();
         mPassword = in.readString();
-        mAccountList = ParcelHelper.readList(in, Account.class);
+        mAccountList = ParcelUtils.readList(in, Account.class);
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        ParcelHelper.writeUuid(dest, mId);
+        ParcelUtils.writeUuid(dest, mId);
         dest.writeString(mFirstName);
         dest.writeString(mLastName);
         dest.writeString(mEmail);
         dest.writeString(mPassword);
-        ParcelHelper.writeList(dest, mAccountList);
+        ParcelUtils.writeList(dest, mAccountList);
     }
 
     @Override

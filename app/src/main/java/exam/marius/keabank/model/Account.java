@@ -1,7 +1,7 @@
 package exam.marius.keabank.model;
 
 import android.os.Parcel;
-import exam.marius.keabank.util.ParcelHelper;
+import exam.marius.keabank.util.ParcelUtils;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -142,20 +142,20 @@ public class Account implements TransactionTarget {
     }
 
     protected Account(Parcel in) {
-        mId = ParcelHelper.readUuid(in);
+        mId = ParcelUtils.readUuid(in);
         mAmount = in.readFloat();
-        mType = ParcelHelper.readEnum(in, Type.class);
-        mCustomerId = ParcelHelper.readUuid(in);
-        mTransactionList = ParcelHelper.readList(in, Transaction.class);
+        mType = ParcelUtils.readEnum(in, Type.class);
+        mCustomerId = ParcelUtils.readUuid(in);
+        mTransactionList = ParcelUtils.readList(in, Transaction.class);
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        ParcelHelper.writeUuid(dest, mId);
+        ParcelUtils.writeUuid(dest, mId);
         dest.writeFloat(mAmount);
-        ParcelHelper.writeEnum(dest, mType);
-        ParcelHelper.writeUuid(dest, mCustomerId);
-        ParcelHelper.writeList(dest, mTransactionList);
+        ParcelUtils.writeEnum(dest, mType);
+        ParcelUtils.writeUuid(dest, mCustomerId);
+        ParcelUtils.writeList(dest, mTransactionList);
     }
 
     @Override

@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import exam.marius.keabank.model.Account;
 import exam.marius.keabank.model.Transaction;
-import exam.marius.keabank.util.ModelBinding;
-import exam.marius.keabank.util.StringWrapper;
+import exam.marius.keabank.util.StringUtils;
+import exam.marius.keabank.util.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +47,7 @@ public class AccountDetailActivity extends UpNavActivity {
         mAccount = getIntent().getParcelableExtra(EXTRA_ACCOUNT);
 
         mAccountView = findViewById(R.id.include);
-        ModelBinding.bindAccount(mAccount, mAccountView);
+        ViewUtils.bindAccount(mAccount, mAccountView);
 
         mTransactionsListView = findViewById(R.id.list_transactions);
 
@@ -89,7 +89,7 @@ public class AccountDetailActivity extends UpNavActivity {
             mAmountTextView.setText(getResources().getString(R.string.amount, amount));
             mAmountTextView.setTextColor(getResources().getColor(amount > 0 ? R.color.green : R.color.red, getTheme()));
 
-            mDateTextView.setText(StringWrapper.wrapDate(mTransaction.getDate()));
+            mDateTextView.setText(StringUtils.wrapDate(mTransaction.getDate()));
 
             float accumulatedTransactionsAmount = transactions.subList(0, getAdapterPosition())
                     .stream()

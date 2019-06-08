@@ -16,7 +16,7 @@ import exam.marius.keabank.database.MainDatabase;
 import exam.marius.keabank.model.Account;
 import exam.marius.keabank.model.Bill;
 import exam.marius.keabank.model.Customer;
-import exam.marius.keabank.util.ModelBinding;
+import exam.marius.keabank.util.ViewUtils;
 
 import java.util.List;
 
@@ -97,7 +97,7 @@ public class HomeActivity extends AppCompatActivity {
         private void bind(Account account) {
             mAccount = account;
 
-            ModelBinding.bindAccount(mAccount, mTypeTextView, mAmountTextView, mIdTextView);
+            ViewUtils.bindAccount(mAccount, mTypeTextView, mAmountTextView, mIdTextView);
 
             Log.d(TAG, String.format("Bound account %s to holder", mAccount.getType().getText()));
         }

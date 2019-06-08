@@ -12,10 +12,11 @@ import exam.marius.keabank.model.Account;
 import exam.marius.keabank.model.Bill;
 import exam.marius.keabank.model.Customer;
 import exam.marius.keabank.model.Transaction;
-import exam.marius.keabank.util.StringWrapper;
+import exam.marius.keabank.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public class PaymentActivity extends UpNavActivity {
@@ -134,7 +135,7 @@ public class PaymentActivity extends UpNavActivity {
             mTitleField.setText(bill.getTitle());
             mDescriptionField.setText(bill.getDescription());
             mAmountField.setText(String.valueOf(bill.getAmount()));
-            mDueDateField.setText(StringWrapper.wrapDate(bill.getDueDate()));
+            mDueDateField.setText(StringUtils.wrapDate(bill.getDueDate()));
             mRecurrentLayout.setVisibility(bill.isRecurrent() ? View.VISIBLE : View.INVISIBLE);
         }
 

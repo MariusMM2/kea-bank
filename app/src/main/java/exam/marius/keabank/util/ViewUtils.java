@@ -5,10 +5,7 @@ import android.widget.TextView;
 import exam.marius.keabank.R;
 import exam.marius.keabank.model.Account;
 
-/**
- * Utility class for binding a model to its presentable view
- */
-public class ModelBinding {
+public class ViewUtils {
     public static void bindAccount(Account account, View accountView) {
         TextView typeTextView = accountView.findViewById(R.id.text_destination);
         TextView amountTextView = accountView.findViewById(R.id.text_amount);

@@ -18,7 +18,7 @@ import exam.marius.keabank.model.Account;
 import exam.marius.keabank.model.Customer;
 import exam.marius.keabank.model.Transaction;
 import exam.marius.keabank.model.TransactionException;
-import exam.marius.keabank.util.StringWrapper;
+import exam.marius.keabank.util.StringUtils;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -334,11 +334,11 @@ public class TransferActivity extends UpNavActivity {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month, dayOfMonth);
                 mDate = calendar.getTime();
-                mDueDateField.setText(StringWrapper.wrapDate(mDate, true));
+                mDueDateField.setText(StringUtils.wrapDate(mDate, true));
             });
 
             mDate = new Date();
-            mDueDateField.setText(StringWrapper.wrapDate(mDate, true));
+            mDueDateField.setText(StringUtils.wrapDate(mDate, true));
         }
 
         Date getDate() {

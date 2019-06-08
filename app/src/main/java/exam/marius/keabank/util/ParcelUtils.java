@@ -10,8 +10,8 @@ import java.util.UUID;
 /**
  * A wrapping class for certain Parcel read/write operations
  */
-public class ParcelHelper {
-    private ParcelHelper() {
+public class ParcelUtils {
+    private ParcelUtils() {
     }
 
     /**
@@ -83,7 +83,7 @@ public class ParcelHelper {
             dest.writeInt(list.size());
 
             for (UUID uuid : list) {
-                ParcelHelper.writeUuid(dest, uuid);
+                ParcelUtils.writeUuid(dest, uuid);
             }
         }
     }
@@ -101,7 +101,7 @@ public class ParcelHelper {
             int listSize = in.readInt();
 
             for (int i = 0; i < listSize; i++) {
-                UUID uuid = ParcelHelper.readUuid(in);
+                UUID uuid = ParcelUtils.readUuid(in);
                 list.add(uuid);
             }
         }
