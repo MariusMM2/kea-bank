@@ -16,6 +16,7 @@ public class Account implements TransactionTarget {
     private Type mType;
     private UUID mCustomerId;
     private transient List<Transaction> mTransactionList;
+    private boolean mSkipTransactionParcel = false;
 
     // Called at deserialization,
     // instantiates any transient fields
@@ -110,7 +111,7 @@ public class Account implements TransactionTarget {
 
     @Override
     public void prepareParcel() {
-        mTransactionList = null;
+        mSkipTransactionParcel = true;
     }
 
     @Override
@@ -174,7 +175,12 @@ public class Account implements TransactionTarget {
         dest.writeFloat(mAmount);
         ParcelUtils.writeEnum(dest, mType);
         ParcelUtils.writeUuid(dest, mCustomerId);
-        ParcelUtils.writeList(dest, mTransactionList);
+        if (mSkipTransactionParcel) {
+            ParcelUtils.writeList(dest, null);
+            mSkipTransactionParcel = false;
+        } else {
+            ParcelUtils.writeList(dest, mTransactionList);
+        }
     }
 
     @Override
