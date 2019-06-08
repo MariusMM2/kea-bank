@@ -4,6 +4,7 @@ import android.os.Parcel;
 import exam.marius.keabank.util.ParcelUtils;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Bill implements TransactionTarget {
@@ -138,6 +139,19 @@ public class Bill implements TransactionTarget {
     @Override
     public boolean canGoNegative() {
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Bill bill = (Bill) o;
+        return mId.equals(bill.mId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mId);
     }
 
     public UUID getCustomerId() {
