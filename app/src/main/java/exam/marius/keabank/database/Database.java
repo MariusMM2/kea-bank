@@ -19,7 +19,7 @@ public interface Database<T extends DatabaseItem> {
 
     int size();
 
-    void update(int index, T item);
+    void update(T item);
 
     void save();
 

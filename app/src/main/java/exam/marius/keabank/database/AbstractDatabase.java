@@ -71,9 +71,13 @@ abstract class AbstractDatabase<T extends DatabaseItem> implements Database<T> {
     }
 
     @Override
-    public void update(int index, T item) {
+    public void update(T item) {
         load();
+
+        int index = mItems.indexOf(item);
+
         mItems.set(index, item);
+
         save();
     }
 
