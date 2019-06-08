@@ -109,10 +109,12 @@ public class Transaction implements DatabaseItem, Parcelable {
         return this;
     }
 
-    public void setTitle(String title) {
+    public Transaction setTitle(String title) {
         mTitle = title;
 
         Log.d(TAG, String.format("Set title of transaction {%s} to {%s}", getId(), mTitle));
+
+        return this;
     }
 
     public void commit() throws TransactionException {
