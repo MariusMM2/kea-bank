@@ -324,7 +324,6 @@ public class TransferActivity extends UpNavActivity {
         mAmountField.setText("1234");
     }
 
-
     class DatePickerDialog extends android.app.DatePickerDialog {
         private Date mDate;
 
