@@ -17,7 +17,6 @@ import exam.marius.keabank.database.MainDatabase;
 import exam.marius.keabank.model.Account;
 import exam.marius.keabank.model.Customer;
 import exam.marius.keabank.model.Transaction;
-import exam.marius.keabank.model.TransactionException;
 import exam.marius.keabank.util.StringUtils;
 import exam.marius.keabank.util.ViewUtils;
 
@@ -317,6 +316,13 @@ public class TransferActivity extends UpNavActivity {
 
         Log.d(TAG, String.format("submitTransaction: %s", mNewTransaction.toString()));
     }
+
+    public void debugFillFields(View view) {
+        mDestinationsSpinner.setSelection(2);
+        mMessageField.setText("This is a generated message");
+        mAmountField.setText("1234");
+    }
+
 
     class DatePickerDialog extends android.app.DatePickerDialog {
         private Date mDate;
