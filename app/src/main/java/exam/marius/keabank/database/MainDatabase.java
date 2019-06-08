@@ -59,9 +59,9 @@ public class MainDatabase {
         );
         final List<Bill> billList = new ArrayList<>(
                 Arrays.asList(
-                        new Bill("Bill 1", "1++", false, 10, Calendar.getInstance().getTime(), customer.getId()),
+                        new Bill("Bill 1", "1++", true, 10, Calendar.getInstance().getTime(), customer.getId()),
                         new Bill("Bill 2", "2++", false, 20, Calendar.getInstance().getTime(), customer.getId()),
-                        new Bill("Bill 3", "3++", false, 30, Calendar.getInstance().getTime(), customer.getId())
+                        new Bill("Bill 3", "3++", true, 30, Calendar.getInstance().getTime(), customer.getId())
                 )
         );
         final List<Transaction> transactionList = new ArrayList<>(
