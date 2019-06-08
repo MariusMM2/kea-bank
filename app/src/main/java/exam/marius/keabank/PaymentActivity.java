@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSpinner;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import exam.marius.keabank.model.Account;
@@ -13,12 +15,16 @@ import exam.marius.keabank.model.Bill;
 import exam.marius.keabank.model.Customer;
 import exam.marius.keabank.model.Transaction;
 import exam.marius.keabank.util.StringUtils;
+import exam.marius.keabank.util.ViewUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public class PaymentActivity extends UpNavActivity {
+    private static final String TAG = "PaymentActivity";
 
     private static final String EXTRA_CUSTOMER = "exam.marius.extras.EXTRA_CUSTOMER";
     private static final String EXTRA_BILLS = "exam.marius.extras.EXTRA_BILLS";
@@ -118,6 +124,25 @@ public class PaymentActivity extends UpNavActivity {
         setContents(null);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == TransactionDetailActivity.REQUEST_CONFIRM_TRANSACTION) {
+            if (resultCode == RESULT_OK) {
+                mNewTransaction.setStatus(Transaction.Status.PENDING);
+
+                Intent i = HomeActivity.newIntent(this, mCustomer, mNewTransaction);
+
+                setResult(RESULT_OK, i);
+
+                finish();
+
+                Log.d(TAG, String.format("onActivityResult: %s", mNewTransaction.toString()));
+            }
+        }
+    }
+
     private void setContents(Bill bill) {
         int visibility = bill != null ? View.VISIBLE : View.GONE;
 
@@ -144,6 +169,72 @@ public class PaymentActivity extends UpNavActivity {
     }
 
     public void submitPayment(View view) {
+        // Input Validation
+        final boolean[] validInput = {true};
+        final View[] focusView = {null};
 
+        final BiConsumer<TextView, String> errorMacro = ViewUtils.newViewInputError(validInput, focusView);
+
+        // Destination selection
+        Bill selectedBill = null;
+        if (mBillsSpinner.getSelectedItemPosition() != 0) {
+            // User had "Enter Account ID" selected
+            selectedBill = mBillList.get(mBillsSpinner.getSelectedItemPosition() - 1);
+        } else {
+            errorMacro.accept((TextView) mBillsSpinner.getSelectedView(), "");
+        }
+
+        // Source selection
+        Account source = null;
+        try {
+            source = mCustomer.getAccountList().get(mSourcesSpinner.getSelectedItemPosition());
+        } catch (IndexOutOfBoundsException e) {
+            Toast.makeText(this, getString(R.string.transaction_error_source), Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Customer source account exception: ", e);
+            validInput[0] = false;
+        }
+        // END Input Validation
+
+        if (validInput[0]) {
+            String title = null;
+            String message = null;
+            float amount = -1;
+            Date date = null;
+            Transaction.Type type = null;
+            if (selectedBill != null) {
+
+                // Title field
+                title = selectedBill.getTitle();
+
+                // Message field
+                message = selectedBill.getDescription();
+
+                // Amount field
+                amount = selectedBill.getAmount();
+
+                // Date field
+                date = selectedBill.getDueDate();
+
+                // Recurrent option
+                type = selectedBill.isRecurrent() ? Transaction.Type.PAYMENT_SERVICE : Transaction.Type.NORMAL;
+            }
+
+            mNewTransaction.setSource(source)
+                    .setDestination(selectedBill)
+                    .setType(type)
+                    .setTitle(title)
+                    .setDate(date)
+                    .setMessage(message)
+                    .setAmount(amount)
+                    .setStatus(Transaction.Status.STOPPED);
+
+            Intent i = TransactionDetailActivity.newIntent(this, mNewTransaction);
+            startActivityForResult(i, TransactionDetailActivity.REQUEST_CONFIRM_TRANSACTION);
+            return;
+        } else {
+            focusView[0].requestFocus();
+        }
+
+        Log.d(TAG, String.format("submitPayment: %s", mNewTransaction.toString()));
     }
 }
