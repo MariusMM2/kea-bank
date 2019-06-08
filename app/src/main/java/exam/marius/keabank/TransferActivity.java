@@ -19,6 +19,7 @@ import exam.marius.keabank.model.Customer;
 import exam.marius.keabank.model.Transaction;
 import exam.marius.keabank.model.TransactionException;
 import exam.marius.keabank.util.StringUtils;
+import exam.marius.keabank.util.ViewUtils;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -190,13 +191,7 @@ public class TransferActivity extends UpNavActivity {
         final boolean[] validInput = {true};
         final View[] focusView = {null};
 
-        final BiConsumer<TextView, String> errorMacro = (targetView, targetError) -> {
-            validInput[0] = false;
-            if (targetView != null && targetError != null) {
-                targetView.setError(targetError);
-                focusView[0] = targetView;
-            }
-        };
+        final BiConsumer<TextView, String> errorMacro = ViewUtils.newViewInputError(validInput, focusView);
 
         // Amount selection
         float amount = -1;
