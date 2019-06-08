@@ -280,6 +280,10 @@ public class Transaction implements DatabaseItem, Parcelable {
         return this;
     }
 
+    public boolean isPending() {
+        return mStatus.equals(Status.PENDING);
+    }
+
     public enum Status {
         STOPPED("Stopped"),
         PENDING("Pending"),

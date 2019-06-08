@@ -6,6 +6,7 @@ import android.util.Log;
 import exam.marius.keabank.model.*;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static exam.marius.keabank.database.AbstractDatabase.sFilesDir;
@@ -38,8 +39,11 @@ public class MainDatabase {
         try {
             createDummyData();
         } catch (TransactionException e) {
-            e.printStackTrace();
+            Log.e(TAG, "MainDatabase: Unable to generate dummy data: ", e);
+            return;
         }
+
+        doUpdate();
     }
 
     public static MainDatabase getInstance(Context context) {
@@ -48,44 +52,6 @@ public class MainDatabase {
         }
 
         return sInstance;
-    }
-
-    private void createDummyData() throws TransactionException {
-        Customer customer = new Customer("John", "Doe", "johndoe@email.com", "123456", Calendar.getInstance().getTime());
-        final List<NemId> nemIdList = new ArrayList<>(
-                Collections.singletonList(
-                        new NemId(UUID.randomUUID(), "foobar98", "f00b4r98", customer.getId())
-                )
-        );
-
-        final List<Account> accountList = new ArrayList<>(
-                Arrays.asList(
-                        Account.newDefault(3000, customer.getId()),
-                        Account.newBudget(1000, customer.getId())
-                )
-        );
-        final List<Bill> billList = new ArrayList<>(
-                Arrays.asList(
-                        new Bill("Bill 1", "1++", true, 10, Calendar.getInstance().getTime(), customer.getId()),
-                        new Bill("Bill 2", "2++", false, 20, Calendar.getInstance().getTime(), customer.getId()),
-                        new Bill("Bill 3", "3++", true, 30, Calendar.getInstance().getTime(), customer.getId())
-                )
-        );
-        final List<Transaction> transactionList = new ArrayList<>(
-                Arrays.asList(
-                        Transaction.beginTransaction().setSource(accountList.get(0)).setDestination(accountList.get(1)).setAmount(1000).commit(),
-                        Transaction.beginTransaction().setSource(accountList.get(1)).setDestination(accountList.get(0)).setAmount(2000).commit(),
-                        Transaction.beginTransaction().setSource(accountList.get(0)).setDestination(billList.get(0)).setAmount(billList.get(0).getAmount()),
-                        Transaction.beginTransaction().setSource(accountList.get(1)).setDestination(billList.get(2)).setAmount(billList.get(2).getAmount()).commit(),
-                        Transaction.beginTransaction().setSource(billList.get(1)).setDestination(accountList.get(0)).setAmount(billList.get(1).getAmount())
-                )
-        );
-
-        accountList.forEach(account -> mAccountDb.add(account));
-        billList.forEach(bill -> mBillDb.add(bill));
-        mCustomerDb.add(customer);
-        nemIdList.forEach(nemId -> mNemIdDb.add(nemId));
-        transactionList.forEach(transaction -> mTransactionDb.add(transaction));
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -165,7 +131,6 @@ public class MainDatabase {
     }
 
     public void addTransaction(Transaction newTransaction) {
-
         try {
             newTransaction.commit();
         } catch (TransactionException e) {
@@ -173,24 +138,22 @@ public class MainDatabase {
         }
 
         TransactionTarget source = newTransaction.getSource();
-        if (source instanceof Account) {
-            mAccountDb.update((Account) source);
-        } else if (source instanceof Bill) {
+        if (source instanceof Bill) {
             Bill sourceBill = (Bill) source;
             sourceBill.setPendingPayment(true);
             sourceBill.setAutomated(newTransaction.getType().equals(Transaction.Type.PAYMENT_SERVICE));
-            mBillDb.update(sourceBill);
         }
 
-        TransactionTarget target = newTransaction.getDestination();
-        if (target instanceof Account) {
-            mAccountDb.update((Account) target);
-        } else if (target instanceof Bill) {
-            Bill targetBill = (Bill) target;
+        updateTransactionTarget(source);
+
+        TransactionTarget destination = newTransaction.getDestination();
+        if (destination instanceof Bill) {
+            Bill targetBill = (Bill) destination;
             targetBill.setPendingPayment(true);
             targetBill.setAutomated(newTransaction.getType().equals(Transaction.Type.PAYMENT_SERVICE));
-            mBillDb.update(targetBill);
         }
+
+        updateTransactionTarget(destination);
 
         mTransactionDb.add(newTransaction);
     }
@@ -208,6 +171,76 @@ public class MainDatabase {
         outGoingTransactions.addAll(incomingTransactions);
 
         return outGoingTransactions;
+    }
+
+    public void doUpdate() {
+        List<Transaction> allTransactions = mTransactionDb.readMultiple(Transaction::isPending);
+        allTransactions.forEach(transaction -> {
+            try {
+                transaction.commit();
+            } catch (TransactionException e) {
+                e.printStackTrace();
+            }
+
+            final Consumer<TransactionTarget> targetConsumer = target -> {
+                updateTransactionTarget(target);
+
+                if (target instanceof Bill) {
+                    Bill targetBill = (Bill) target;
+                    mBillDb.update(targetBill.next());
+                }
+            };
+
+            targetConsumer.accept(transaction.getSource());
+            targetConsumer.accept(transaction.getDestination());
+        });
+    }
+
+    private void updateTransactionTarget(TransactionTarget target) {
+        if (target instanceof Account) {
+            mAccountDb.update((Account) target);
+        } else if (target instanceof Bill) {
+            mBillDb.update((Bill) target);
+        }
+    }
+
+    private void createDummyData() throws TransactionException {
+        Customer customer = new Customer("John", "Doe", "johndoe@email.com", "123456", Calendar.getInstance().getTime());
+        final List<NemId> nemIdList = new ArrayList<>(
+                Collections.singletonList(
+                        new NemId(UUID.randomUUID(), "foobar98", "f00b4r98", customer.getId())
+                )
+        );
+
+        final List<Account> accountList = new ArrayList<>(
+                Arrays.asList(
+                        Account.newDefault(3000, customer.getId()),
+                        Account.newBudget(1000, customer.getId()),
+                        Account.newSavings(0, customer.getId())
+                )
+        );
+        final List<Bill> billList = new ArrayList<>(
+                Arrays.asList(
+                        new Bill("Bill 1", "1++", true, 10, Calendar.getInstance().getTime(), customer.getId()),
+                        new Bill("Bill 2", "2++", false, 20, Calendar.getInstance().getTime(), customer.getId()),
+                        new Bill("Bill 3", "3++", true, 30, Calendar.getInstance().getTime(), customer.getId())
+                )
+        );
+        final List<Transaction> transactionList = new ArrayList<>(
+                Arrays.asList(
+                        Transaction.beginTransaction().setSource(accountList.get(0)).setDestination(accountList.get(1)).setAmount(1000).commit(),
+                        Transaction.beginTransaction().setSource(accountList.get(1)).setDestination(accountList.get(0)).setAmount(2000).commit(),
+                        Transaction.beginTransaction().setSource(accountList.get(0)).setDestination(billList.get(0)).setAmount(billList.get(0).getAmount()),
+                        Transaction.beginTransaction().setSource(accountList.get(1)).setDestination(billList.get(2)).setAmount(billList.get(2).getAmount()).commit(),
+                        Transaction.beginTransaction().setSource(billList.get(1)).setDestination(accountList.get(0)).setAmount(billList.get(1).getAmount()).commit()
+                )
+        );
+
+        accountList.forEach(account -> mAccountDb.add(account));
+        billList.forEach(bill -> mBillDb.add(bill));
+        mCustomerDb.add(customer);
+        nemIdList.forEach(nemId -> mNemIdDb.add(nemId));
+        transactionList.forEach(transaction -> mTransactionDb.add(transaction));
     }
 }
 
