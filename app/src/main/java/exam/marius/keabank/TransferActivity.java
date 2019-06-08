@@ -274,7 +274,7 @@ public class TransferActivity extends UpNavActivity {
             source = mCustomer.getAccountList().get(mSourcesSpinner.getSelectedItemPosition());
         } catch (IndexOutOfBoundsException e) {
             Toast.makeText(this, getString(R.string.transaction_error_source), Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Customer source account exception:", e);
+            Log.e(TAG, "Customer source account exception: ", e);
             validInput[0] = false;
         }
 
