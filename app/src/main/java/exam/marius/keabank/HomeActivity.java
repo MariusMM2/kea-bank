@@ -50,6 +50,28 @@ public class HomeActivity extends AppCompatActivity {
         Customer intentCustomer = intent.getParcelableExtra(EXTRA_CUSTOMER);
         if (intentCustomer != null) {
             mCustomer = intentCustomer;
+
+            Transaction transaction = intent.getParcelableExtra(EXTRA_TRANSACTION);
+
+            if (transaction != null) {
+                TransactionTarget source = transaction.getSource();
+                if (source instanceof Account) {
+                    int sourceIndex = mCustomer.getAccountList().indexOf(source);
+                    if (sourceIndex != -1) {
+                        mCustomer.getAccountList().get(sourceIndex).setAmount(source.getAmount());
+                        mCustomer.getAccountList().get(sourceIndex).addTransaction(transaction);
+                    }
+                }
+
+                TransactionTarget destination = transaction.getDestination();
+                if (destination instanceof Account) {
+                    int destinationIndex = mCustomer.getAccountList().indexOf(destination);
+                    if (destinationIndex != -1) {
+                        mCustomer.getAccountList().get(destinationIndex).setAmount(destination.getAmount());
+                        mCustomer.getAccountList().get(destinationIndex).addTransaction(transaction.reverse());
+                    }
+                }
+            }
             Log.i(TAG, "onCreate: Customer instance found: " + mCustomer.toString());
         } else {
             mCustomer = MainDatabase.getInstance(this).getDummyCustomer();
@@ -82,6 +104,11 @@ public class HomeActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 setIntent(data);
                 recreate();
+
+                if (data != null) {
+                    Transaction transaction = data.getParcelableExtra(EXTRA_TRANSACTION);
+                    MainDatabase.getInstance(this).addTransaction(transaction);
+                }
             }
         }
     }

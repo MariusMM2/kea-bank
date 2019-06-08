@@ -2,6 +2,7 @@ package exam.marius.keabank.database;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import exam.marius.keabank.model.*;
 
 import java.util.*;
@@ -11,6 +12,8 @@ import static exam.marius.keabank.database.AbstractDatabase.sFilesDir;
 
 @SuppressWarnings({"SpellCheckingInspection", "WeakerAccess"})
 public class MainDatabase {
+    private static final String TAG = "MainDatabase";
+
     static boolean DEBUG_NO_NEMID = true;
     static boolean DEBUG_NO_PASSWORD = true;
     private static MainDatabase sInstance;
@@ -154,6 +157,33 @@ public class MainDatabase {
     }
 
     public void addTransaction(Transaction newTransaction) {
+
+        try {
+            newTransaction.commit();
+        } catch (TransactionException e) {
+            Log.e(TAG, "addTransaction: Error finalizing transaction: " + newTransaction.toString(), e);
+        }
+
+        TransactionTarget source = newTransaction.getSource();
+        if (source instanceof Account) {
+            mAccountDb.update((Account) source);
+        } else if (source instanceof Bill) {
+            Bill sourceBill = (Bill) source;
+            sourceBill.setPendingPayment(true);
+            sourceBill.setAutomated(newTransaction.getType().equals(Transaction.Type.PAYMENT_SERVICE));
+            mBillDb.update(sourceBill);
+        }
+
+        TransactionTarget target = newTransaction.getDestination();
+        if (target instanceof Account) {
+            mAccountDb.update((Account) target);
+        } else if (target instanceof Bill) {
+            Bill targetBill = (Bill) target;
+            targetBill.setPendingPayment(true);
+            targetBill.setAutomated(newTransaction.getType().equals(Transaction.Type.PAYMENT_SERVICE));
+            mBillDb.update(targetBill);
+        }
+
         mTransactionDb.add(newTransaction);
     }
 

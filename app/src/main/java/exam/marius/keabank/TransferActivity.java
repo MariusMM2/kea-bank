@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSpinner;
 import android.text.Editable;
@@ -169,6 +170,26 @@ public class TransferActivity extends UpNavActivity {
         mAmountField = findViewById(R.id.edit_amount);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == TransactionDetailActivity.REQUEST_CONFIRM_TRANSACTION) {
+            if (resultCode == RESULT_OK) {
+                mNewTransaction
+                        .setStatus(Transaction.Status.PENDING);
+
+                Intent i = HomeActivity.newIntent(this, mCustomer, mNewTransaction);
+
+                setResult(RESULT_OK, i);
+
+                finish();
+
+                Log.d(TAG, String.format("onActivityResult: %s", mNewTransaction.toString()));
+            }
+        }
+    }
+
     private void showCustomerErrorDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Error")
@@ -278,22 +299,14 @@ public class TransferActivity extends UpNavActivity {
         // END Input Validation
 
         if (validInput[0]) {
-            try {
-                mNewTransaction.setSource(source)
-                        .setDestination(destination)
-                        .setType(type)
-                        .setDate(date)
-                        .setMessage(message)
-                        .setAmount(amount)
-                        .setStatus(Transaction.Status.PENDING)
-                        .commit();
 
-                MainDatabase.getInstance(this).addTransaction(mNewTransaction);
-
-                source.addTransaction(mNewTransaction);
-                destination.addTransaction(mNewTransaction.reverse());
-
-                Intent i = newIntent(this, mCustomer);
+            mNewTransaction.setSource(source)
+                    .setDestination(destination)
+                    .setType(type)
+                    .setDate(date)
+                    .setMessage(message)
+                    .setAmount(amount)
+                    .setStatus(Transaction.Status.STOPPED);
 
             Intent i = TransactionDetailActivity.newIntent(this, mNewTransaction);
             startActivityForResult(i, TransactionDetailActivity.REQUEST_CONFIRM_TRANSACTION);

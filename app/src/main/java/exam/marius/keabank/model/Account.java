@@ -143,6 +143,10 @@ public class Account implements TransactionTarget {
         mTransactionList.add(transactions);
     }
 
+    public void setAmount(float amount) {
+        mAmount = amount;
+    }
+
     public enum Type {
         SAVINGS("Savings"),
         BUDGET("Budget"),
