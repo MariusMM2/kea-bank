@@ -185,7 +185,7 @@ public class TransferActivity extends UpNavActivity {
                 .create().show();
     }
 
-    public void submitTransaction(View view) {
+    public void submitTransfer(View view) {
         // Input Validation
         final boolean[] validInput = {true};
         final View[] focusView = {null};
@@ -231,7 +231,7 @@ public class TransferActivity extends UpNavActivity {
         } catch (NullPointerException e) {
             validInput[0] = false;
             Toast.makeText(this, getString(R.string.transaction_error_date), Toast.LENGTH_SHORT).show();
-            Log.e(TAG, String.format("submitTransaction: %s", Log.getStackTraceString(e.getCause())));
+            Log.e(TAG, String.format("submitTransfer: %s", Log.getStackTraceString(e.getCause())));
         }
 
         // Type selection
@@ -241,7 +241,7 @@ public class TransferActivity extends UpNavActivity {
         } catch (IndexOutOfBoundsException e) {
             validInput[0] = false;
             Toast.makeText(this, getString(R.string.transaction_error_type), Toast.LENGTH_SHORT).show();
-            Log.e(TAG, String.format("submitTransaction: %s", Log.getStackTraceString(e.getCause())));
+            Log.e(TAG, String.format("submitTransfer: %s", Log.getStackTraceString(e.getCause())));
         }
 
         // Destination selection
@@ -263,7 +263,7 @@ public class TransferActivity extends UpNavActivity {
             } catch (IndexOutOfBoundsException | NoSuchElementException e) {
                 validInput[0] = false;
                 Toast.makeText(this, getString(R.string.transaction_error_destination_internal), Toast.LENGTH_SHORT).show();
-                Log.e(TAG, String.format("submitTransaction: %s", Log.getStackTraceString(e.getCause())));
+                Log.e(TAG, String.format("submitTransfer: %s", Log.getStackTraceString(e.getCause())));
             }
         }
 
@@ -314,7 +314,7 @@ public class TransferActivity extends UpNavActivity {
             focusView[0].requestFocus();
         }
 
-        Log.d(TAG, String.format("submitTransaction: %s", mNewTransaction.toString()));
+        Log.d(TAG, String.format("submitTransfer: %s", mNewTransaction.toString()));
     }
 
     public void debugFillFields(View view) {
