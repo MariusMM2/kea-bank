@@ -75,6 +75,11 @@ public class TransactionTest {
             public String getDescription() {
                 return null;
             }
+
+            @Override
+            public void prepareParcel() {
+
+            }
         };
         mTransactionTargetNat = new TransactionTarget() {
             @Override
@@ -127,6 +132,11 @@ public class TransactionTest {
             @Override
             public String getDescription() {
                 return null;
+            }
+
+            @Override
+            public void prepareParcel() {
+
             }
         };
     }
