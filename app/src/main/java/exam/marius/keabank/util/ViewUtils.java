@@ -21,7 +21,7 @@ public class ViewUtils {
         float amount = account.getAmount();
         amountTextView.setText(typeTextView.getResources().getString(R.string.amount, amount));
 
-        idTextView.setText(account.getId().toString());
+        idTextView.setText(account.getNumber());
     }
 
     public static BiConsumer<TextView, String> newViewInputError(boolean[] validInput, View[] focusView) {

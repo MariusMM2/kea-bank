@@ -82,7 +82,6 @@ public class Account implements TransactionTarget {
         return mAmount;
     }
 
-
     // Always True for credit accounts
     // getAmount() - amount > 0 for debit accounts
     @Override
@@ -111,7 +110,7 @@ public class Account implements TransactionTarget {
 
     @Override
     public String getTitle() {
-        return String.format("%s - %x", getType().getText(), mId.getMostSignificantBits());
+        return String.format("%s - %s", getType().getText(), mNumber);
     }
 
     @Override
@@ -139,10 +138,6 @@ public class Account implements TransactionTarget {
 
     public UUID getCustomerId() {
         return mCustomerId;
-    }
-
-    public void setCustomerId(UUID customerId) {
-        mCustomerId = customerId;
     }
 
     public List<Transaction> getTransactionList() {
