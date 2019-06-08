@@ -49,17 +49,13 @@ public class PaymentActivity extends UpNavActivity {
         return intent;
     }
 
-    static Customer getCustomer(Intent intent) {
-        return intent.getParcelableExtra(EXTRA_CUSTOMER);
-    }
-
     @SuppressWarnings("Duplicates")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
 
-        mCustomer = getCustomer(getIntent());
+        mCustomer = getIntent().getParcelableExtra(EXTRA_CUSTOMER);
         mBillList = getIntent().getParcelableArrayListExtra(EXTRA_BILLS);
 
         if (mCustomer == null) {
