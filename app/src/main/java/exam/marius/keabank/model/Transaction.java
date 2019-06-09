@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import exam.marius.keabank.util.ParcelUtils;
 import exam.marius.keabank.util.StringUtils;
+import exam.marius.keabank.util.TimeUtils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Transaction implements DatabaseItem, Parcelable {
+
     private static final String TAG = "Transaction";
     private UUID mId;
     private TransactionTarget mSource; // X
@@ -280,8 +282,24 @@ public class Transaction implements DatabaseItem, Parcelable {
         return this;
     }
 
-    public boolean isPending() {
-        return mStatus.equals(Status.PENDING);
+    public boolean isDone() {
+        return mStatus.equals(Status.DONE);
+    }
+
+    public boolean isClose() {
+        return TimeUtils.weeksLeft(new Date(), mDate) < 1;
+    }
+
+    public boolean commitOnTime() throws TransactionException {
+        final boolean todayDueDate = TimeUtils.daysLeft(new Date(), mDate) < 1;
+        if (todayDueDate) {
+            commit();
+        }
+        return todayDueDate;
+    }
+
+    public void setPending() {
+        mStatus = Status.PENDING;
     }
 
     public enum Status {

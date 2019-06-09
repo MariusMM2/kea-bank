@@ -174,25 +174,34 @@ public class MainDatabase {
     }
 
     public void doUpdate() {
-        List<Transaction> allTransactions = mTransactionDb.readMultiple(Transaction::isPending);
+        List<Transaction> allTransactions = mTransactionDb.readMultiple(transaction1 -> !transaction1.isDone() && transaction1.isClose());
         allTransactions.forEach(transaction -> {
+
+            boolean hasCommited = false;
             try {
-                transaction.commit();
+                hasCommited = transaction.commitOnTime();
             } catch (TransactionException e) {
                 e.printStackTrace();
             }
 
-            final Consumer<TransactionTarget> targetConsumer = target -> {
-                updateTransactionTarget(target);
+            if (hasCommited) {
 
-                if (target instanceof Bill) {
-                    Bill targetBill = (Bill) target;
-                    mBillDb.update(targetBill.next());
-                }
-            };
+                final Consumer<TransactionTarget> targetConsumer = target -> {
+                    updateTransactionTarget(target);
 
-            targetConsumer.accept(transaction.getSource());
-            targetConsumer.accept(transaction.getDestination());
+                    if (target instanceof Bill) {
+                        Bill targetBill = (Bill) target;
+                        mBillDb.update(targetBill.next());
+                    }
+                };
+
+                targetConsumer.accept(transaction.getSource());
+                targetConsumer.accept(transaction.getDestination());
+            } else {
+                transaction.setPending();
+            }
+
+            mTransactionDb.update(transaction);
         });
     }
 

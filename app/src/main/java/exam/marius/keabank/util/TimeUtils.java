@@ -31,4 +31,20 @@ public class TimeUtils {
             return ChronoUnit.WEEKS.between(localDateTimeBefore, localDateTimeAfter);
         }
     }
+
+    public static long daysLeft(Date dateBefore, Date dateAfter) {
+        if (dateBefore.compareTo(dateAfter) > -1) {
+            // dateAfter is same or before dateBefore, return 0 days
+            return 0;
+        } else {
+            // dateAfter is after dateBefore, return difference in days
+            Instant instantBefore = Instant.ofEpochMilli(dateBefore.getTime());
+            Instant instantAfter = Instant.ofEpochMilli(dateAfter.getTime());
+
+            LocalDateTime localDateTimeBefore = LocalDateTime.ofInstant(instantBefore, ZoneId.systemDefault());
+            LocalDateTime localDateTimeAfter = LocalDateTime.ofInstant(instantAfter, ZoneId.systemDefault());
+
+            return ChronoUnit.DAYS.between(localDateTimeBefore, localDateTimeAfter);
+        }
+    }
 }
