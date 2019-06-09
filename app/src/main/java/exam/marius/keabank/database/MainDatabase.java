@@ -17,6 +17,7 @@ public class MainDatabase {
 
     static boolean DEBUG_NO_NEMID = true;
     static boolean DEBUG_NO_PASSWORD = true;
+    static boolean DEBUG_NO_PERSIST = false;
     private static MainDatabase sInstance;
     AccountDatabase mAccountDb;
     BillDatabase mBillDb;
@@ -36,11 +37,14 @@ public class MainDatabase {
         mNemIdDb = new NemIdDatabase(context);
         mTransactionDb = new TransactionDatabase(context);
 
-        try {
-            createDummyData();
-        } catch (TransactionException e) {
-            Log.e(TAG, "MainDatabase: Unable to generate dummy data: ", e);
-            return;
+        if (DEBUG_NO_PERSIST) {
+            try {
+                createDummyData();
+            } catch (TransactionException e) {
+                Log.e(TAG, "MainDatabase: Unable to generate dummy data: ", e);
+                return;
+            }
+
         }
 
         doUpdate();
@@ -193,7 +197,7 @@ public class MainDatabase {
         }
     }
 
-    private void createDummyData() throws TransactionException {
+    public void createDummyData() throws TransactionException {
         Customer customer = new Customer("John", "Doe", "johndoe@email.com", "123456", Calendar.getInstance().getTime());
         final List<NemId> nemIdList = new ArrayList<>(
                 Collections.singletonList(
@@ -224,6 +228,21 @@ public class MainDatabase {
                         Transaction.beginTransaction().setSource(billList.get(1)).setDestination(accountList.get(0)).setAmount(billList.get(1).getAmount()).commit()
                 )
         );
+
+        boolean oldFlag = DEBUG_NO_PERSIST;
+
+        if (!oldFlag) {
+            DEBUG_NO_PERSIST = true;
+        }
+        mAccountDb = new AccountDatabase(null);
+        mBillDb = new BillDatabase(null);
+        mCustomerDb = new CustomerDatabase(null);
+        mNemIdDb = new NemIdDatabase(null);
+        mTransactionDb = new TransactionDatabase(null);
+
+        if (!oldFlag) {
+            DEBUG_NO_PERSIST = false;
+        }
 
         accountList.forEach(account -> mAccountDb.add(account));
         billList.forEach(bill -> mBillDb.add(bill));

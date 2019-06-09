@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 abstract class AbstractDatabase<T extends DatabaseItem> implements Database<T> {
     private static final String TAG = "AbstractDatabase";
-    private static final boolean DEBUG = true;
 
 
     static File sFilesDir;
@@ -24,7 +23,7 @@ abstract class AbstractDatabase<T extends DatabaseItem> implements Database<T> {
     private List<T> mItems;
 
     AbstractDatabase(Context context) {
-        if (DEBUG) {
+        if (MainDatabase.DEBUG_NO_PERSIST) {
             mItems = new ArrayList<>();
             save();
         } else {

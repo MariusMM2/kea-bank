@@ -87,12 +87,7 @@ public class HomeActivity extends AppCompatActivity {
         mAccountAdapter = new AccountAdapter(mCustomer);
         mAccountsList.setAdapter(mAccountAdapter);
         mAccountAdapter.notifyDataSetChanged();
-        mAccountsRefresh.setOnRefreshListener(() -> {
-            mCustomer = MainDatabase.getInstance(HomeActivity.this).getDummyCustomer();
-            mAccountAdapter.setCustomer(mCustomer);
-            mAccountAdapter.notifyDataSetChanged();
-            new Handler().postDelayed(() -> mAccountsRefresh.setRefreshing(false), 500);
-        });
+        mAccountsRefresh.setOnRefreshListener(this::doDbRefresh);
     }
 
     public void startTransferActivity(View view) {
@@ -121,6 +116,23 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    public void debugResetDatabase(View view) {
+        try {
+            MainDatabase.getInstance(this).createDummyData();
+            mAccountsRefresh.setRefreshing(true);
+            doDbRefresh();
+        } catch (TransactionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void doDbRefresh() {
+        mCustomer = MainDatabase.getInstance(HomeActivity.this).getDummyCustomer();
+        mAccountAdapter.setCustomer(mCustomer);
+        mAccountAdapter.notifyDataSetChanged();
+        new Handler().postDelayed(() -> mAccountsRefresh.setRefreshing(false), 500);
     }
 
     /**
