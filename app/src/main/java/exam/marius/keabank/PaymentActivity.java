@@ -79,7 +79,7 @@ public class PaymentActivity extends UpNavActivity {
         mSourcesSpinner.setAdapter(mSourcesAdapter);
 
         // Bills Field
-        List<String> billEntries = mBillList.stream().filter(Bill::isOpen).map(Bill::getTitle).collect(Collectors.toList());
+        List<String> billEntries = mBillList.stream().map(Bill::getTitle).collect(Collectors.toList());
         billEntries.add(0, getResources().getString(R.string.prompt_bill_select_bill));
 
         mBillsAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, billEntries);
