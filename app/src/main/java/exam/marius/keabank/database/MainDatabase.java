@@ -51,22 +51,26 @@ public class MainDatabase {
         return sInstance;
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public boolean tryLogin(NemId nemId) {
+    public NemId tryLogin(NemId nemId) {
         if (DEBUG_NO_NEMID) {
-            return true;
+            return mNemIdDb.readAll().get(0);
         }
 
-        NemId retrievedNemId = mNemIdDb.read(databaseItem -> databaseItem.getUsername().equals(nemId.getUsername()));
+        NemId retrievedNemId;
+        try {
+            retrievedNemId = mNemIdDb.read(databaseItem -> databaseItem.getUsername().equals(nemId.getUsername()));
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return null;
+        }
 
-        if (retrievedNemId != null) {
-            if (DEBUG_NO_PASSWORD) {
-                return true;
-            } else {
-                return retrievedNemId.getPassword().equals(nemId.getPassword());
-            }
+        if (DEBUG_NO_PASSWORD) {
+            return retrievedNemId;
         } else {
-            return false;
+            if (retrievedNemId.getPassword().equals(nemId.getPassword())) {
+                return retrievedNemId;
+            } else {
+                return null;
+            }
         }
 
     }
@@ -76,17 +80,15 @@ public class MainDatabase {
         Customer customer = null;
         try {
             customer = getCustomer(nemId);
-        } catch (InvalidNemIDException | InvalidCustomerException ignored) {
+        } catch (InvalidCustomerException ignored) {
 
         }
         return customer;
     }
 
     @SuppressWarnings("WeakerAccess")
-    public Customer getCustomer(@NonNull NemId nemId) throws InvalidNemIDException, InvalidCustomerException {
+    public Customer getCustomer(@NonNull NemId nemId) throws InvalidCustomerException {
         NemId retrievedNemId = mNemIdDb.read(item -> item.getId().equals(nemId.getId()));
-
-        if (retrievedNemId == null) throw new InvalidNemIDException();
 
         Customer retrievedCustomer = mCustomerDb.read(item -> item.getId().equals(retrievedNemId.getCustomerId()));
 
@@ -287,10 +289,3 @@ public class MainDatabase {
     }
 }
 
-class InvalidNemIDException extends Exception {
-
-}
-
-class InvalidCustomerException extends Exception {
-
-}

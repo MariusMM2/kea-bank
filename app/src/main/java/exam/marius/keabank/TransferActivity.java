@@ -193,7 +193,7 @@ public class TransferActivity extends UpNavActivity {
         float amount = -1;
         try {
             if (mAmountField.getText().toString().isEmpty()) {
-                errorMacro.accept(mAmountField, getString(R.string.transaction_error_empty_field, mAmountField.getHint()));
+                errorMacro.accept(mAmountField, getString(R.string.error_field_required));
             } else {
                 amount = Float.parseFloat(mAmountField.getText().toString());
                 if (amount == 0) {
@@ -210,7 +210,7 @@ public class TransferActivity extends UpNavActivity {
         String message = mMessageField.getText().toString();
 
         if (message.isEmpty()) {
-            errorMacro.accept(mMessageField, getString(R.string.transaction_error_empty_field, mMessageField.getHint()));
+            errorMacro.accept(mMessageField, getString(R.string.error_field_required));
         } else {
             int messageMinLength = getResources().getInteger(R.integer.transaction_message_min_length);
             int messageMaxLength = getResources().getInteger(R.integer.transaction_message_max_length);
@@ -240,7 +240,7 @@ public class TransferActivity extends UpNavActivity {
             // User had "Enter Account ID" selected
             String destinationNumber = mDestinationEditText.getText().toString();
             if (destinationNumber.isEmpty()) {
-                errorMacro.accept(mDestinationEditText, getString(R.string.transaction_error_empty_field, ((TextView) findViewById(R.id.text_destination_label)).getText()));
+                errorMacro.accept(mDestinationEditText, getString(R.string.error_field_required));
             } else {
                 destination = MainDatabase.getInstance(this).getAccount(destinationNumber);
 

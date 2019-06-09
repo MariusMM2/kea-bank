@@ -46,6 +46,13 @@ public class HomeActivity extends AppCompatActivity {
         return intent;
     }
 
+    static Intent newIntent(Context packageContext, Customer customer) {
+        Intent intent = new Intent(packageContext, HomeActivity.class);
+        intent.putExtra(EXTRA_CUSTOMER, (Parcelable) customer);
+
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -37,4 +37,21 @@
 
     <string name="prompt_bill_select_bill">Select Bill</string>
     <string name="text_bill_recurrent">This bill is recurrent</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_register">Register</string>
+    <string name="error_invalid_email">This username is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_password_short">Password too short! Must have at least %d characters</string>
+    <string name="error_password_Long">Password too long! Must have at most %d characters</string>
+    <string name="error_username_short">Username too short! Must have at least %d characters</string>
+    <string name="error_username_Long">Username too long! Must have at most %d characters</string>
+    <string name="error_account_not_found">This NemID does not exist</string>
+    <string name="error_nemid_no_customer">This NemID is not associated with any customer</string>
 </resources>

@@ -2,4 +2,8 @@
 <resources>
     <integer name="transaction_message_min_length">6</integer>
     <integer name="transaction_message_max_length">150</integer>
+    <integer name="field_password_min_length">6</integer>
+    <integer name="field_password_max_length">40</integer>
+    <integer name="field_username_min_length">6</integer>
+    <integer name="field_username_max_length">20</integer>
 </resources>
