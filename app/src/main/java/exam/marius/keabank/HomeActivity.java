@@ -17,7 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import exam.marius.keabank.database.MainDatabase;
-import exam.marius.keabank.model.*;
+import exam.marius.keabank.model.Account;
+import exam.marius.keabank.model.Bill;
+import exam.marius.keabank.model.Customer;
+import exam.marius.keabank.model.Transaction;
 import exam.marius.keabank.util.ViewUtils;
 
 import java.util.List;
@@ -49,37 +52,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        Intent intent = getIntent();
-        Customer intentCustomer = intent.getParcelableExtra(EXTRA_CUSTOMER);
-        if (intentCustomer != null) {
-            mCustomer = intentCustomer;
-
-            Transaction transaction = intent.getParcelableExtra(EXTRA_TRANSACTION);
-
-            if (transaction != null) {
-                TransactionTarget source = transaction.getSource();
-                if (source instanceof Account) {
-                    int sourceIndex = mCustomer.getAccountList().indexOf(source);
-                    if (sourceIndex != -1) {
-                        mCustomer.getAccountList().get(sourceIndex).setAmount(source.getAmount());
-                        mCustomer.getAccountList().get(sourceIndex).addTransaction(transaction);
-                    }
-                }
-
-                TransactionTarget destination = transaction.getDestination();
-                if (destination instanceof Account) {
-                    int destinationIndex = mCustomer.getAccountList().indexOf(destination);
-                    if (destinationIndex != -1) {
-                        mCustomer.getAccountList().get(destinationIndex).setAmount(destination.getAmount());
-                        mCustomer.getAccountList().get(destinationIndex).addTransaction(transaction.reverse());
-                    }
-                }
-            }
-            Log.i(TAG, "onCreate: Customer instance found: " + mCustomer.toString());
-        } else {
-            mCustomer = MainDatabase.getInstance(this).getDummyCustomer();
-            Log.i(TAG, "onCreate: no Customer instance found, retrieved from database: " + mCustomer.toString());
-        }
+        mCustomer = MainDatabase.getInstance(this).getDummyCustomer();
 
         mAccountsRefresh = findViewById(R.id.refresh_accounts);
         mAccountsList = findViewById(R.id.list_accounts);
@@ -107,13 +80,11 @@ public class HomeActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_TRANSACTION) {
             if (resultCode == RESULT_OK) {
-                setIntent(data);
-                recreate();
-
                 if (data != null) {
                     Transaction transaction = data.getParcelableExtra(EXTRA_TRANSACTION);
                     MainDatabase.getInstance(this).addTransaction(transaction);
                 }
+                doDbRefresh();
             }
         }
     }
@@ -129,7 +100,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void doDbRefresh() {
-        mCustomer = MainDatabase.getInstance(HomeActivity.this).getDummyCustomer();
+        mCustomer = MainDatabase.getInstance(this).getDummyCustomer();
         mAccountAdapter.setCustomer(mCustomer);
         mAccountAdapter.notifyDataSetChanged();
         new Handler().postDelayed(() -> mAccountsRefresh.setRefreshing(false), 500);
