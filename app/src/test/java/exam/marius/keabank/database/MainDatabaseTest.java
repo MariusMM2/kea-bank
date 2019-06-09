@@ -151,9 +151,9 @@ public class MainDatabaseTest {
     public void getBills() {
         mBillList.forEach(bill -> mMainDatabase.mBillDb.add(bill));
 
-        List<Bill> bills1 = mMainDatabase.getBills(mCustomer1);
+        List<Bill> bills1 = mMainDatabase.getOpenBills(mCustomer1);
         assertEquals(2, bills1.size());
-        List<Bill> bills2 = mMainDatabase.getBills(mCustomer2);
+        List<Bill> bills2 = mMainDatabase.getOpenBills(mCustomer2);
         assertEquals(1, bills2.size());
     }
 
@@ -172,9 +172,9 @@ public class MainDatabaseTest {
         setUp();
 
 
-        List<Bill> bills1 = mMainDatabase.getBills(mCustomer1);
+        List<Bill> bills1 = mMainDatabase.getOpenBills(mCustomer1);
         assertEquals(2, bills1.size());
-        List<Bill> bills2 = mMainDatabase.getBills(mCustomer2);
+        List<Bill> bills2 = mMainDatabase.getOpenBills(mCustomer2);
         assertEquals(1, bills2.size());
     }
 
