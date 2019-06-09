@@ -19,6 +19,7 @@ import exam.marius.keabank.model.Account;
 import exam.marius.keabank.model.Customer;
 import exam.marius.keabank.model.Transaction;
 import exam.marius.keabank.util.StringUtils;
+import exam.marius.keabank.util.TimeUtils;
 import exam.marius.keabank.util.ViewUtils;
 
 import java.util.*;
@@ -316,7 +317,7 @@ public class TransferActivity extends UpNavActivity {
                 mDueDateField.setText(StringUtils.wrapDate(mDate, true));
             });
 
-            mDate = new Date();
+            mDate = TimeUtils.getToday();
             mDueDateField.setText(StringUtils.wrapDate(mDate, true));
         }
 

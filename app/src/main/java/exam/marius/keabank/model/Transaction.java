@@ -287,11 +287,11 @@ public class Transaction implements DatabaseItem, Parcelable {
     }
 
     public boolean isClose() {
-        return TimeUtils.weeksLeft(new Date(), mDate) < 1;
+        return TimeUtils.weeksLeft(TimeUtils.getToday(), mDate) < 1;
     }
 
     public boolean commitOnTime() throws TransactionException {
-        final boolean todayDueDate = TimeUtils.daysLeft(new Date(), mDate) < 1;
+        final boolean todayDueDate = TimeUtils.daysLeft(TimeUtils.getToday(), mDate) < 1;
         if (todayDueDate) {
             commit();
         }
