@@ -130,7 +130,7 @@ public class PaymentActivity extends UpNavActivity {
 
         if (requestCode == TransactionDetailActivity.REQUEST_CONFIRM_TRANSACTION) {
             if (resultCode == RESULT_OK) {
-                Intent i = HomeActivity.newIntent(this, mCustomer, mNewTransaction);
+                Intent i = HomeActivity.newIntent(this, mNewTransaction);
 
                 setResult(RESULT_OK, i);
 

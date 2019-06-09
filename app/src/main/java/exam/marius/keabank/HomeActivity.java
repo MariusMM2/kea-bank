@@ -39,9 +39,8 @@ public class HomeActivity extends AppCompatActivity {
 
     private Customer mCustomer;
 
-    static Intent newIntent(Context packageContext, Customer customer, Transaction transaction) {
+    static Intent newIntent(Context packageContext, Transaction transaction) {
         Intent intent = new Intent(packageContext, HomeActivity.class);
-        intent.putExtra(EXTRA_CUSTOMER, (Parcelable) customer);
         intent.putExtra(EXTRA_TRANSACTION, (Parcelable) transaction);
 
         return intent;
