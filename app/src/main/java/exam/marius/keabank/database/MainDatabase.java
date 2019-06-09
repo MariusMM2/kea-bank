@@ -37,14 +37,8 @@ public class MainDatabase {
         mNemIdDb = new NemIdDatabase(context);
         mTransactionDb = new TransactionDatabase(context);
 
-        if (DEBUG_NO_PERSIST) {
-            try {
-                createDummyData();
-            } catch (TransactionException e) {
-                Log.e(TAG, "MainDatabase: Unable to generate dummy data: ", e);
-                return;
-            }
-
+        if (DEBUG_NO_PERSIST || mNemIdDb.readAll().size() == 0) {
+            createDummyData();
         }
 
         doUpdate();
@@ -201,7 +195,7 @@ public class MainDatabase {
         }
     }
 
-    public void createDummyData() throws TransactionException {
+    public void createDummyData() {
         Customer customer = new Customer("John", "Doe", "johndoe@email.com", "123456", Calendar.getInstance().getTime());
         final List<NemId> nemIdList = new ArrayList<>(
                 Collections.singletonList(
@@ -225,11 +219,11 @@ public class MainDatabase {
         );
         final List<Transaction> transactionList = new ArrayList<>(
                 Arrays.asList(
-                        Transaction.beginTransaction().setSource(accountList.get(0)).setDestination(accountList.get(1)).setAmount(1000).commit(),
-                        Transaction.beginTransaction().setSource(accountList.get(1)).setDestination(accountList.get(0)).setAmount(2000).commit(),
+                        Transaction.beginTransaction().setSource(accountList.get(0)).setDestination(accountList.get(1)).setAmount(1000),
+                        Transaction.beginTransaction().setSource(accountList.get(1)).setDestination(accountList.get(0)).setAmount(2000),
                         Transaction.beginTransaction().setSource(accountList.get(0)).setDestination(billList.get(0)).setAmount(billList.get(0).getAmount()),
-                        Transaction.beginTransaction().setSource(accountList.get(1)).setDestination(billList.get(2)).setAmount(billList.get(2).getAmount()).commit(),
-                        Transaction.beginTransaction().setSource(billList.get(1)).setDestination(accountList.get(0)).setAmount(billList.get(1).getAmount()).commit()
+                        Transaction.beginTransaction().setSource(accountList.get(1)).setDestination(billList.get(2)).setAmount(billList.get(2).getAmount()),
+                        Transaction.beginTransaction().setSource(billList.get(1)).setDestination(accountList.get(0)).setAmount(billList.get(1).getAmount())
                 )
         );
 

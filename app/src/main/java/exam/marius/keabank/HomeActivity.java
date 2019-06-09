@@ -89,13 +89,9 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void debugResetDatabase(View view) {
-        try {
-            MainDatabase.getInstance(this).createDummyData();
-            mAccountsRefresh.setRefreshing(true);
-            doDbRefresh();
-        } catch (TransactionException e) {
-            e.printStackTrace();
-        }
+        MainDatabase.getInstance(this).createDummyData();
+        mAccountsRefresh.setRefreshing(true);
+        doDbRefresh();
     }
 
     private void doDbRefresh() {
