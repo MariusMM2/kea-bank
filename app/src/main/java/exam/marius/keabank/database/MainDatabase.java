@@ -131,31 +131,8 @@ public class MainDatabase {
     }
 
     public void addTransaction(Transaction newTransaction) {
-        try {
-            newTransaction.commit();
-        } catch (TransactionException e) {
-            Log.e(TAG, "addTransaction: Error finalizing transaction: " + newTransaction.toString(), e);
-        }
-
-        TransactionTarget source = newTransaction.getSource();
-        if (source instanceof Bill) {
-            Bill sourceBill = (Bill) source;
-            sourceBill.setPendingPayment(true);
-            sourceBill.setAutomated(newTransaction.getType().equals(Transaction.Type.PAYMENT_SERVICE));
-        }
-
-        updateTransactionTarget(source);
-
-        TransactionTarget destination = newTransaction.getDestination();
-        if (destination instanceof Bill) {
-            Bill targetBill = (Bill) destination;
-            targetBill.setPendingPayment(true);
-            targetBill.setAutomated(newTransaction.getType().equals(Transaction.Type.PAYMENT_SERVICE));
-        }
-
-        updateTransactionTarget(destination);
-
         mTransactionDb.add(newTransaction);
+        doUpdate(newTransaction);
     }
 
     public List<Transaction> getTransactions(Account account) {
@@ -174,9 +151,12 @@ public class MainDatabase {
     }
 
     public void doUpdate() {
-        List<Transaction> allTransactions = mTransactionDb.readMultiple(transaction1 -> !transaction1.isDone() && transaction1.isClose());
-        allTransactions.forEach(transaction -> {
+        List<Transaction> allTransactions = mTransactionDb.readMultiple(transaction1 -> !transaction1.isDone());
+        allTransactions.forEach(this::doUpdate);
+    }
 
+    public void doUpdate(Transaction transaction) {
+        if (transaction.isClose()) {
             boolean hasCommited = false;
             try {
                 hasCommited = transaction.commitOnTime();
@@ -191,7 +171,7 @@ public class MainDatabase {
 
                     if (target instanceof Bill) {
                         Bill targetBill = (Bill) target;
-                        mBillDb.update(targetBill.next());
+                        mBillDb.add(targetBill.next());
                     }
                 };
 
@@ -202,7 +182,7 @@ public class MainDatabase {
             }
 
             mTransactionDb.update(transaction);
-        });
+        }
     }
 
     private void updateTransactionTarget(TransactionTarget target) {
