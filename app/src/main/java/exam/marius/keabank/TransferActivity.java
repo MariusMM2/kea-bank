@@ -38,7 +38,6 @@ public class TransferActivity extends UpNavActivity {
     private AppCompatSpinner mSourcesSpinner;
     private EditText mDestinationEditText;
     private AppCompatSpinner mDestinationsSpinner;
-    private AppCompatSpinner mTypesSpinner;
     private EditText mDueDateField;
     private EditText mMessageField;
     private EditText mAmountField;
@@ -140,20 +139,6 @@ public class TransferActivity extends UpNavActivity {
         List<String> types = Arrays.stream(Transaction.Type.values()).map(Transaction.Type::getText).collect(Collectors.toList());
         mTypesAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, types);
 
-        mTypesSpinner = findViewById(R.id.spinner_transaction_type);
-        mTypesSpinner.setAdapter(mTypesAdapter);
-        mTypesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mNewTransaction.setType(Transaction.Type.values()[position]);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                mDestinationsSpinner.setSelection(0);
-            }
-        });
-
         // Due Date Field
         mDueDateField = findViewById(R.id.edit_transaction_date);
         mDueDateDialog = new DatePickerDialog(this);
@@ -248,14 +233,7 @@ public class TransferActivity extends UpNavActivity {
         }
 
         // Type selection
-        Transaction.Type type = null;
-        try {
-            type = Transaction.Type.values()[mTypesSpinner.getSelectedItemPosition()];
-        } catch (IndexOutOfBoundsException e) {
-            validInput[0] = false;
-            Toast.makeText(this, getString(R.string.transaction_error_type), Toast.LENGTH_SHORT).show();
-            Log.e(TAG, String.format("submitTransfer: %s", Log.getStackTraceString(e.getCause())));
-        }
+        Transaction.Type type = Transaction.Type.NORMAL;
 
         // Destination selection
         Account destination = null;
