@@ -114,8 +114,12 @@ public class MainDatabase {
         return retrievedCustomer;
     }
 
-    public List<Bill> getBills(@NonNull Customer customer) {
-        return mBillDb.readMultiple(item -> item.getCustomerId().equals(customer.getId()));
+    public List<Bill> getOpenBills(@NonNull Customer customer) {
+        final List<Bill> bills = mBillDb.readMultiple(bill -> bill.getCustomerId().equals(customer.getId()))
+                .stream()
+                .filter(Bill::isOpen)
+                .collect(Collectors.toList());
+        return bills;
     }
 
     public Account getAccount(UUID accountId) {
@@ -155,7 +159,7 @@ public class MainDatabase {
     }
 
     public void doUpdate() {
-        List<Transaction> allTransactions = mTransactionDb.readMultiple(transaction1 -> !transaction1.isDone());
+        List<Transaction> allTransactions = mTransactionDb.readMultiple(transaction -> !transaction.isDone());
         allTransactions.forEach(this::doUpdate);
     }
 

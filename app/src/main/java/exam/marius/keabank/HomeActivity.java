@@ -96,7 +96,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void startPaymentActivity(View view) {
-        List<Bill> billList = MainDatabase.getInstance(this).getBills(mCustomer);
+        List<Bill> billList = MainDatabase.getInstance(this).getOpenBills(mCustomer);
         Intent i = PaymentActivity.newIntent(this, mCustomer, billList);
         startActivityForResult(i, REQUEST_TRANSACTION);
     }
