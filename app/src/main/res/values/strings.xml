@@ -54,4 +54,5 @@
     <string name="error_username_Long">Username too long! Must have at most %d characters</string>
     <string name="error_account_not_found">This NemID does not exist</string>
     <string name="error_nemid_no_customer">This NemID is not associated with any customer</string>
+    <string name="action_logout">Log Out</string>
 </resources>

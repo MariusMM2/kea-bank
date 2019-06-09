@@ -6,4 +6,5 @@
     <integer name="field_password_max_length">40</integer>
     <integer name="field_username_min_length">6</integer>
     <integer name="field_username_max_length">20</integer>
+    <integer name="display_name_max_length">15</integer>
 </resources>

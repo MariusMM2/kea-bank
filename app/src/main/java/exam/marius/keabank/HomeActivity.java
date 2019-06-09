@@ -12,9 +12,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.TextView;
 import exam.marius.keabank.database.MainDatabase;
 import exam.marius.keabank.model.Account;
@@ -58,7 +56,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mCustomer = MainDatabase.getInstance(this).getDummyCustomer();
+        mCustomer = getIntent().getParcelableExtra(EXTRA_CUSTOMER);
 
         mAccountsRefresh = findViewById(R.id.refresh_accounts);
         mAccountsList = findViewById(R.id.list_accounts);
@@ -67,6 +65,38 @@ public class HomeActivity extends AppCompatActivity {
         mAccountsList.setAdapter(mAccountAdapter);
         mAccountAdapter.notifyDataSetChanged();
         mAccountsRefresh.setOnRefreshListener(this::doDbRefresh);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+
+        // Sets the user name in the ActionBar
+        MenuItem menuItem = menu.findItem(R.id.user_name);
+        String displayName = String.format("%s %s", mCustomer.getFirstName(), mCustomer.getLastName());
+        if (displayName.length() > getResources().getInteger(R.integer.display_name_max_length)) {
+            displayName = mCustomer.getFirstName();
+        }
+        menuItem.setTitle(displayName);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.user_name) {
+            return true;
+        } else if (id == R.id.action_logout) {
+            // Logs the user out and returns to the Login Activity
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void startTransferActivity(View view) {
