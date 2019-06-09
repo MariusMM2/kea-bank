@@ -2,9 +2,18 @@ package exam.marius.keabank.util;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.Date;
 
 public class TimeUtils {
+
+    public static Date getToday() {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        return calendar.getTime();
+    }
 
     public static Date addMonths(Date dueDate, long months) {
         Instant instant = Instant.ofEpochMilli(dueDate.getTime());
