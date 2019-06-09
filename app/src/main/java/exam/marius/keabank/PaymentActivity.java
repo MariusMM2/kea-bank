@@ -214,7 +214,7 @@ public class PaymentActivity extends UpNavActivity {
                 date = selectedBill.getDueDate();
 
                 // Recurrent option
-                type = selectedBill.isRecurrent() ? Transaction.Type.PAYMENT_SERVICE : Transaction.Type.NORMAL;
+                type = mRecurrentField.isChecked() ? Transaction.Type.PAYMENT_SERVICE : Transaction.Type.NORMAL;
             }
 
             mNewTransaction.setSource(source)
