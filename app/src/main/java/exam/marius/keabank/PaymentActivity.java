@@ -130,8 +130,6 @@ public class PaymentActivity extends UpNavActivity {
 
         if (requestCode == TransactionDetailActivity.REQUEST_CONFIRM_TRANSACTION) {
             if (resultCode == RESULT_OK) {
-                mNewTransaction.setStatus(Transaction.Status.PENDING);
-
                 Intent i = HomeActivity.newIntent(this, mCustomer, mNewTransaction);
 
                 setResult(RESULT_OK, i);
