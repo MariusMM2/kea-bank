@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AccountDetailActivity extends UpNavActivity {
     private static final String TAG = "AccountDetailActivity";
@@ -91,16 +92,20 @@ public class AccountDetailActivity extends UpNavActivity {
 
             mDateTextView.setText(StringUtils.wrapDate(mTransaction.getDate()));
 
-            float accumulatedTransactionsAmount = transactions.subList(0, getAdapterPosition())
-                    .stream()
-                    .reduce(0f,
-                            (totalAmount, transaction2) -> totalAmount + transaction2.getAmount(),
-                            Float::sum);
+            if (mTransaction.isDone()) {
 
-            float balanceAfter = accountBalance + accumulatedTransactionsAmount;
-            mBalanceAfterTextView.setText(getResources().getString(R.string.amount, balanceAfter));
+                float accumulatedTransactionsAmount = transactions.subList(0, getAdapterPosition())
+                        .stream()
+                        .filter(Transaction::isDone)
+                        .reduce(0f,
+                                (totalAmount, transaction2) -> totalAmount + transaction2.getAmount(),
+                                Float::sum);
 
-
+                float balanceAfter = accountBalance + accumulatedTransactionsAmount;
+                mBalanceAfterTextView.setText(getResources().getString(R.string.amount, balanceAfter));
+            } else {
+                mBalanceAfterTextView.setText(String.valueOf(mTransaction.getStatus()));
+            }
             Log.d(TAG, String.format("Bound transaction %s to holder", mTransaction.getTitle()));
         }
 
@@ -119,7 +124,7 @@ public class AccountDetailActivity extends UpNavActivity {
         private TransactionAdapter(Account account) {
             mAccount = account;
             mTransactions = new ArrayList<>();
-            mTransactions.addAll(mAccount.getTransactionList());
+            mTransactions.addAll(mAccount.getTransactionList().stream().filter(Transaction::isClose).collect(Collectors.toList()));
             mTransactions.sort(Comparator.comparing(Transaction::getDate));
             Collections.reverse(mTransactions);
         }
