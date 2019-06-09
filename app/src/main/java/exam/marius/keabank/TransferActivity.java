@@ -284,7 +284,7 @@ public class TransferActivity extends UpNavActivity {
                     .setDate(date)
                     .setMessage(message)
                     .setAmount(amount)
-                    .setStatus(Transaction.Status.STOPPED);
+                    .setStatus(Transaction.Status.IDLE);
 
             Intent i = TransactionDetailActivity.newIntent(this, mNewTransaction);
             startActivityForResult(i, TransactionDetailActivity.REQUEST_CONFIRM_TRANSACTION);

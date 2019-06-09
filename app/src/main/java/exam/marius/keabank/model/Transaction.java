@@ -36,7 +36,7 @@ public class Transaction implements DatabaseItem, Parcelable {
     }
 
     private Transaction() {
-        this(UUID.randomUUID(), null, null, -1f, "", Status.STOPPED, Type.NORMAL, Calendar.getInstance().getTime());
+        this(UUID.randomUUID(), null, null, -1f, "", Status.IDLE, Type.NORMAL, Calendar.getInstance().getTime());
     }
 
     public static final Creator<Transaction> CREATOR = new Creator<Transaction>() {
@@ -285,7 +285,7 @@ public class Transaction implements DatabaseItem, Parcelable {
     }
 
     public enum Status {
-        STOPPED("Stopped"),
+        IDLE("Idle"),
         PENDING("Pending"),
         CANCELED("Canceled"),
         DONE("Done");
