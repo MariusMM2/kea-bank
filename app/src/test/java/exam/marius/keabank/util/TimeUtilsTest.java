@@ -44,6 +44,17 @@ public class TimeUtilsTest {
         date2 = calendar.getTime();
 
         assertEquals(1, TimeUtils.weeksLeft(date, date2));
+
+        //
+        calendar = Calendar.getInstance();
+        calendar.set(2019, 6, 23);
+        date = calendar.getTime();
+
+        calendar = Calendar.getInstance();
+        calendar.set(2019, 6, 4);
+        date2 = calendar.getTime();
+
+        assertEquals(0, TimeUtils.weeksLeft(date, date2));
     }
 
     @Test
