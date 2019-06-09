@@ -3,10 +3,12 @@ package exam.marius.keabank;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -28,6 +30,7 @@ public class HomeActivity extends AppCompatActivity {
     private static final String EXTRA_CUSTOMER = "exam.marius.extras.EXTRA_CUSTOMER";
     private static final String EXTRA_TRANSACTION = "exam.marius.extras.EXTRA_TRANSACTION";
 
+    private SwipeRefreshLayout mAccountsRefresh;
     private RecyclerView mAccountsList;
     private AccountAdapter mAccountAdapter;
 
@@ -78,11 +81,18 @@ public class HomeActivity extends AppCompatActivity {
             Log.i(TAG, "onCreate: no Customer instance found, retrieved from database: " + mCustomer.toString());
         }
 
+        mAccountsRefresh = findViewById(R.id.refresh_accounts);
         mAccountsList = findViewById(R.id.list_accounts);
 
         mAccountAdapter = new AccountAdapter(mCustomer);
         mAccountsList.setAdapter(mAccountAdapter);
         mAccountAdapter.notifyDataSetChanged();
+        mAccountsRefresh.setOnRefreshListener(() -> {
+            mCustomer = MainDatabase.getInstance(HomeActivity.this).getDummyCustomer();
+            mAccountAdapter.setCustomer(mCustomer);
+            mAccountAdapter.notifyDataSetChanged();
+            new Handler().postDelayed(() -> mAccountsRefresh.setRefreshing(false), 500);
+        });
     }
 
     public void startTransferActivity(View view) {
@@ -181,6 +191,10 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             return mCustomer.getAccountList().size();
+        }
+
+        void setCustomer(Customer customer) {
+            mCustomer = customer;
         }
     }
 
