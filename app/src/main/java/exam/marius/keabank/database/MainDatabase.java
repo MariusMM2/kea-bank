@@ -246,7 +246,7 @@ public class MainDatabase {
         billList.forEach(bill -> mBillDb.add(bill));
         mCustomerDb.add(customer);
         nemIdList.forEach(nemId -> mNemIdDb.add(nemId));
-        transactionList.forEach(transaction -> mTransactionDb.add(transaction));
+        transactionList.forEach(this::addTransaction);
     }
 }
 
