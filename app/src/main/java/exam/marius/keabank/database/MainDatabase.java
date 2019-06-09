@@ -2,7 +2,6 @@ package exam.marius.keabank.database;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import exam.marius.keabank.model.*;
 
 import java.util.*;
@@ -158,6 +157,45 @@ public class MainDatabase {
     }
 
     public void doUpdate(Transaction transaction) {
+        final Consumer<TransactionTarget> targetConsumer = target -> {
+
+            if (target instanceof Bill) {
+                Bill targetBill = (Bill) target;
+                if (targetBill.isRecurrent()) {
+                    if (transaction.getType().equals(Transaction.Type.PAYMENT_SERVICE)) {
+                        targetBill.setAutomated(true);
+                    }
+                    final Bill nextBill = targetBill.next();
+                    if (transaction.getType().equals(Transaction.Type.PAYMENT_SERVICE)) {
+                        Transaction nextTransaction = Transaction.beginTransaction();
+                        if (targetBill.equals(transaction.getDestination())) {
+                            nextTransaction
+                                    .setSource(transaction.getSource())
+                                    .setDestination(nextBill);
+                        } else if (targetBill.equals(transaction.getSource())) {
+                            nextTransaction
+                                    .setSource(nextBill)
+                                    .setDestination(transaction.getDestination());
+                        }
+
+                        nextTransaction.setTitle(transaction.getTitle())
+                                .setDate(nextBill.getDueDate())
+                                .setMessage(transaction.getMessage())
+                                .setAmount(nextBill.getAmount())
+                                .setType(transaction.getType())
+                                .setStatus(Transaction.Status.IDLE);
+                        mTransactionDb.add(nextTransaction);
+                        mBillDb.add(nextBill);
+                        doUpdate(nextTransaction);
+                    } else {
+                        mBillDb.add(nextBill);
+                    }
+                }
+            }
+
+            updateTransactionTarget(target);
+        };
+
         if (transaction.isClose()) {
             boolean hasCommited = false;
             try {
@@ -167,16 +205,6 @@ public class MainDatabase {
             }
 
             if (hasCommited) {
-
-                final Consumer<TransactionTarget> targetConsumer = target -> {
-                    updateTransactionTarget(target);
-
-                    if (target instanceof Bill) {
-                        Bill targetBill = (Bill) target;
-                        mBillDb.add(targetBill.next());
-                    }
-                };
-
                 targetConsumer.accept(transaction.getSource());
                 targetConsumer.accept(transaction.getDestination());
             } else {
@@ -184,6 +212,15 @@ public class MainDatabase {
             }
 
             mTransactionDb.update(transaction);
+        } else {
+            TransactionTarget destination = transaction.getDestination();
+            if (destination instanceof Bill) {
+                Bill destinationBill = (Bill) destination;
+                if (transaction.getType().equals(Transaction.Type.PAYMENT_SERVICE)) {
+                    destinationBill.setAutomated(true);
+                    updateTransactionTarget(destinationBill);
+                }
+            }
         }
     }
 
