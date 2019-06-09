@@ -202,7 +202,8 @@ public class Transaction implements DatabaseItem, Parcelable {
                 -this.mAmount,
                 this.mMessage,
                 this.mStatus,
-                Type.NORMAL, this.mDate
+                this.mType,
+                this.mDate
         );
     }
 
