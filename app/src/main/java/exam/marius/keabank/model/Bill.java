@@ -33,6 +33,101 @@ public class Bill implements TransactionTarget {
         mCustomerId = customerId;
     }
 
+    public void setAutomated(boolean automated) {
+        mAutomated = automated;
+    }
+
+    @Override
+    public UUID getId() {
+        return mId;
+    }
+
+    @Override
+    public String getTitle() {
+        return mTitle;
+    }
+
+    @Override
+    public String getDescription() {
+        return mDescription == null ? "" : mDescription;
+    }
+
+    public UUID getCustomerId() {
+        return mCustomerId;
+    }
+
+    @Override
+    public void prepareParcel() {
+
+    }
+
+    public boolean isRecurrent() {
+        return mRecurrent;
+    }
+
+    public boolean isOpen() {
+        return !mDone && !mAutomated;
+    }
+
+    public Date getDueDate() {
+        return mDueDate;
+    }
+
+    @Override
+    public float getAmount() {
+        return mAmount;
+    }
+
+    @Override
+    public boolean canGoNegative() {
+        return true;
+    }
+
+    @Override
+    public boolean canSubtractAmount(float amount) {
+        return true;
+    }
+
+    @Override
+    public void subtract(float amount) {
+        onTransaction();
+    }
+
+    @Override
+    public void increase(float amount) {
+        onTransaction();
+    }
+
+    private void onTransaction() {
+        mDone = true;
+        mPendingPayment = false;
+    }
+
+    public Bill next() {
+        return new Bill(
+                mTitle,
+                mDescription,
+                mAutomated,
+                mRecurrent,
+                mAmount,
+                TimeUtils.addMonths(mDueDate, 1),
+                mCustomerId
+        );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Bill bill = (Bill) o;
+        return mId.equals(bill.mId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mId);
+    }
+
     protected Bill(Parcel in) {
         mAmount = in.readFloat();
         mId = ParcelUtils.readUuid(in);
@@ -74,115 +169,4 @@ public class Bill implements TransactionTarget {
             return new Bill[size];
         }
     };
-
-    @Override
-    public UUID getId() {
-        return mId;
-    }
-
-    @Override
-    public String getTitle() {
-        return mTitle;
-    }
-
-    @Override
-    public String getDescription() {
-        return mDescription == null ? "" : mDescription;
-    }
-
-    @Override
-    public void prepareParcel() {
-
-    }
-
-    public boolean isAutomated() {
-        return mAutomated;
-    }
-
-    public boolean isRecurrent() {
-        return mRecurrent;
-    }
-
-    public boolean isPendingPayment() {
-        return mPendingPayment;
-    }
-
-    public boolean isOpen() {
-        return !mDone || (!mAutomated && !mPendingPayment);
-    }
-
-    public boolean isDone() {
-        return mDone;
-    }
-
-    public Date getDueDate() {
-        return mDueDate;
-    }
-
-    @Override
-    public float getAmount() {
-        return mAmount;
-    }
-
-    @Override
-    public boolean canSubtractAmount(float amount) {
-        return true;
-    }
-
-    @Override
-    public void subtract(float amount) {
-        onTransaction();
-    }
-
-    @Override
-    public void increase(float amount) {
-        onTransaction();
-    }
-
-    private void onTransaction() {
-        mDone = true;
-        mPendingPayment = false;
-    }
-
-    public Bill next() {
-        return new Bill(
-                mTitle,
-                mDescription,
-                mAutomated,
-                mRecurrent,
-                mAmount,
-                TimeUtils.addMonths(mDueDate, 1),
-                mCustomerId
-        );
-    }
-
-    @Override
-    public boolean canGoNegative() {
-        return true;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Bill bill = (Bill) o;
-        return mId.equals(bill.mId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(mId);
-    }
-
-    public UUID getCustomerId() {
-        return mCustomerId;
-    }
-
-    public void setAutomated(boolean automated) {
-        mAutomated = automated;
-    }
-
-    public void setPendingPayment(boolean pendingPayment) {
-        mPendingPayment = pendingPayment;
-    }
 }
