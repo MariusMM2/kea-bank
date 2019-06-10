@@ -187,7 +187,8 @@ public class RegisterActivity extends UpNavActivity {
         DatePickerDialog() {
             super(RegisterActivity.this);
             setCanceledOnTouchOutside(true);
-            getDatePicker().setMaxDate(TimeUtils.removeYears(new Date(System.currentTimeMillis()), 18).getTime());
+            final long maxDate = TimeUtils.removeYears(new Date(System.currentTimeMillis()), 18).getTime();
+            getDatePicker().setMaxDate(maxDate);
             setOnDateSetListener((view, year, month, dayOfMonth) -> {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month, dayOfMonth);
@@ -195,7 +196,7 @@ public class RegisterActivity extends UpNavActivity {
                 mBirthDateField.setText(StringUtils.wrapDate(mDate, false));
             });
 
-            mDate = TimeUtils.getToday();
+            mDate = new Date(maxDate);
             mBirthDateField.setText(StringUtils.wrapDate(mDate, false));
         }
 
