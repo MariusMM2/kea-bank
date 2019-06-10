@@ -18,8 +18,8 @@ public class MainDatabaseTest {
     private final NemId mNemId1a = new NemId("Subject1", "123456");
     private final NemId mNemId1b = new NemId("Subject1", "1234567");
     private final NemId mNemId2 = new NemId("Foo2", "1");
-    private final Customer mCustomer1 = new Customer("John", "Doe", "johndoe@email.com", "123456", Calendar.getInstance().getTime());
-    private final Customer mCustomer2 = new Customer("Johnny", "Doe", "johndoe@email.com", "123456", Calendar.getInstance().getTime());
+    private final Customer mCustomer1 = new Customer("John", "Doe", Calendar.getInstance().getTime());
+    private final Customer mCustomer2 = new Customer("Johnny", "Doe", Calendar.getInstance().getTime());
     private final List<Account> mAccountList = new ArrayList<>(
             Arrays.asList(
                     Account.newDefault(1000, mCustomer1.getId()),
@@ -61,25 +61,25 @@ public class MainDatabaseTest {
     public void tryLogin() {
         MainDatabase.DEBUG_NO_NEMID = true;
 
-        assertTrue(mMainDatabase.tryLogin(new NemId("Foo", "f00")));
+        assertNotNull(mMainDatabase.tryLogin(new NemId("Foo", "f00")));
 
         addNemId1a();
 
         assertNotNull(mMainDatabase.mNemIdDb.read(databaseItem -> ((NemId) databaseItem).getUsername().equals(mNemId1a.getUsername())));
         assertNull(mMainDatabase.mNemIdDb.read(databaseItem -> ((NemId) databaseItem).getUsername().equals(mNemId2.getUsername())));
 
-        assertTrue(mMainDatabase.tryLogin(mNemId1a));
-        assertTrue(mMainDatabase.tryLogin(mNemId2));
+        assertNotNull(mMainDatabase.tryLogin(mNemId1a));
+        assertNotNull(mMainDatabase.tryLogin(mNemId2));
 
         MainDatabase.DEBUG_NO_NEMID = false;
 
-        assertTrue(mMainDatabase.tryLogin(mNemId1a));
-        assertFalse(mMainDatabase.tryLogin(mNemId2));
+        assertNotNull(mMainDatabase.tryLogin(mNemId1a));
+        assertNull(mMainDatabase.tryLogin(mNemId2));
 
         MainDatabase.DEBUG_NO_PASSWORD = false;
 
-        assertTrue(mMainDatabase.tryLogin(mNemId1a));
-        assertFalse(mMainDatabase.tryLogin(mNemId1b));
+        assertNotNull(mMainDatabase.tryLogin(mNemId1a));
+        assertNull(mMainDatabase.tryLogin(mNemId1b));
     }
 
     @Test
@@ -91,8 +91,6 @@ public class MainDatabaseTest {
             fail("InvalidNemIDException not thrown");
         } catch (InvalidCustomerException e) {
             fail();
-        } catch (InvalidNemIDException ignored) {
-
         }
 
         try {
