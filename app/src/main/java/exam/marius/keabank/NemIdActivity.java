@@ -103,7 +103,7 @@ public class NemIdActivity extends AppCompatActivity implements AsyncTaskCallbac
             if (password.length() < passwordMinLength) {
                 mErrorMacro.accept(mPasswordField, getString(R.string.error_password_short, passwordMinLength));
             } else if (password.length() > passwordMaxLength) {
-                mErrorMacro.accept(mPasswordField, getString(R.string.error_password_Long, passwordMaxLength));
+                mErrorMacro.accept(mPasswordField, getString(R.string.error_password_long, passwordMaxLength));
             }
         }
 

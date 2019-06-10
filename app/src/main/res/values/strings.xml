@@ -39,7 +39,6 @@
     <string name="text_bill_recurrent">This bill is recurrent</string>
     <string name="title_activity_login">Sign in</string>
 
-    <!-- Strings related to login -->
     <string name="prompt_email">Username</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
@@ -49,7 +48,7 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_password_short">Password too short! Must have at least %d characters</string>
-    <string name="error_password_Long">Password too long! Must have at most %d characters</string>
+    <string name="error_password_long">Password too long! Must have at most %d characters</string>
     <string name="error_username_short">Username too short! Must have at least %d characters</string>
     <string name="error_username_Long">Username too long! Must have at most %d characters</string>
     <string name="error_account_not_found">This NemID does not exist</string>

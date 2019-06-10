@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
             if (password.length() < passwordMinLength) {
                 mErrorMacro.accept(mPasswordField, getString(R.string.error_password_short, passwordMinLength));
             } else if (password.length() > passwordMaxLength) {
-                mErrorMacro.accept(mPasswordField, getString(R.string.error_password_Long, passwordMaxLength));
+                mErrorMacro.accept(mPasswordField, getString(R.string.error_password_long, passwordMaxLength));
             }
         }
 
