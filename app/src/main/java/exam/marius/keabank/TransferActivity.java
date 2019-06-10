@@ -49,6 +49,8 @@ public class TransferActivity extends UpNavActivity {
     private SpinnerAdapter mTypesAdapter;
     private int mChosenDestination;
 
+    private Runnable onNemIdConfirmation;
+
 
     static Intent newIntent(Context packageContext, Customer customer) {
         Intent intent = new Intent(packageContext, TransferActivity.class);
@@ -124,7 +126,7 @@ public class TransferActivity extends UpNavActivity {
                     mDestinationEditText.setText(mCustomer.getAccountList().get(position - 1).getNumber());
                     mChosenDestination = position;
 
-                    Account.Type type = mCustomer.getAccountList().get(position-1).getType();
+                    Account.Type type = mCustomer.getAccountList().get(position - 1).getType();
                     boolean canMonthlyTransfer = false;
                     final Account.Type[] monthlyTransferCompatible = Account.getMonthlyTransferCompatible();
                     for (Account.Type defaultType : monthlyTransferCompatible) {
@@ -173,6 +175,11 @@ public class TransferActivity extends UpNavActivity {
         // Monthly Transfer Field
         mMonthlyTransferCheckBox = findViewById(R.id.checkbox_automated);
         mMonthlyTransferCheckBox.setChecked(false);
+
+        onNemIdConfirmation = () -> {
+            Intent i = TransactionDetailActivity.newIntent(this, mNewTransaction);
+            startActivityForResult(i, TransactionDetailActivity.REQUEST_CONFIRM_TRANSACTION);
+        };
     }
 
     @Override
@@ -188,6 +195,10 @@ public class TransferActivity extends UpNavActivity {
                 finish();
 
                 Log.d(TAG, String.format("onActivityResult: %s", mNewTransaction.toString()));
+            }
+        } else if (requestCode == NemIdActivity.REQUEST_NEMID_CONFIRMATION) {
+            if (resultCode == RESULT_OK) {
+                onNemIdConfirmation.run();
             }
         }
     }
@@ -306,8 +317,13 @@ public class TransferActivity extends UpNavActivity {
                     .setAmount(amount)
                     .setStatus(Transaction.Status.IDLE);
 
-            Intent i = TransactionDetailActivity.newIntent(this, mNewTransaction);
-            startActivityForResult(i, TransactionDetailActivity.REQUEST_CONFIRM_TRANSACTION);
+            if (((Account) mNewTransaction.getDestination()).getType().equals(Account.Type.PENSION) ||
+                    mDestinationsSpinner.getSelectedItemPosition() == 0) {
+                Intent i = NemIdActivity.newIntent(this, mCustomer);
+                startActivityForResult(i, NemIdActivity.REQUEST_NEMID_CONFIRMATION);
+            } else {
+                onNemIdConfirmation.run();
+            }
             return;
         } else {
             if (focusView[0] != null) {
@@ -317,6 +333,7 @@ public class TransferActivity extends UpNavActivity {
 
         Log.d(TAG, String.format("submitTransfer: %s", mNewTransaction.toString()));
     }
+
 
     public void debugFillFields(View view) {
         mDestinationsSpinner.setSelection(2);

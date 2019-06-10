@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -69,6 +70,13 @@ public class NemIdActivity extends AppCompatActivity implements AsyncTaskCallbac
 
         mUsernameField = findViewById(R.id.username);
         mPasswordField = findViewById(R.id.password);
+        mPasswordField.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_NULL) {
+                NemIdActivity.this.attemptValidate();
+                return true;
+            }
+            return false;
+        });
 
         mLogoView = findViewById(R.id.logo);
         mProgressView = findViewById(R.id.login_progress);
@@ -133,12 +141,13 @@ public class NemIdActivity extends AppCompatActivity implements AsyncTaskCallbac
     }
 
     @Override
-    public void onAsyncTaskComplete(boolean validNemId, boolean noCustomer) {
+    public void onAsyncTaskComplete(NemId actualNemId, boolean validNemId, boolean noCustomer) {
         if (mCustomer == null) {
             // Return the associated NemID
             if (validNemId) {
                 if (noCustomer) {
-                    Intent intent = new Intent(this, NemIdActivity.class);
+                    // NemID found, no associated customer found, return OK
+                    Intent intent = new Intent();
                     final NemId nemId = new NemId(mUsernameField.getText().toString(), mPasswordField.getText().toString());
                     intent.putExtra(EXTRA_NEMID, (Parcelable) nemId);
                     setResult(RESULT_OK, intent);
@@ -148,7 +157,8 @@ public class NemIdActivity extends AppCompatActivity implements AsyncTaskCallbac
                     mFocusView[0].requestFocus();
                 }
             } else {
-                Intent intent = new Intent(this, NemIdActivity.class);
+                // No NemID found, return special result
+                Intent intent = new Intent();
                 final NemId nemId = new NemId(mUsernameField.getText().toString(), mPasswordField.getText().toString());
                 intent.putExtra(EXTRA_NEMID, (Parcelable) nemId);
                 setResult(RESULT_NEW_NEMID, intent);
@@ -156,6 +166,22 @@ public class NemIdActivity extends AppCompatActivity implements AsyncTaskCallbac
             }
         } else {
             // Return the associated Customer
+            if (validNemId) {
+                if (!noCustomer) {
+                    if (actualNemId.getCustomerId().equals(mCustomer.getId())) {
+                        //Success
+                        Intent intent = new Intent();
+                        setResult(RESULT_OK);
+                        finish();
+                    }
+                } else {
+                    mErrorMacro.accept(mUsernameField, getString(R.string.error_invalid_nemid));
+                    mFocusView[0].requestFocus();
+                }
+            } else {
+                mErrorMacro.accept(mUsernameField, getString(R.string.error_invalid_nemid));
+                mFocusView[0].requestFocus();
+            }
         }
     }
 
@@ -183,6 +209,7 @@ public class NemIdActivity extends AppCompatActivity implements AsyncTaskCallbac
         private boolean mValidNemId;
         private boolean mNoCustomer;
         private AsyncTaskCallback mCallback;
+        private NemId mActualNemId;
 
         UserLoginTask(AsyncTaskCallback callback, String email, String password) {
             mCallback = callback;
@@ -200,15 +227,15 @@ public class NemIdActivity extends AppCompatActivity implements AsyncTaskCallbac
                 long before = System.currentTimeMillis();
 
                 // Attempt to validate the NemID
-                NemId actualNemId = MainDatabase.getInstance(NemIdActivity.this).tryLogin(new NemId(mEmail, mPassword));
-                if (actualNemId == null) {
+                mActualNemId = MainDatabase.getInstance(NemIdActivity.this).tryLogin(new NemId(mEmail, mPassword));
+                if (mActualNemId == null) {
                     mValidNemId = false;
                 } else {
 
                     mValidNemId = true;
                     // Attempt to retrieve the associated Customer
                     try {
-                        MainDatabase.getInstance(NemIdActivity.this).getCustomer(actualNemId);
+                        MainDatabase.getInstance(NemIdActivity.this).getCustomer(mActualNemId);
                         mNoCustomer = false;
                     } catch (InvalidCustomerException e) {
                         mNoCustomer = true;
@@ -226,7 +253,7 @@ public class NemIdActivity extends AppCompatActivity implements AsyncTaskCallbac
         protected void onPostExecute(Void aVoid) {
             mAuthTask = null;
             showProgress(false);
-            mCallback.onAsyncTaskComplete(mValidNemId, mNoCustomer);
+            mCallback.onAsyncTaskComplete(mActualNemId, mValidNemId, mNoCustomer);
         }
 
         @Override
@@ -238,5 +265,5 @@ public class NemIdActivity extends AppCompatActivity implements AsyncTaskCallbac
 }
 
 interface AsyncTaskCallback {
-    void onAsyncTaskComplete(boolean validNemId, boolean noCustomer);
+    void onAsyncTaskComplete(NemId actualNemId, boolean validNemId, boolean noCustomer);
 }

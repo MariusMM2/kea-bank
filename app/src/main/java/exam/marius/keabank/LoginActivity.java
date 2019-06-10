@@ -47,9 +47,9 @@ public class LoginActivity extends AppCompatActivity {
         mUsernameField = findViewById(R.id.username);
 
         mPasswordField = findViewById(R.id.password);
-        mPasswordField.setOnEditorActionListener((textView, id, keyEvent) -> {
-            if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                attemptLogin();
+        mPasswordField.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_NULL) {
+                LoginActivity.this.attemptLogin();
                 return true;
             }
             return false;
@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         mProgressView = findViewById(R.id.login_progress);
 
         mSignButton = findViewById(R.id.confirm_button);
-        mSignButton.setText(R.string.action_sign_in);
+//        mSignButton.setText(R.string.action_sign_in);
         mSignButton.setOnClickListener(view -> attemptLogin());
         mRegisterButton = findViewById(R.id.register_button);
     }
