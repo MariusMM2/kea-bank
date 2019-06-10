@@ -71,4 +71,13 @@
     <string name="error_pension_account_min_age">Withdraws from a pension account can only be made after the age of %d</string>
     <string name="actions_monthly_transfer">Set up as a monthly transfer</string>
     <string name="error_invalid_nemid">Invalid NemID</string>
+    <string name="text_bill_label">Bill</string>
+    <string name="text_title">Title</string>
+    <string name="text_description">Description</string>
+    <string name="action_payment_service">Register to Payment Service</string>
+    <string name="first_name_label">First Name</string>
+    <string name="last_name_label">Last Name</string>
+    <string name="birth_date_label">Birth Date</string>
+    <string name="nemid_hint">NemID</string>
+    <string name="action_submit_registration">Submit Registration</string>
 </resources>
