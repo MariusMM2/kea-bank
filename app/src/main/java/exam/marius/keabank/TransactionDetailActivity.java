@@ -15,7 +15,7 @@ public class TransactionDetailActivity extends UpNavActivity {
 
     static final int REQUEST_CONFIRM_TRANSACTION = 0x4;
 
-    private static final String EXTRA_TRANSACTION = "exam.marius.extras.EXTRA_TRANSACTION";
+    private static final String EXTRA_TRANSACTION = "exam.marius.extra.EXTRA_TRANSACTION";
 
     private TextView mLabelMessageTextView;
 

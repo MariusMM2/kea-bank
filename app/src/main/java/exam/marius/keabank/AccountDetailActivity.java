@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class AccountDetailActivity extends UpNavActivity {
     private static final String TAG = "AccountDetailActivity";
 
-    private static final String EXTRA_ACCOUNT = "exam.marius.extras.EXTRA_ACCOUNT";
+    private static final String EXTRA_ACCOUNT = "exam.marius.extra.EXTRA_ACCOUNT";
 
     private View mAccountView;
     private RecyclerView mTransactionsListView;

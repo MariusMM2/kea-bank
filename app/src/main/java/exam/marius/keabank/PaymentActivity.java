@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 public class PaymentActivity extends UpNavActivity {
     private static final String TAG = "PaymentActivity";
 
-    private static final String EXTRA_CUSTOMER = "exam.marius.extras.EXTRA_CUSTOMER";
-    private static final String EXTRA_BILLS = "exam.marius.extras.EXTRA_BILLS";
+    private static final String EXTRA_CUSTOMER = "exam.marius.extra.EXTRA_CUSTOMER";
+    private static final String EXTRA_BILLS = "exam.marius.extra.EXTRA_BILLS";
 
     private Customer mCustomer;
     private List<Bill> mBillList;

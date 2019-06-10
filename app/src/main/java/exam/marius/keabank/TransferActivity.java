@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class TransferActivity extends UpNavActivity {
     private static final String TAG = "TransferActivity";
 
-    private static final String EXTRA_CUSTOMER = "exam.marius.extras.EXTRA_CUSTOMER";
+    private static final String EXTRA_CUSTOMER = "exam.marius.extra.EXTRA_CUSTOMER";
 
     private Customer mCustomer;
     private Transaction mNewTransaction;

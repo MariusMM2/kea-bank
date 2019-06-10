@@ -28,8 +28,8 @@ public class HomeActivity extends AppCompatActivity {
     static final int REQUEST_TRANSACTION = 0x2;
     private static final String TAG = "HomeActivity";
 
-    private static final String EXTRA_CUSTOMER = "exam.marius.extras.EXTRA_CUSTOMER";
-    private static final String EXTRA_TRANSACTION = "exam.marius.extras.EXTRA_TRANSACTION";
+    private static final String EXTRA_CUSTOMER = "exam.marius.extra.EXTRA_CUSTOMER";
+    private static final String EXTRA_TRANSACTION = "exam.marius.extra.EXTRA_TRANSACTION";
 
     private SwipeRefreshLayout mAccountsRefresh;
     private RecyclerView mAccountsList;
