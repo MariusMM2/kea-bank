@@ -8,22 +8,16 @@ import java.util.*;
 
 public class Customer implements DatabaseItem, Parcelable {
     private UUID mId;
-    private String mFirstName, mLastName, mEmail, mPassword;
+    private String mFirstName, mLastName;
     private Date mBirthDate;
     private transient List<Account> mAccountList;
 
-    public Customer(UUID id, String firstName, String lastName, String email, String password, Date birthDate) {
-        mId = id;
+    public Customer(String firstName, String lastName, Date birthDate) {
+        mId = UUID.randomUUID();
         mFirstName = firstName;
         mLastName = lastName;
-        mEmail = email;
-        mPassword = password;
         mBirthDate = birthDate;
         mAccountList = new ArrayList<>();
-    }
-
-    public Customer(String firstName, String lastName, String email, String password, Date birthDate) {
-        this(UUID.randomUUID(), firstName, lastName, email, password, birthDate);
     }
 
     @Override
@@ -37,14 +31,6 @@ public class Customer implements DatabaseItem, Parcelable {
 
     public String getLastName() {
         return mLastName;
-    }
-
-    public String getEmail() {
-        return mEmail;
-    }
-
-    public String getPassword() {
-        return mPassword;
     }
 
     public Date getBirthDate() {
@@ -69,8 +55,6 @@ public class Customer implements DatabaseItem, Parcelable {
                 "mId=" + mId +
                 ", mFirstName='" + mFirstName + '\'' +
                 ", mLastName='" + mLastName + '\'' +
-                ", mEmail='" + mEmail + '\'' +
-                ", mPassword='" + mPassword + '\'' +
                 ", mBirthDate=" + mBirthDate +
                 ", mAccountList=" + mAccountList +
                 '}';
@@ -94,8 +78,6 @@ public class Customer implements DatabaseItem, Parcelable {
         mId = ParcelUtils.readUuid(in);
         mFirstName = in.readString();
         mLastName = in.readString();
-        mEmail = in.readString();
-        mPassword = in.readString();
         mAccountList = ParcelUtils.readList(in, Account.class);
     }
 
@@ -104,8 +86,6 @@ public class Customer implements DatabaseItem, Parcelable {
         ParcelUtils.writeUuid(dest, mId);
         dest.writeString(mFirstName);
         dest.writeString(mLastName);
-        dest.writeString(mEmail);
-        dest.writeString(mPassword);
         ParcelUtils.writeList(dest, mAccountList);
     }
 
