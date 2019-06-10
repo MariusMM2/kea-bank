@@ -145,10 +145,14 @@ public class LoginActivity extends AppCompatActivity {
         private final String mEmail;
         private final String mPassword;
         private Customer mCustomer;
+        private boolean mInvalidNemId;
+        private boolean mNoCustomer;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
+            mInvalidNemId = false;
+            mNoCustomer = false;
         }
 
         @Override
@@ -162,22 +166,17 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Attempt to validate the NemID
                 NemId actualNemId = MainDatabase.getInstance(LoginActivity.this).tryLogin(new NemId(mEmail, mPassword));
-                Customer customer = null;
                 if (actualNemId == null) {
-                    if (mErrorMacro != null) {
-                        mErrorMacro.accept(mUsernameField, getString(R.string.error_account_not_found));
-                        result = false;
-                    }
+                    mInvalidNemId = true;
+                    result = false;
                 } else {
 
                     // Attempt to retrieve the associated Customer
                     try {
                         mCustomer = MainDatabase.getInstance(LoginActivity.this).getCustomer(actualNemId);
                     } catch (InvalidCustomerException e) {
-                        if (mErrorMacro != null) {
-                            mErrorMacro.accept(mUsernameField, getString(R.string.error_nemid_no_customer));
-                            result = false;
-                        }
+                        mNoCustomer = true;
+                        result = false;
                     }
                 }
 
@@ -200,6 +199,14 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(i);
                 finish();
             } else {
+                if (mInvalidNemId) {
+                    mErrorMacro.accept(mUsernameField, getString(R.string.error_account_not_found));
+                }
+
+                if (mNoCustomer) {
+                    mErrorMacro.accept(mUsernameField, getString(R.string.error_nemid_no_customer));
+                }
+
                 showProgress(false);
                 mFocusView[0].requestFocus();
             }
