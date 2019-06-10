@@ -131,12 +131,6 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    public void debugResetDatabase(View view) {
-        MainDatabase.getInstance(this).createDummyData();
-        mAccountsRefresh.setRefreshing(true);
-        returnToLogin();
-    }
-
     private void doDbRefresh() {
         mCustomer = MainDatabase.getInstance(this).getCustomer(mCustomer.getId());
         mAccountAdapter.setCustomer(mCustomer);

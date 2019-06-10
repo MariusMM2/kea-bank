@@ -136,6 +136,10 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+    public void debugResetDatabase(View view) {
+        MainDatabase.getInstance(this).createDummyData();
+    }
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
