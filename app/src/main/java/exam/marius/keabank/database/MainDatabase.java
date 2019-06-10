@@ -14,7 +14,7 @@ import static exam.marius.keabank.database.AbstractDatabase.sFilesDir;
 public class MainDatabase {
     private static final String TAG = "MainDatabase";
 
-    static boolean DEBUG_NO_NEMID = true;
+    static boolean DEBUG_NO_NEMID = false;
     static boolean DEBUG_NO_PASSWORD = true;
     static boolean DEBUG_NO_PERSIST = false;
     private static MainDatabase sInstance;
@@ -75,17 +75,6 @@ public class MainDatabase {
 
     }
 
-    public Customer getDummyCustomer() {
-        NemId nemId = mNemIdDb.readAll().get(0);
-        Customer customer = null;
-        try {
-            customer = getCustomer(nemId);
-        } catch (InvalidCustomerException ignored) {
-
-        }
-        return customer;
-    }
-
     @SuppressWarnings("WeakerAccess")
     public Customer getCustomer(@NonNull NemId nemId) throws InvalidCustomerException {
         NemId retrievedNemId = mNemIdDb.read(item -> item.getId().equals(nemId.getId()));
@@ -129,19 +118,6 @@ public class MainDatabase {
         return mAccountDb.read(account -> account.getNumber().equals(accountNumber));
     }
 
-    void save() {
-        mAccountDb.save();
-        mBillDb.save();
-        mCustomerDb.save();
-        mNemIdDb.save();
-        mTransactionDb.save();
-    }
-
-    public void addTransaction(Transaction newTransaction) {
-        mTransactionDb.add(newTransaction);
-        doUpdate(newTransaction);
-    }
-
     public List<Transaction> getTransactions(Account account) {
         List<Transaction> outGoingTransactions = mTransactionDb.readMultiple(item ->
                 item.getSource().getId().equals(account.getId()));
@@ -155,6 +131,19 @@ public class MainDatabase {
         outGoingTransactions.addAll(incomingTransactions);
 
         return outGoingTransactions;
+    }
+
+    public void addNemId(NemId nemId) {
+        mNemIdDb.add(nemId);
+    }
+
+    public void addCustomer(Customer customer) {
+        mCustomerDb.add(customer);
+    }
+
+    public void addTransaction(Transaction newTransaction) {
+        mTransactionDb.add(newTransaction);
+        doUpdate(newTransaction);
     }
 
     public void doUpdate() {
@@ -239,10 +228,11 @@ public class MainDatabase {
     }
 
     public void createDummyData() {
-        Customer customer = new Customer("John", "Doe", "johndoe@email.com", "123456", Calendar.getInstance().getTime());
+        Customer customer = new Customer("John", "Doe", Calendar.getInstance().getTime());
         final List<NemId> nemIdList = new ArrayList<>(
-                Collections.singletonList(
-                        new NemId(UUID.randomUUID(), "foobar98", "f00b4r98", customer.getId())
+                Arrays.asList(
+                        new NemId(UUID.randomUUID(), "foobar98", "f00b4r98", customer.getId()),
+                        new NemId("foobar99", "f00b4r98")
                 )
         );
 

@@ -25,6 +25,16 @@ public class TimeUtils {
         return Date.from(zonedDateTime.toInstant());
     }
 
+    public static Date removeYears(Date date, long years) {
+        Instant instant = Instant.ofEpochMilli(date.getTime());
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        LocalDate localDate = localDateTime.toLocalDate();
+
+        LocalDateTime startOfDay = localDate.minusYears(years).atStartOfDay();
+        ZonedDateTime zonedDateTime = startOfDay.atZone(ZoneId.systemDefault());
+        return Date.from(zonedDateTime.toInstant());
+    }
+
     public static long weeksLeft(Date dateBefore, Date dateAfter) {
         if (dateBefore.compareTo(dateAfter) > -1) {
             // dateAfter is same or before dateBefore, return 0 weeks

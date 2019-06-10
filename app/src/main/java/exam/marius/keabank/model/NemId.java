@@ -23,6 +23,7 @@ public class NemId implements DatabaseItem, Parcelable {
         mId = UUID.randomUUID();
         mUsername = username;
         mPassword = password;
+        mCustomerId = UUID.randomUUID();
     }
 
     @Override
@@ -71,7 +72,9 @@ public class NemId implements DatabaseItem, Parcelable {
         ParcelUtils.writeUuid(dest, mId);
         dest.writeString(mUsername);
         dest.writeString(mPassword);
-        ParcelUtils.writeUuid(dest, mCustomerId);
+        if (mCustomerId != null) {
+            ParcelUtils.writeUuid(dest, mCustomerId);
+        }
     }
 
     @Override

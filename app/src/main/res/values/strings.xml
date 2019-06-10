@@ -55,4 +55,10 @@
     <string name="error_account_not_found">This NemID does not exist</string>
     <string name="error_nemid_no_customer">This NemID is not associated with any customer</string>
     <string name="action_logout">Log Out</string>
+    <string name="action_confirm">Confirm</string>
+    <string name="error_existing_customer">A customer with this NemID already exists</string>
+    <string name="info_existing_nemid_attachment">Customer will be attached to the existing NemID</string>
+    <string name="info_new_nemid">A new NemID will be added on creation</string>
+    <string name="error_name_short">This name is too short, needs at least %d characters</string>
+    <string name="error_name_long">This name is too long, needs at most %d characters</string>
 </resources>

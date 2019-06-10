@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Base.Theme.AppCompat">
+    <style name="AppTheme" parent="Theme.AppCompat">
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
 
@@ -10,8 +10,8 @@
         <item name="android:windowExitTransition">@android:transition/explode</item>
 
         <!-- specify shared element transitions -->
-        <!--        <item name="android:windowSharedElementEnterTransition">@transition/change_transform</item>-->
-        <!--        <item name="android:windowSharedElementExitTransition">@transition/change_transform</item>-->
+        <item name="android:windowSharedElementEnterTransition">@transition/change_transform</item>
+        <item name="android:windowSharedElementExitTransition">@transition/change_transform</item>
 
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -24,6 +24,12 @@
     <style name="AppTheme.ListPage" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

@@ -1,13 +1,15 @@
 package exam.marius.keabank;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,62 +22,74 @@ import exam.marius.keabank.util.ViewUtils;
 
 import java.util.function.BiConsumer;
 
-/**
- * A login screen that offers login via NemID.
- */
-public class LoginActivity extends AppCompatActivity {
-    private UserLoginTask mAuthTask = null;
+public class NemIdActivity extends AppCompatActivity implements AsyncTaskCallback {
 
-    // UI references.
+    static final int REQUEST_NEMID = 0x1;
+    static final int REQUEST_NEMID_CONFIRMATION = 0x2;
+
+    static final int RESULT_NEW_NEMID = 0x2;
+    public static final int RESULT_EXISTING_CUSTOMER = 0x4;
+
+
+    private static final String EXTRA_CUSTOMER = "exam.marius.extra.EXTRA_CUSTOMER";
+    private static final String EXTRA_NEMID = "exam.marius.extra.EXTRA_NEMID";
+
     private TextInputEditText mUsernameField;
     private TextInputEditText mPasswordField;
     private ImageView mLogoView;
     private View mProgressView;
-    private Button mSignButton;
-    private Button mRegisterButton;
+    private Button mConfirmButton;
 
     private BiConsumer<TextView, String> mErrorMacro;
     private boolean[] mValidInput;
-    private View[] mFocusView;
+    private TextView[] mFocusView;
+
+    private UserLoginTask mAuthTask;
+
+    private Customer mCustomer;
+
+    static Intent newIntent(Context packageContext, Customer customer) {
+        Intent intent = new Intent(packageContext, NemIdActivity.class);
+        intent.putExtra(EXTRA_CUSTOMER, (Parcelable) customer);
+        return intent;
+    }
+
+    static NemId getNemId(Intent intent) {
+        return intent.getParcelableExtra(EXTRA_NEMID);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        // Set up the login form.
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.activity_nem_id);
+        setFinishOnTouchOutside(false);
+
+        mCustomer = getIntent().getParcelableExtra(EXTRA_CUSTOMER);
 
         mUsernameField = findViewById(R.id.username);
-
         mPasswordField = findViewById(R.id.password);
-        mPasswordField.setOnEditorActionListener((textView, id, keyEvent) -> {
-            if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                attemptLogin();
-                return true;
-            }
-            return false;
-        });
 
         mLogoView = findViewById(R.id.logo);
         mProgressView = findViewById(R.id.login_progress);
 
-        mSignButton = findViewById(R.id.confirm_button);
-        mSignButton.setText(R.string.action_sign_in);
-        mSignButton.setOnClickListener(view -> attemptLogin());
-        mRegisterButton = findViewById(R.id.register_button);
+        mConfirmButton = findViewById(R.id.confirm_button);
+        mConfirmButton.setOnClickListener(v -> attemptValidate());
     }
 
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
-    private void attemptLogin() {
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mAuthTask = null;
+    }
+
+    private void attemptValidate() {
         if (mAuthTask != null) {
             return;
         }
 
         mValidInput = new boolean[]{true};
-        mFocusView = new View[]{null};
+        mFocusView = new TextView[]{null};
 
         mErrorMacro = ViewUtils.newViewInputError(mValidInput, mFocusView);
 
@@ -111,10 +125,37 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(username, password);
+            mAuthTask = new UserLoginTask(this, username, password);
             mAuthTask.execute((Void) null);
         } else {
             mFocusView[0].requestFocus();
+        }
+    }
+
+    @Override
+    public void onAsyncTaskComplete(boolean validNemId, boolean noCustomer) {
+        if (mCustomer == null) {
+            // Return the associated NemID
+            if (validNemId) {
+                if (noCustomer) {
+                    Intent intent = new Intent(this, NemIdActivity.class);
+                    final NemId nemId = new NemId(mUsernameField.getText().toString(), mPasswordField.getText().toString());
+                    intent.putExtra(EXTRA_NEMID, (Parcelable) nemId);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } else {
+                    mErrorMacro.accept(mUsernameField, getResources().getString(R.string.error_existing_customer));
+                    mFocusView[0].requestFocus();
+                }
+            } else {
+                Intent intent = new Intent(this, NemIdActivity.class);
+                final NemId nemId = new NemId(mUsernameField.getText().toString(), mPasswordField.getText().toString());
+                intent.putExtra(EXTRA_NEMID, (Parcelable) nemId);
+                setResult(RESULT_NEW_NEMID, intent);
+                finish();
+            }
+        } else {
+            // Return the associated Customer
         }
     }
 
@@ -124,85 +165,68 @@ public class LoginActivity extends AppCompatActivity {
     private void showProgress(final boolean show) {
         int duration = getResources().getInteger(android.R.integer.config_mediumAnimTime);
 
-        mSignButton.setEnabled(!show);
-        AnimUtils.fade(mSignButton, duration, !show).start();
-        AnimUtils.fade(mRegisterButton, duration, !show).start();
+        mConfirmButton.setEnabled(!show);
+        AnimUtils.fade(mConfirmButton, duration, !show).start();
         AnimUtils.fade(mLogoView, duration, !show).start();
         AnimUtils.fade(mProgressView, duration, show).start();
-    }
-
-    public void startRegisterActivity(View view) {
-        Intent i = new Intent(this, RegisterActivity.class);
-        startActivity(i);
     }
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Void, Void> {
 
         private final String mEmail;
         private final String mPassword;
         private Customer mCustomer;
+        private boolean mValidNemId;
+        private boolean mNoCustomer;
+        private AsyncTaskCallback mCallback;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(AsyncTaskCallback callback, String email, String password) {
+            mCallback = callback;
             mEmail = email;
             mPassword = password;
+            mValidNemId = false;
+            mNoCustomer = false;
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Void doInBackground(Void... params) {
             try {
                 // Simulate network access.
                 int duration = 1000;
                 long before = System.currentTimeMillis();
 
-                boolean result = true;
-
                 // Attempt to validate the NemID
-                NemId actualNemId = MainDatabase.getInstance(LoginActivity.this).tryLogin(new NemId(mEmail, mPassword));
-                Customer customer = null;
+                NemId actualNemId = MainDatabase.getInstance(NemIdActivity.this).tryLogin(new NemId(mEmail, mPassword));
                 if (actualNemId == null) {
-                    if (mErrorMacro != null) {
-                        mErrorMacro.accept(mUsernameField, getString(R.string.error_account_not_found));
-                        result = false;
-                    }
+                    mValidNemId = false;
                 } else {
 
+                    mValidNemId = true;
                     // Attempt to retrieve the associated Customer
                     try {
-                        mCustomer = MainDatabase.getInstance(LoginActivity.this).getCustomer(actualNemId);
+                        MainDatabase.getInstance(NemIdActivity.this).getCustomer(actualNemId);
+                        mNoCustomer = false;
                     } catch (InvalidCustomerException e) {
-                        if (mErrorMacro != null) {
-                            mErrorMacro.accept(mUsernameField, getString(R.string.error_nemid_no_customer));
-                            result = false;
-                        }
+                        mNoCustomer = true;
                     }
                 }
 
                 long after = System.currentTimeMillis();
 
                 Thread.sleep(duration - (after - before));
-
-                return result;
-            } catch (InterruptedException e) {
-                return false;
-            }
+            } catch (InterruptedException ignored) { }
+            return null;
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(Void aVoid) {
             mAuthTask = null;
-
-            if (success) {
-                Intent i = HomeActivity.newIntent(LoginActivity.this, mCustomer);
-                startActivity(i);
-                finish();
-            } else {
-                showProgress(false);
-                mFocusView[0].requestFocus();
-            }
+            showProgress(false);
+            mCallback.onAsyncTaskComplete(mValidNemId, mNoCustomer);
         }
 
         @Override
@@ -213,3 +237,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 }
 
+interface AsyncTaskCallback {
+    void onAsyncTaskComplete(boolean validNemId, boolean noCustomer);
+}
