@@ -109,6 +109,10 @@ public class MainDatabase {
         return retrievedCustomer;
     }
 
+    public Customer getCustomer(@NonNull UUID uuid) {
+        return mCustomerDb.read(customer -> customer.getId().equals(uuid));
+    }
+
     public List<Bill> getOpenBills(@NonNull Customer customer) {
         final List<Bill> bills = mBillDb.readMultiple(bill -> bill.getCustomerId().equals(customer.getId()))
                 .stream()

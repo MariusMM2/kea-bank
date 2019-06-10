@@ -132,7 +132,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void doDbRefresh() {
-        mCustomer = MainDatabase.getInstance(this).getDummyCustomer();
+        mCustomer = MainDatabase.getInstance(this).getCustomer(mCustomer.getId());
         mAccountAdapter.setCustomer(mCustomer);
         mAccountAdapter.notifyDataSetChanged();
         new Handler().postDelayed(() -> mAccountsRefresh.setRefreshing(false), 500);
