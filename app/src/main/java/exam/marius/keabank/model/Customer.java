@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import exam.marius.keabank.util.ParcelUtils;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.*;
 
 public class Customer implements DatabaseItem, Parcelable {
@@ -11,6 +13,14 @@ public class Customer implements DatabaseItem, Parcelable {
     private String mFirstName, mLastName;
     private Date mBirthDate;
     private transient List<Account> mAccountList;
+
+    // Called at deserialization,
+    // instantiates any transient fields
+    // to a default value
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        mAccountList = new ArrayList<>();
+        in.defaultReadObject();
+    }
 
     public Customer(String firstName, String lastName, Date birthDate) {
         mId = UUID.randomUUID();
@@ -43,10 +53,6 @@ public class Customer implements DatabaseItem, Parcelable {
 
     public void addAccount(Account account) {
         mAccountList.add(account);
-    }
-
-    public void removeAccounts() {
-        mAccountList = new ArrayList<>();
     }
 
     @Override

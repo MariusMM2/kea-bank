@@ -92,8 +92,6 @@ public class MainDatabase {
     }
 
     private void getAccounts(Customer customer) {
-        customer.removeAccounts();
-
         List<Account> retrievedAccounts = mAccountDb.readMultiple(item -> item.getCustomerId().equals(customer.getId()));
 
         retrievedAccounts.forEach(account -> {
@@ -150,7 +148,6 @@ public class MainDatabase {
         List<Account> accounts = customer.getAccountList();
         accounts.forEach(account -> mAccountDb.add(account));
 
-        customer.removeAccounts();
         mCustomerDb.add(customer);
     }
 
