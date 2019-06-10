@@ -166,7 +166,6 @@ public class MainDatabaseTest {
     public void persistData() {
         mBillList.forEach(bill -> mMainDatabase.mBillDb.add(bill));
 
-        mMainDatabase.save();
         setUp();
 
 
