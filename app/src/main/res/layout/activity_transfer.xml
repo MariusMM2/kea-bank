@@ -137,6 +137,15 @@
                 android:paddingStart="12dp"
                 tools:text="000" />
         </android.support.design.widget.TextInputLayout>
+
+        <!--Monthly Payment Field-->
+        <CheckBox
+            android:id="@+id/checkbox_automated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/actions_monthly_transfer"
+            android:visibility="invisible" />
+
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton

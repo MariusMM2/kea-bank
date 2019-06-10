@@ -3,6 +3,7 @@ package exam.marius.keabank.database;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import exam.marius.keabank.model.*;
+import exam.marius.keabank.util.TimeUtils;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -217,6 +218,22 @@ public class MainDatabase {
             if (hasCommited) {
                 targetConsumer.accept(transaction.getSource());
                 targetConsumer.accept(transaction.getDestination());
+                if (transaction.getSource() instanceof Account && transaction.getDestination() instanceof Account) {
+                    if (transaction.getType().equals(Transaction.Type.PAYMENT_SERVICE)) {
+                        Transaction nextTransaction = Transaction.beginTransaction();
+                        nextTransaction.setSource(transaction.getSource())
+                                .setDestination(transaction.getDestination())
+                                .setTitle(transaction.getTitle())
+                                .setDate(TimeUtils.addMonths(transaction.getDate(), 1))
+                                .setMessage(transaction.getMessage())
+                                .setAmount(transaction.getAmount())
+                                .setType(Transaction.Type.PAYMENT_SERVICE)
+                                .setStatus(Transaction.Status.IDLE);
+                        mTransactionDb.add(nextTransaction);
+                        doUpdate(nextTransaction);
+                    }
+
+                }
             } else {
                 transaction.setPending();
             }

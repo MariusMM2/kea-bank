@@ -64,6 +64,10 @@ public class Account implements TransactionTarget {
         return new Account(amount, Type.DEFAULT, customerId);
     }
 
+    public static Type[] getMonthlyTransferCompatible() {
+        return new Type[] {Type.BUDGET, Type.SAVINGS};
+    }
+
     @Override
     public UUID getId() {
         return mId;

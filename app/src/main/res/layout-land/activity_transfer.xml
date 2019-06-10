@@ -148,6 +148,17 @@
             tools:text="000" />
     </android.support.design.widget.TextInputLayout>
 
+    <!--Monthly Payment Field-->
+    <CheckBox
+        android:id="@+id/checkbox_automated"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/actions_monthly_transfer"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/divider"
+        app:layout_constraintTop_toBottomOf="@+id/layout_amount" />
+
     <View
         android:id="@+id/divider"
         android:layout_width="1dp"

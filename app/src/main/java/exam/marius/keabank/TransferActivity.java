@@ -8,7 +8,6 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSpinner;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -43,7 +42,7 @@ public class TransferActivity extends UpNavActivity {
     private EditText mDueDateField;
     private EditText mMessageField;
     private EditText mAmountField;
-
+    private CheckBox mMonthlyTransferCheckBox;
 
     private SpinnerAdapter mSourcesAdapter;
     private SpinnerAdapter mDestinationsAdapter;
@@ -66,11 +65,6 @@ public class TransferActivity extends UpNavActivity {
         setContentView(R.layout.activity_transfer);
 
         mCustomer = getIntent().getParcelableExtra(EXTRA_CUSTOMER);
-
-        if (mCustomer == null) {
-            showCustomerErrorDialog();
-            return;
-        }
 
         mNewTransaction = Transaction.beginTransaction();
 
@@ -123,12 +117,32 @@ public class TransferActivity extends UpNavActivity {
                     if (mChosenDestination != 0) {
                         mDestinationEditText.setText("");
                         mChosenDestination = -1;
+
+                        mMonthlyTransferCheckBox.setVisibility(View.INVISIBLE);
                     }
                 } else {
                     mDestinationEditText.setText(mCustomer.getAccountList().get(position - 1).getNumber());
                     mChosenDestination = position;
+
+                    Account.Type type = mCustomer.getAccountList().get(position-1).getType();
+                    boolean canMonthlyTransfer = false;
+                    final Account.Type[] monthlyTransferCompatible = Account.getMonthlyTransferCompatible();
+                    for (Account.Type defaultType : monthlyTransferCompatible) {
+                        if (type.equals(defaultType)) {
+                            canMonthlyTransfer = true;
+                            break;
+                        }
+                    }
+
+                    if (canMonthlyTransfer) {
+                        mMonthlyTransferCheckBox.setVisibility(View.VISIBLE);
+                    } else {
+                        mMonthlyTransferCheckBox.setVisibility(View.INVISIBLE);
+                    }
                 }
                 mDestinationEditText.setError(null);
+
+                mMonthlyTransferCheckBox.setChecked(false);
             }
 
             @Override
@@ -155,6 +169,10 @@ public class TransferActivity extends UpNavActivity {
 
         // Amount Field
         mAmountField = findViewById(R.id.edit_amount);
+
+        // Monthly Transfer Field
+        mMonthlyTransferCheckBox = findViewById(R.id.checkbox_automated);
+        mMonthlyTransferCheckBox.setChecked(false);
     }
 
     @Override
@@ -172,15 +190,6 @@ public class TransferActivity extends UpNavActivity {
                 Log.d(TAG, String.format("onActivityResult: %s", mNewTransaction.toString()));
             }
         }
-    }
-
-    private void showCustomerErrorDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Error")
-                .setMessage("Error retrieving customer details")
-                .setPositiveButton(android.R.string.ok, null)
-                .setOnDismissListener(dialog -> finish())
-                .create().show();
     }
 
     public void submitTransfer(View view) {
@@ -232,9 +241,6 @@ public class TransferActivity extends UpNavActivity {
             Log.e(TAG, String.format("submitTransfer: %s", Log.getStackTraceString(e.getCause())));
         }
 
-        // Type selection
-        Transaction.Type type = Transaction.Type.NORMAL;
-
         // Destination selection
         Account destination = null;
         if (mDestinationsSpinner.getSelectedItemPosition() == 0) {
@@ -274,6 +280,10 @@ public class TransferActivity extends UpNavActivity {
                 errorMacro.accept(mDestinationEditText, getString(R.string.transaction_error_same_target));
             }
         }
+
+        // Type selection
+        Transaction.Type type = mMonthlyTransferCheckBox.isChecked() ? Transaction.Type.PAYMENT_SERVICE : Transaction.Type.NORMAL;
+
         // END Input Validation
 
         if (validInput[0]) {
