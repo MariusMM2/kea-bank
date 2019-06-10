@@ -108,19 +108,11 @@ public class RegisterActivity extends UpNavActivity {
 
         final BiConsumer<TextView, String> errorMacro = ViewUtils.newViewInputError(validInput, focusView);
 
-        // First Name selection
-        String firstName = mFirstNameField.getText().toString();
+        // NemID selection
+        String nemIdUsername = mNemIdField.getText().toString();
 
-        if (firstName.isEmpty()) {
-            errorMacro.accept(mFirstNameField, getString(R.string.error_field_required));
-        } else {
-            int messageMinLength = getResources().getInteger(R.integer.name_min_length);
-            int messageMaxLength = getResources().getInteger(R.integer.name_max_length);
-            if (firstName.length() <= messageMinLength) {
-                errorMacro.accept(mFirstNameField, getString(R.string.error_name_short, messageMinLength));
-            } else if (firstName.length() > messageMaxLength) {
-                errorMacro.accept(mFirstNameField, getString(R.string.error_name_long, messageMaxLength));
-            }
+        if (nemIdUsername.isEmpty()) {
+            errorMacro.accept(mNemIdField, getString(R.string.error_field_required));
         }
 
         // Last Name selection
@@ -138,15 +130,23 @@ public class RegisterActivity extends UpNavActivity {
             }
         }
 
+        // First Name selection
+        String firstName = mFirstNameField.getText().toString();
+
+        if (firstName.isEmpty()) {
+            errorMacro.accept(mFirstNameField, getString(R.string.error_field_required));
+        } else {
+            int messageMinLength = getResources().getInteger(R.integer.name_min_length);
+            int messageMaxLength = getResources().getInteger(R.integer.name_max_length);
+            if (firstName.length() <= messageMinLength) {
+                errorMacro.accept(mFirstNameField, getString(R.string.error_name_short, messageMinLength));
+            } else if (firstName.length() > messageMaxLength) {
+                errorMacro.accept(mFirstNameField, getString(R.string.error_name_long, messageMaxLength));
+            }
+        }
+
         // Date selection
         Date date = mBirthDateDialog.getDate();
-
-        // NemID selection
-        String nemIdUsername = mNemIdField.getText().toString();
-
-        if (nemIdUsername.isEmpty()) {
-            errorMacro.accept(mNemIdField, getString(R.string.error_field_required));
-        }
         // END Input Validation
 
         if (validInput[0]) {
