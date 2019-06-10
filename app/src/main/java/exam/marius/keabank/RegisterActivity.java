@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import exam.marius.keabank.database.MainDatabase;
+import exam.marius.keabank.model.Account;
 import exam.marius.keabank.model.Customer;
 import exam.marius.keabank.model.NemId;
 import exam.marius.keabank.util.StringUtils;
@@ -165,6 +166,9 @@ public class RegisterActivity extends UpNavActivity {
                         Customer customer = new Customer(firstName, lastName, date);
 
                         mNemId.setCustomerId(customer.getId());
+
+                        customer.addAccount(Account.newDefault(1000, customer.getId()));
+                        customer.addAccount(Account.newBudget(0, customer.getId()));
 
                         MainDatabase.getInstance(this).addCustomer(customer);
                         MainDatabase.getInstance(this).addNemId(mNemId);
