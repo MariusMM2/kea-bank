@@ -35,6 +35,22 @@ public class TimeUtils {
         return Date.from(zonedDateTime.toInstant());
     }
 
+    public static long yearsDifference(Date dateBefore, Date dateAfter) {
+        if (dateBefore.compareTo(dateAfter) > -1) {
+            // dateAfter is same or before dateBefore, return 0 weeks
+            return 0;
+        } else {
+            // dateAfter is after dateBefore, return difference in weeks
+            Instant instantBefore = Instant.ofEpochMilli(dateBefore.getTime());
+            Instant instantAfter = Instant.ofEpochMilli(dateAfter.getTime());
+
+            LocalDateTime localDateTimeBefore = LocalDateTime.ofInstant(instantBefore, ZoneId.systemDefault());
+            LocalDateTime localDateTimeAfter = LocalDateTime.ofInstant(instantAfter, ZoneId.systemDefault());
+
+            return ChronoUnit.YEARS.between(localDateTimeBefore, localDateTimeAfter);
+        }
+    }
+
     public static long weeksLeft(Date dateBefore, Date dateAfter) {
         if (dateBefore.compareTo(dateAfter) > -1) {
             // dateAfter is same or before dateBefore, return 0 weeks

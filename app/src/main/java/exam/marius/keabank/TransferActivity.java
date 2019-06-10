@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSpinner;
 import android.text.Editable;
@@ -276,6 +277,16 @@ public class TransferActivity extends UpNavActivity {
         // END Input Validation
 
         if (validInput[0]) {
+            if (source.getType().equals(Account.Type.PENSION)) {
+                final long age = TimeUtils.yearsDifference(mCustomer.getBirthDate(), TimeUtils.getToday());
+                if (age < getResources().getInteger(R.integer.pension_account_min_withdraw_age)) {
+                    validInput[0] = false;
+                    Snackbar.make(mSourcesSpinner, getString(R.string.error_pension_account_min_age, getResources().getInteger(R.integer.pension_account_min_withdraw_age)), Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+        if (validInput[0]) {
 
             mNewTransaction.setSource(source)
                     .setDestination(destination)
@@ -289,7 +300,9 @@ public class TransferActivity extends UpNavActivity {
             startActivityForResult(i, TransactionDetailActivity.REQUEST_CONFIRM_TRANSACTION);
             return;
         } else {
-            focusView[0].requestFocus();
+            if (focusView[0] != null) {
+                focusView[0].requestFocus();
+            }
         }
 
         Log.d(TAG, String.format("submitTransfer: %s", mNewTransaction.toString()));

@@ -68,4 +68,5 @@
     <string name="text_name">Name: %s</string>
     <string name="text_birthdate">Birth Date: %s</string>
     <string name="error_passwords_no_match">Passwords do not match</string>
+    <string name="error_pension_account_min_age">Withdraws from a pension account can only be made after the age of %d</string>
 </resources>

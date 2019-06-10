@@ -9,4 +9,5 @@
     <integer name="display_name_max_length">15</integer>
     <integer name="name_min_length">2</integer>
     <integer name="name_max_length">20</integer>
+    <integer name="pension_account_min_withdraw_age">77</integer>
 </resources>
