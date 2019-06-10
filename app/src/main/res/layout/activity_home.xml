@@ -8,7 +8,7 @@
     tools:context=".HomeActivity">
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/layout_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -19,6 +19,7 @@
             android:id="@+id/btn_new_account"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="newAccountDialog"
             android:text="@string/new_account" />
 
         <Button
@@ -41,10 +42,9 @@
         android:id="@+id/refresh_accounts"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_buttons">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list_accounts"

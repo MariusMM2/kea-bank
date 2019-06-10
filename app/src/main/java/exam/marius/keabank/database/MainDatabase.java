@@ -86,23 +86,29 @@ public class MainDatabase {
 
         if (retrievedCustomer == null) throw new InvalidCustomerException();
 
-        retrievedCustomer.removeAccounts();
+        getAccounts(retrievedCustomer);
 
-        List<Account> retrievedAccounts = mAccountDb.readMultiple(item -> item.getCustomerId().equals(retrievedCustomer.getId()));
+        return retrievedCustomer;
+    }
+
+    private void getAccounts(Customer customer) {
+        customer.removeAccounts();
+
+        List<Account> retrievedAccounts = mAccountDb.readMultiple(item -> item.getCustomerId().equals(customer.getId()));
 
         retrievedAccounts.forEach(account -> {
             List<Transaction> transactionList = getTransactions(account);
 
             transactionList.forEach(account::addTransaction);
 
-            retrievedCustomer.addAccount(account);
+            customer.addAccount(account);
         });
-
-        return retrievedCustomer;
     }
 
     public Customer getCustomer(@NonNull UUID uuid) {
-        return mCustomerDb.read(customer -> customer.getId().equals(uuid));
+        final Customer customer = mCustomerDb.read(customer1 -> customer1.getId().equals(uuid));
+        getAccounts(customer);
+        return customer;
     }
 
     public List<Bill> getOpenBills(@NonNull Customer customer) {
@@ -146,6 +152,10 @@ public class MainDatabase {
 
         customer.removeAccounts();
         mCustomerDb.add(customer);
+    }
+
+    public void addAccount(Account account) {
+        mAccountDb.add(account);
     }
 
     public void addTransaction(Transaction newTransaction) {

@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,6 +22,7 @@ import exam.marius.keabank.model.Customer;
 import exam.marius.keabank.model.Transaction;
 import exam.marius.keabank.util.ViewUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("Duplicates")
@@ -64,7 +66,7 @@ public class HomeActivity extends AppCompatActivity {
         mAccountAdapter = new AccountAdapter(mCustomer);
         mAccountsList.setAdapter(mAccountAdapter);
         mAccountAdapter.notifyDataSetChanged();
-        mAccountsRefresh.setOnRefreshListener(this::doDbRefresh);
+        mAccountsRefresh.setOnRefreshListener(this::dbRefresh);
     }
 
     @Override
@@ -126,16 +128,36 @@ public class HomeActivity extends AppCompatActivity {
                     Transaction transaction = data.getParcelableExtra(EXTRA_TRANSACTION);
                     MainDatabase.getInstance(this).addTransaction(transaction);
                 }
-                doDbRefresh();
+                dbRefresh();
             }
         }
     }
 
     private void doDbRefresh() {
+        mAccountsRefresh.setRefreshing(true);
+        dbRefresh();
+    }
+
+    private void dbRefresh() {
         mCustomer = MainDatabase.getInstance(this).getCustomer(mCustomer.getId());
         mAccountAdapter.setCustomer(mCustomer);
         mAccountAdapter.notifyDataSetChanged();
         new Handler().postDelayed(() -> mAccountsRefresh.setRefreshing(false), 500);
+    }
+
+    public void newAccountDialog(View view) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose account to add");
+
+        String[] accounts = Arrays.stream(Account.Type.values()).map(Account.Type::getText).toArray(String[]::new);
+
+        builder.setItems(accounts, (dialog, which) -> {
+            final Account account = new Account(0, Account.Type.values()[which], mCustomer.getId());
+            MainDatabase.getInstance(HomeActivity.this).addAccount(account);
+            doDbRefresh();
+        });
+
+        builder.show();
     }
 
     /**
