@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         // Set up the login form.
 
-        mUsernameField = findViewById(R.id.email);
+        mUsernameField = findViewById(R.id.username);
 
         mPasswordField = findViewById(R.id.password);
         mPasswordField.setOnEditorActionListener((textView, id, keyEvent) -> {
