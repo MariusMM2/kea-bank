@@ -61,10 +61,10 @@ public class NemId implements DatabaseItem, Parcelable {
     }
 
     protected NemId(Parcel in) {
-        ParcelUtils.readUuid(in);
+        mId = ParcelUtils.readUuid(in);
         mUsername = in.readString();
         mPassword = in.readString();
-        ParcelUtils.readUuid(in);
+        mCustomerId = ParcelUtils.readUuid(in);
     }
 
     @Override
@@ -72,9 +72,7 @@ public class NemId implements DatabaseItem, Parcelable {
         ParcelUtils.writeUuid(dest, mId);
         dest.writeString(mUsername);
         dest.writeString(mPassword);
-        if (mCustomerId != null) {
-            ParcelUtils.writeUuid(dest, mCustomerId);
-        }
+        ParcelUtils.writeUuid(dest, mCustomerId);
     }
 
     @Override
