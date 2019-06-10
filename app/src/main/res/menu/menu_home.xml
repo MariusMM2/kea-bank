@@ -3,11 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="uni.kea.marius.kearatings.MainActivity">
     <item
-        android:id="@+id/user_name"
+        android:id="@+id/action_customer_details"
         android:orderInCategory="100"
         android:title=""
-        app:showAsAction="always"
-        android:enabled="false" />
+        app:showAsAction="always"  />
 
     <item
         android:id="@+id/action_logout"

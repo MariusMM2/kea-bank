@@ -12,18 +12,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity
-            android:name=".LoginActivity" >
+        <activity android:name=".CustomerDetailActivity"
+            android:parentActivityName=".HomeActivity"/>
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterActivity"
-            android:parentActivityName=".LoginActivity"/>
         <activity
-            android:name=".HomeActivity" />
+            android:name=".RegisterActivity"
+            android:parentActivityName=".LoginActivity" />
+        <activity android:name=".HomeActivity" />
         <activity
             android:name=".AccountDetailActivity"
             android:parentActivityName=".HomeActivity" />
@@ -36,9 +37,10 @@
         <activity
             android:name=".PaymentActivity"
             android:parentActivityName=".HomeActivity" />
-        <activity android:name=".NemIdActivity"
-            android:theme="@style/AppTheme.Dialog"
-            android:excludeFromRecents="true" />
+        <activity
+            android:name=".NemIdActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/AppTheme.Dialog" />
     </application>
 
 </manifest>

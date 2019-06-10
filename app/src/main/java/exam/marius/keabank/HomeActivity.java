@@ -73,7 +73,7 @@ public class HomeActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_home, menu);
 
         // Sets the user name in the ActionBar
-        MenuItem menuItem = menu.findItem(R.id.user_name);
+        MenuItem menuItem = menu.findItem(R.id.action_customer_details);
         String displayName = String.format("%s %s", mCustomer.getFirstName(), mCustomer.getLastName());
         if (displayName.length() > getResources().getInteger(R.integer.display_name_max_length)) {
             displayName = mCustomer.getFirstName();
@@ -86,17 +86,23 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.user_name) {
+        if (id == R.id.action_customer_details) {
+            Intent intent = CustomerDetailActivity.newIntent(this, mCustomer);
+            startActivity(intent);
             return true;
         } else if (id == R.id.action_logout) {
             // Logs the user out and returns to the Login Activity
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            finish();
+            returnToLogin();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void returnToLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     public void startTransferActivity(View view) {
@@ -128,7 +134,7 @@ public class HomeActivity extends AppCompatActivity {
     public void debugResetDatabase(View view) {
         MainDatabase.getInstance(this).createDummyData();
         mAccountsRefresh.setRefreshing(true);
-        doDbRefresh();
+        returnToLogin();
     }
 
     private void doDbRefresh() {

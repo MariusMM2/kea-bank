@@ -75,7 +75,10 @@ public class MainDatabase {
 
     }
 
-    @SuppressWarnings("WeakerAccess")
+    public NemId getNemId(Customer customer) {
+        return mNemIdDb.read(nemId -> nemId.getCustomerId().equals(customer.getId()));
+    }
+
     public Customer getCustomer(@NonNull NemId nemId) throws InvalidCustomerException {
         NemId retrievedNemId = mNemIdDb.read(item -> item.getId().equals(nemId.getId()));
 
@@ -138,6 +141,10 @@ public class MainDatabase {
     }
 
     public void addCustomer(Customer customer) {
+        List<Account> accounts = customer.getAccountList();
+        accounts.forEach(account -> mAccountDb.add(account));
+
+        customer.removeAccounts();
         mCustomerDb.add(customer);
     }
 
@@ -280,6 +287,10 @@ public class MainDatabase {
         mCustomerDb.add(customer);
         nemIdList.forEach(nemId -> mNemIdDb.add(nemId));
         transactionList.forEach(this::addTransaction);
+    }
+
+    public void updateNemId(NemId nemId) {
+        mNemIdDb.update(nemId);
     }
 }
 

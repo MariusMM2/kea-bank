@@ -91,4 +91,8 @@ public class NemId implements DatabaseItem, Parcelable {
             return new NemId[size];
         }
     };
+
+    public void setPassword(String password) {
+        mPassword = password;
+    }
 }
