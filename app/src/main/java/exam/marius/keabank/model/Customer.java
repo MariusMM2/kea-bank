@@ -78,6 +78,7 @@ public class Customer implements DatabaseItem, Parcelable {
         mId = ParcelUtils.readUuid(in);
         mFirstName = in.readString();
         mLastName = in.readString();
+        mBirthDate = new Date(in.readLong());
         mAccountList = ParcelUtils.readList(in, Account.class);
     }
 
@@ -86,6 +87,7 @@ public class Customer implements DatabaseItem, Parcelable {
         ParcelUtils.writeUuid(dest, mId);
         dest.writeString(mFirstName);
         dest.writeString(mLastName);
+        dest.writeLong(mBirthDate.getTime());
         ParcelUtils.writeList(dest, mAccountList);
     }
 
