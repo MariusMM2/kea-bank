@@ -149,6 +149,7 @@ public class MainDatabase {
         accounts.forEach(account -> mAccountDb.add(account));
 
         mCustomerDb.add(customer);
+        addPresetBills(customer);
     }
 
     public void addAccount(Account account) {
@@ -242,38 +243,7 @@ public class MainDatabase {
     }
 
     public void createDummyData() {
-        Customer customer = new Customer("John", "Doe", Calendar.getInstance().getTime());
-        final List<NemId> nemIdList = new ArrayList<>(
-                Arrays.asList(
-                        new NemId(UUID.randomUUID(), "foobar98", "f00b4r98", customer.getId()),
-                        new NemId("foobar99", "f00b4r98")
-                )
-        );
-
-        final List<Account> accountList = new ArrayList<>(
-                Arrays.asList(
-                        Account.newDefault(3000, customer.getId()),
-                        Account.newBudget(1000, customer.getId()),
-                        Account.newSavings(0, customer.getId())
-                )
-        );
-        final List<Bill> billList = new ArrayList<>(
-                Arrays.asList(
-                        new Bill("Bill 1", "1++", true, 10, Calendar.getInstance().getTime(), customer.getId()),
-                        new Bill("Bill 2", "2++", false, 20, Calendar.getInstance().getTime(), customer.getId()),
-                        new Bill("Bill 3", "3++", true, 30, Calendar.getInstance().getTime(), customer.getId())
-                )
-        );
-        final List<Transaction> transactionList = new ArrayList<>(
-                Arrays.asList(
-                        Transaction.beginTransaction().setSource(accountList.get(0)).setDestination(accountList.get(1)).setAmount(1000),
-                        Transaction.beginTransaction().setSource(accountList.get(1)).setDestination(accountList.get(0)).setAmount(2000),
-                        Transaction.beginTransaction().setSource(accountList.get(0)).setDestination(billList.get(0)).setAmount(billList.get(0).getAmount()),
-                        Transaction.beginTransaction().setSource(accountList.get(1)).setDestination(billList.get(2)).setAmount(billList.get(2).getAmount()),
-                        Transaction.beginTransaction().setSource(billList.get(1)).setDestination(accountList.get(0)).setAmount(billList.get(1).getAmount())
-                )
-        );
-
+        //Clear database
         boolean oldFlag = DEBUG_NO_PERSIST;
 
         if (!oldFlag) {
@@ -289,11 +259,54 @@ public class MainDatabase {
             DEBUG_NO_PERSIST = false;
         }
 
+        //Fill database
+        Customer customer = new Customer("John", "Doe", Calendar.getInstance().getTime());
+        final List<NemId> nemIdList = new ArrayList<>(
+                Arrays.asList(
+                        new NemId(UUID.randomUUID(), "foobar98", "f00b4r98", customer.getId()),
+                        new NemId("foobar99", "f00b4r98")
+                )
+        );
+
+        final List<Account> accountList = new ArrayList<>(
+                Arrays.asList(
+                        Account.newDefault(3000, customer.getId()),
+                        Account.newBudget(1000, customer.getId()),
+                        Account.newSavings(0, customer.getId())
+                )
+        );
+
+        List<Bill> billList = addPresetBills(customer);
+
+        final List<Transaction> transactionList = new ArrayList<>(
+                Arrays.asList(
+                        Transaction.beginTransaction().setSource(accountList.get(0)).setDestination(accountList.get(1)).setAmount(1000),
+                        Transaction.beginTransaction().setSource(accountList.get(1)).setDestination(accountList.get(0)).setAmount(2000),
+                        Transaction.beginTransaction().setSource(accountList.get(0)).setDestination(billList.get(0)).setAmount(billList.get(0).getAmount()),
+                        Transaction.beginTransaction().setSource(accountList.get(1)).setDestination(billList.get(2)).setAmount(billList.get(2).getAmount()),
+                        Transaction.beginTransaction().setSource(billList.get(1)).setDestination(accountList.get(0)).setAmount(billList.get(1).getAmount())
+                )
+        );
+
         accountList.forEach(account -> mAccountDb.add(account));
-        billList.forEach(bill -> mBillDb.add(bill));
         mCustomerDb.add(customer);
         nemIdList.forEach(nemId -> mNemIdDb.add(nemId));
         transactionList.forEach(this::addTransaction);
+    }
+
+    private List<Bill> addPresetBills(Customer customer) {
+
+        final List<Bill> billList = new ArrayList<>(
+                Arrays.asList(
+                        new Bill("Bill 1", "1++", true, 10, Calendar.getInstance().getTime(), customer.getId()),
+                        new Bill("Bill 2", "2++", false, 20, Calendar.getInstance().getTime(), customer.getId()),
+                        new Bill("Bill 3", "3++", true, 30, Calendar.getInstance().getTime(), customer.getId())
+                )
+        );
+
+        billList.forEach(bill -> mBillDb.add(bill));
+
+        return billList;
     }
 
     public void updateNemId(NemId nemId) {
