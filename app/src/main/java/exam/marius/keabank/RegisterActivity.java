@@ -32,6 +32,9 @@ public class RegisterActivity extends UpNavActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
+    private static final String INSTANCE_CUSTOMER = "INSTANCE_CUSTOMER";
+    private static final String INSTANCE_NEMID = "INSTANCE_NEMID";
+
     private DatePickerDialog mBirthDateDialog;
 
     private TextInputEditText mFirstNameField;
@@ -50,6 +53,11 @@ public class RegisterActivity extends UpNavActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        if (savedInstanceState != null) {
+            mCustomer = savedInstanceState.getParcelable(INSTANCE_CUSTOMER);
+            mNemId = savedInstanceState.getParcelable(INSTANCE_NEMID);
+        }
 
         mFirstNameField = findViewById(R.id.edit_firstname);
 
@@ -70,6 +78,13 @@ public class RegisterActivity extends UpNavActivity {
         mNemIdInfoTextView.setVisibility(View.INVISIBLE);
         mNemIdInfoImageView = findViewById(R.id.image_nemid_info);
         mNemIdInfoImageView.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(INSTANCE_CUSTOMER, mCustomer);
+        outState.putParcelable(INSTANCE_NEMID, mNemId);
     }
 
     @Override
