@@ -1,34 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_login"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
+    tools:parentTag="android.support.constraint.ConstraintLayout"
     tools:showIn="@layout/activity_nem_id">
-
     <!-- Login progress -->
-
     <Button
         android:id="@+id/confirm_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/action_confirm"
+        android:layout_marginEnd="8dp"
+        android:text="@string/action_sign_in"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/layout_password"
+        app:layout_constraintStart_toStartOf="@+id/layout_password"
         app:layout_constraintTop_toBottomOf="@+id/layout_password" />
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="200dp"
         android:layout_height="200dp"
+        android:layout_marginStart="64dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/kea_logo" />
@@ -39,8 +35,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:alpha="0"
         app:layout_constraintBottom_toBottomOf="@+id/logo"
@@ -53,9 +49,10 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:paddingBottom="16dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/logo"
         app:layout_constraintTop_toBottomOf="@+id/layout_username">
 
         <android.support.design.widget.TextInputEditText
@@ -64,14 +61,15 @@
             android:layout_height="wrap_content"
             android:hint="@string/prompt_password"
             android:imeActionId="6"
-            android:imeActionLabel="@string/action_confirm"
+            android:imeActionLabel="@string/action_sign_in"
             android:imeOptions="actionUnspecified"
             android:inputType="textPassword"
             android:maxLines="1"
             android:paddingEnd="8dp"
             android:paddingStart="12dp"
             android:singleLine="true"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            tools:text="p4ssw0rd123" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -79,10 +77,11 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:paddingBottom="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logo">
+        app:layout_constraintStart_toEndOf="@+id/logo"
+        app:layout_constraintTop_toTopOf="@+id/logo">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/username"
@@ -97,5 +96,4 @@
             android:singleLine="true"
             android:textAlignment="center" />
     </android.support.design.widget.TextInputLayout>
-
 </android.support.constraint.ConstraintLayout>
