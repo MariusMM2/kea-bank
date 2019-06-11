@@ -34,7 +34,7 @@ public class HomeActivity extends AppCompatActivity {
     private static final String EXTRA_TRANSACTION = "exam.marius.extra.EXTRA_TRANSACTION";
 
     private SwipeRefreshLayout mAccountsRefresh;
-    private RecyclerView mAccountsList;
+    private RecyclerView mAccountsListView;
     private AccountAdapter mAccountAdapter;
 
     private Customer mCustomer;
@@ -61,10 +61,10 @@ public class HomeActivity extends AppCompatActivity {
         mCustomer = getIntent().getParcelableExtra(EXTRA_CUSTOMER);
 
         mAccountsRefresh = findViewById(R.id.refresh_accounts);
-        mAccountsList = findViewById(R.id.list_accounts);
+        mAccountsListView = findViewById(R.id.recycler_list);
 
         mAccountAdapter = new AccountAdapter(mCustomer);
-        mAccountsList.setAdapter(mAccountAdapter);
+        mAccountsListView.setAdapter(mAccountAdapter);
         mAccountAdapter.notifyDataSetChanged();
         mAccountsRefresh.setOnRefreshListener(this::dbRefresh);
     }

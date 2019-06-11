@@ -50,7 +50,7 @@ public class AccountDetailActivity extends UpNavActivity {
         mAccountView = findViewById(R.id.include);
         ViewUtils.bindAccount(mAccount, mAccountView);
 
-        mTransactionsListView = findViewById(R.id.list_transactions);
+        mTransactionsListView = findViewById(R.id.recycler_list);
 
         mTransactionAdapter = new TransactionAdapter(mAccount);
         mTransactionsListView.setAdapter(mTransactionAdapter);

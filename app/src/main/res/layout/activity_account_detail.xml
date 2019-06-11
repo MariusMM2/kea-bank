@@ -18,20 +18,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list_transactions"
-        android:layout_width="match_parent"
+    <include
+        layout="@layout/layout_recycler_view"
+        android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:fadingEdgeLength="40dp"
-        android:requiresFadingEdge="vertical"
-        android:scrollbars="vertical"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include"
-        tools:listitem="@layout/item_transaction" />
+        app:layout_constraintTop_toBottomOf="@+id/include" />
 </android.support.constraint.ConstraintLayout>

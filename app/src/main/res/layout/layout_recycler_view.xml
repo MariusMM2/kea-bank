@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/recycler_list"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:fadingEdgeLength="40dp"
+    android:requiresFadingEdge="vertical"
+    android:scrollbars="vertical"
+    app:layoutManager="android.support.v7.widget.LinearLayoutManager">
+
+</android.support.v7.widget.RecyclerView>
