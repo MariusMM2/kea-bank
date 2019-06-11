@@ -21,6 +21,7 @@ public class CustomerDetailActivity extends UpNavActivity {
 
     private TextView mNameTextView;
     private TextView mBirthDateTextView;
+    private TextView mAffiliateTextView;
 
     private TextInputEditText mOldPasswordField;
     private TextInputEditText mNewPasswordField;
@@ -46,6 +47,9 @@ public class CustomerDetailActivity extends UpNavActivity {
 
         mBirthDateTextView = findViewById(R.id.text_birthdate);
         mBirthDateTextView.setText(getString(R.string.text_birthdate, StringUtils.wrapDate(mCustomer.getBirthDate())));
+
+        mAffiliateTextView = findViewById(R.id.text_affiliate);
+        mAffiliateTextView.setText(getString(R.string.text_affiliate, mCustomer.getAffiliate().getText()));
 
         mOldPasswordField = findViewById(R.id.field_oldpassword);
 

@@ -1,15 +1,20 @@
 package exam.marius.keabank;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import exam.marius.keabank.database.MainDatabase;
 import exam.marius.keabank.model.Account;
 import exam.marius.keabank.model.Customer;
@@ -24,6 +29,8 @@ import java.util.function.BiConsumer;
 
 public class RegisterActivity extends UpNavActivity {
     private static final String TAG = "RegisterActivity";
+
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     private DatePickerDialog mBirthDateDialog;
 
@@ -77,6 +84,32 @@ public class RegisterActivity extends UpNavActivity {
                 showExistingNemIdInfo();
             }
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (permissions.length == 1 &&
+                    permissions[0].equals(Manifest.permission.ACCESS_COARSE_LOCATION) &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mCustomer.setAffiliate(Customer.Affiliate.ODENSE);
+
+            } else {
+                mCustomer.setAffiliate(Customer.Affiliate.COPENHAGEN);
+            }
+
+            finishRegistration();
+        }
+    }
+
+    private void finishRegistration() {
+        Toast.makeText(this, getString(R.string.action_affiliate_set, mCustomer.getAffiliate().getText()), Toast.LENGTH_SHORT).show();
+        MainDatabase.getInstance(this).addCustomer(mCustomer);
+        MainDatabase.getInstance(this).addNemId(mNemId);
+
+        Intent i = HomeActivity.newIntent(this, mCustomer);
+        startActivity(i);
+        finish();
     }
 
     private void showNewNemIdInfo() {
@@ -154,28 +187,27 @@ public class RegisterActivity extends UpNavActivity {
 
             new AlertDialog.Builder(this)
                     .setTitle("Confirm Creation")
-                    .setMessage(String.format("Are you sure you want to create this account:\n" +
-                                    "Name: %s %s\n" +
-                                    "Birth Date: %s\n" +
-                                    "NemID Username: %s?",
+                    .setMessage(getString(R.string.dialog_confirm_customer_register,
                             firstName,
                             lastName,
                             StringUtils.wrapDate(date),
                             mNemId.getUsername()))
                     .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                        Customer customer = new Customer(firstName, lastName, date);
+                        mCustomer = new Customer(firstName, lastName, date);
 
-                        mNemId.setCustomerId(customer.getId());
+                        mNemId.setCustomerId(mCustomer.getId());
 
-                        customer.addAccount(Account.newDefault(1000, customer.getId()));
-                        customer.addAccount(Account.newBudget(0, customer.getId()));
+                        mCustomer.addAccount(Account.newDefault(1000, mCustomer.getId()));
+                        mCustomer.addAccount(Account.newBudget(0, mCustomer.getId()));
 
-                        MainDatabase.getInstance(this).addCustomer(customer);
-                        MainDatabase.getInstance(this).addNemId(mNemId);
-
-                        Intent i = HomeActivity.newIntent(this, customer);
-                        startActivity(i);
-                        finish();
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                                == PackageManager.PERMISSION_GRANTED) {
+                            mCustomer.setAffiliate(Customer.Affiliate.ODENSE);
+                            finishRegistration();
+                        } else {
+                            // Show rationale and request permission.
+                            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+                        }
                     })
                     .setNegativeButton(android.R.string.cancel, null)
                     .show();

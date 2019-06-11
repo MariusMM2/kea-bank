@@ -223,8 +223,6 @@ public class NemIdActivity extends AppCompatActivity implements AsyncTaskCallbac
         protected Void doInBackground(Void... params) {
             try {
                 // Simulate network access.
-                int duration = 1000;
-                long before = System.currentTimeMillis();
 
                 // Attempt to validate the NemID
                 mActualNemId = MainDatabase.getInstance(NemIdActivity.this).tryLogin(new NemId(mEmail, mPassword));
@@ -242,10 +240,9 @@ public class NemIdActivity extends AppCompatActivity implements AsyncTaskCallbac
                     }
                 }
 
-                long after = System.currentTimeMillis();
-
-                Thread.sleep(duration - (after - before));
-            } catch (InterruptedException ignored) { }
+                Thread.sleep(1000);
+            } catch (InterruptedException ignored) {
+            }
             return null;
         }
 

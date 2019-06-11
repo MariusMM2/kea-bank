@@ -21,6 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/image_picture"
         app:layout_constraintTop_toTopOf="@+id/image_picture"
@@ -31,6 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toEndOf="@+id/image_picture"
         app:layout_constraintTop_toBottomOf="@+id/text_name"
         tools:text="Birth date: 01.01.1970" />
@@ -110,5 +112,15 @@
             android:inputType="textPassword"
             android:singleLine="true" />
     </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:id="@+id/text_affiliate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@+id/image_picture"
+        app:layout_constraintTop_toBottomOf="@+id/text_birthdate"
+        tools:text="Affiliate: Copenhagen" />
 
 </android.support.constraint.ConstraintLayout>

@@ -13,6 +13,7 @@ public class Customer implements DatabaseItem, Parcelable {
     private String mFirstName, mLastName;
     private Date mBirthDate;
     private transient List<Account> mAccountList;
+    private Affiliate mAffiliate;
 
     // Called at deserialization,
     // instantiates any transient fields
@@ -28,6 +29,7 @@ public class Customer implements DatabaseItem, Parcelable {
         mLastName = lastName;
         mBirthDate = birthDate;
         mAccountList = new ArrayList<>();
+        mAffiliate = Affiliate.COPENHAGEN;
     }
 
     @Override
@@ -53,6 +55,10 @@ public class Customer implements DatabaseItem, Parcelable {
 
     public void addAccount(Account account) {
         mAccountList.add(account);
+    }
+
+    public void setAffiliate(Affiliate affiliate) {
+        mAffiliate = affiliate;
     }
 
     @Override
@@ -86,6 +92,7 @@ public class Customer implements DatabaseItem, Parcelable {
         mLastName = in.readString();
         mBirthDate = new Date(in.readLong());
         mAccountList = ParcelUtils.readList(in, Account.class);
+        mAffiliate = ParcelUtils.readEnum(in, Affiliate.class);
     }
 
     @Override
@@ -95,6 +102,7 @@ public class Customer implements DatabaseItem, Parcelable {
         dest.writeString(mLastName);
         dest.writeLong(mBirthDate.getTime());
         ParcelUtils.writeList(dest, mAccountList);
+        ParcelUtils.writeEnum(dest, mAffiliate);
     }
 
     @Override
@@ -113,4 +121,23 @@ public class Customer implements DatabaseItem, Parcelable {
             return new Customer[size];
         }
     };
+
+    public Affiliate getAffiliate() {
+        return mAffiliate;
+    }
+
+    public enum Affiliate {
+        COPENHAGEN("Copenhagen"),
+        ODENSE("Odense");
+
+        private final String mText;
+
+        Affiliate(String text) {
+            mText = text;
+        }
+
+        public String getText() {
+            return mText;
+        }
+    }
 }

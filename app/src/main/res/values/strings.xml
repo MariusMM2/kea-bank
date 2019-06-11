@@ -80,4 +80,8 @@
     <string name="birth_date_label">Birth Date</string>
     <string name="nemid_hint">NemID</string>
     <string name="action_submit_registration">Submit Registration</string>
+    <string name="dialog_confirm_customer_register">Are you sure you want to create this account:\nName: %s %s\nBirth Date: %s\nNemID Username: %s?\n
+        Note: This app will request the device\'s location to assign the closest affiliate. If the permission is denied, the affiliate in Copenhagen will be chosen.</string>
+    <string name="action_affiliate_set">Setting affiliate to %s</string>
+    <string name="text_affiliate">Affiliate: %s</string>
 </resources>
