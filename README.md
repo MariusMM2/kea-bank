@@ -27,7 +27,7 @@ The next launch of the app is on 11th of April.
 In this case, new transactions will be created for 10th of February, March, April and May, and the former three will also be executed.
 
 When creating a new customer, a Default and Budget account will be created for it. Three bills will also be added to 
-that customer. If location permission is provided, the bank affiliate closest to the customer will be assigned*, otherwise
+that customer. If location permission is provided, the bank affiliate closest to the customer will be assigned, otherwise
  the affiliate in Copenhagen will be assigned.
 
 By default, the database contains two NemIDs, one Customer, two Accounts, three default Bills and 5 transactions for said customer. 
@@ -50,7 +50,7 @@ The database state can be reset by tapping the "DEBUG_RESETDB" button on the log
 #### Bill Payment
 
 1. Start the app.
-2. Log in**.
+2. Log in*.
 3. Tap the "Payments" button at the top of the screen.
 4. Choose account to pay from.
 5. Choose bill to pay.
@@ -62,7 +62,7 @@ The database state can be reset by tapping the "DEBUG_RESETDB" button on the log
 #### Money Transfer
 
 1. Start the app.
-2. Log in**.
+2. Log in*.
 3. Tap the "Transfer" button at the top of the screen.
 4. Choose account to pay from.
 5. Choose account to pay to from the dropdown or enter the account number.
@@ -80,23 +80,21 @@ Same as above, but you must choose a Budget or Savings account as destination an
 #### Open a new account
 
 1. Start the app.
-2. Log in**.
+2. Log in*.
 3. Tap the "New Account" button at the top of the screen.
 4. Choose account to create from the list.
 
 #### Change/Reset Password
 
 1. Start the app.
-2. Log in**.
+2. Log in*.
 3. Tap your user name in the app bar.
 4. Fill out the fields with your old and new password.
 5. Tap the "Change Password" button.
 6. Your new password has been saved.
 
 ### Notes:
-\* Currently, the Odense affiliate will be assigned if location is provided.
-
-\** The currently available credentials are:  
+\* The currently available credentials are:  
 NemIDs:  
 foobar98 - has a linked customer
 foobar99 - has no linked customer (can be usen when creating a new customer)
