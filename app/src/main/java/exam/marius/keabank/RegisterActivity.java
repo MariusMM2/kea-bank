@@ -4,17 +4,23 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import exam.marius.keabank.database.MainDatabase;
 import exam.marius.keabank.model.Account;
 import exam.marius.keabank.model.Customer;
@@ -23,9 +29,12 @@ import exam.marius.keabank.util.StringUtils;
 import exam.marius.keabank.util.TimeUtils;
 import exam.marius.keabank.util.ViewUtils;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 public class RegisterActivity extends UpNavActivity {
     private static final String TAG = "RegisterActivity";
@@ -107,14 +116,57 @@ public class RegisterActivity extends UpNavActivity {
             if (permissions.length == 1 &&
                     permissions[0].equals(Manifest.permission.ACCESS_COARSE_LOCATION) &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mCustomer.setAffiliate(Customer.Affiliate.ODENSE);
+                setClosestAffiliate();
 
             } else {
-                mCustomer.setAffiliate(Customer.Affiliate.COPENHAGEN);
+                setDefaultAffiliate();
             }
 
             finishRegistration();
         }
+    }
+
+    private void setClosestAffiliate() {
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationClient.getLastLocation().addOnCompleteListener(this, locationTask -> {
+            Location location = locationTask.getResult();
+            if (location != null) {
+                Log.i(TAG, "setClosestAffiliate: found device location: " + location.toString());
+                List<Float> distances = Arrays
+                        .stream(Customer.Affiliate.values())
+                        .map(value -> value.getLocation().distanceTo(location))
+                        .collect(Collectors.toList());
+
+                Log.d(TAG, "setClosestAffiliate: distances: " + distances.toString());
+
+                Float smallestDistance = distances
+                        .stream()
+                        .min(Float::compareTo)
+                        .orElse(-1f);
+
+                Log.d(TAG, "setClosestAffiliate: smallestDistance: " + smallestDistance);
+
+                if (smallestDistance == -1f) {
+                    Log.w(TAG, "setClosestAffiliate: unable to find distance, setting default");
+                    setDefaultAffiliate();
+                } else {
+                    Customer.Affiliate affiliate = Customer.Affiliate.values()[distances.indexOf(smallestDistance)];
+                    Log.i(TAG, "setClosestAffiliate: found closest: " + affiliate);
+                    mCustomer.setAffiliate(affiliate);
+                }
+            } else {
+                Log.w(TAG, "setClosestAffiliate: location is null");
+                setDefaultAffiliate();
+            }
+
+            finishRegistration();
+        });
+    }
+
+    private void setDefaultAffiliate() {
+        Log.i(TAG, "setDefaultAffiliate: Setting default affiliate");
+        mCustomer.setAffiliate(Customer.Affiliate.COPENHAGEN);
+        finishRegistration();
     }
 
     private void finishRegistration() {
@@ -217,10 +269,19 @@ public class RegisterActivity extends UpNavActivity {
 
                         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                                 == PackageManager.PERMISSION_GRANTED) {
-                            mCustomer.setAffiliate(Customer.Affiliate.ODENSE);
-                            finishRegistration();
+                            Log.i(TAG, "validateInput: Location permission given");
+                            GoogleApiAvailability instance = GoogleApiAvailability.getInstance();
+                            int googleServicesResult = instance.isGooglePlayServicesAvailable(this);
+                            if (googleServicesResult == ConnectionResult.SUCCESS) {
+                                Log.i(TAG, "validateInput: Google Services is available");
+                                setClosestAffiliate();
+                            } else {
+                                Log.i(TAG, "validateInput: Google services is unavailable");
+                                instance.getErrorDialog(this, googleServicesResult, 0, dialog1 -> setDefaultAffiliate()).show();
+                            }
                         } else {
                             // Show rationale and request permission.
+                            Log.i(TAG, "validateInput: Location permission not given, requesting permission");
                             requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
                         }
                     })

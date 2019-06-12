@@ -1,5 +1,6 @@
 package exam.marius.keabank.model;
 
+import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 import exam.marius.keabank.util.ParcelUtils;
@@ -126,18 +127,35 @@ public class Customer implements DatabaseItem, Parcelable {
         return mAffiliate;
     }
 
+    private static final Location LOC_1 = new Location("");
+    private static final Location LOC_2 = new Location("");
+    private static final Location LOC_3 = new Location("");
+
     public enum Affiliate {
-        COPENHAGEN("Copenhagen"),
-        ODENSE("Odense");
-
+        COPENHAGEN("Copenhagen", LOC_1),
+        ODENSE("Odense", LOC_2),
+        GOOGLEPLEX("Google Plex", LOC_3);
+        static {
+            LOC_1.setLatitude(55.671344);
+            LOC_1.setLongitude(12.5237847);
+            LOC_2.setLatitude(55.3843628);
+            LOC_2.setLongitude(10.2577382);
+            LOC_3.setLatitude(37.423423);
+            LOC_3.setLongitude(-122.083953);
+        }
         private final String mText;
+        private final Location mLocation;
 
-        Affiliate(String text) {
+        Affiliate(String text, Location location) {
             mText = text;
+            mLocation = location;
         }
 
         public String getText() {
             return mText;
+        }
+        public Location getLocation() {
+            return mLocation;
         }
     }
 }
