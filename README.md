@@ -97,6 +97,7 @@ Same as above, but you must choose a Budget or Savings account as destination an
 \* The currently available credentials are:  
 NemIDs:  
 foobar98 - has a linked customer
+
 foobar99 - has no linked customer (can be usen when creating a new customer)
 
 For development purposes, password validation is disabled.
