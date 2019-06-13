@@ -218,6 +218,6 @@
         android:layout_marginEnd="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_send"
+        app:srcCompat="@drawable/ic_confirm"
         android:onClick="submitPayment" />
 </android.support.constraint.ConstraintLayout>

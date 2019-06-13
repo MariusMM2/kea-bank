@@ -178,5 +178,5 @@
         android:onClick="submitTransfer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_send" />
+        app:srcCompat="@drawable/ic_confirm" />
 </android.support.constraint.ConstraintLayout>
